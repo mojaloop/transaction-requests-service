@@ -3,8 +3,11 @@
  --------------
  Copyright © 2017 Bill & Melinda Gates Foundation
  The Mojaloop files are made available by the Bill & Melinda Gates Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
+
  http://www.apache.org/licenses/LICENSE-2.0
+
  Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
  Contributors
  --------------
  This is the official list of the Mojaloop project contributors for this file.
@@ -15,33 +18,25 @@
  Gates Foundation organization for an example). Those individuals should have
  their names indented and be marked with a '-'. Email address can be added
  optionally within square brackets <email>.
- * Gates Foundation
 
- - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+ * Gates Foundation
+ - Name Surname <name.surname@gatesfoundation.com>
+
+ * Rajiv Mothilal <rajiv.mothilal@modusbox.com>
 
  --------------
  ******/
-'use strict'
 
-const handler = require('../domain/metadata/health')
-const Boom = require('@hapi/boom')
-/**
- * Operations on /health
- */
-module.exports = {
+'use strict'
+const SwagMock = require('swagmock')
+const Path = require('path')
+const apiPath = Path.resolve(__dirname, '../../src/interface/swagger.json')
+let mockGen
+
+module.exports = function () {
   /**
-   * summary: Get Server
-   * description: The HTTP request GET /health is used to return the current status of the API.
-   * parameters:
-   * produces: application/json
-   * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
+   * Cached mock generator
    */
-  get: async (request, h) => {
-    try {
-      let {response, statusCode} = await handler.getHealth()
-      return h.response({ status: 'OK' }).code(statusCode)
-    } catch (e) {
-      return Boom.badRequest(e.message)
-    }
-  }
+  mockGen = mockGen || SwagMock(apiPath)
+  return mockGen
 }

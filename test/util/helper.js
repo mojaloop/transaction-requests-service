@@ -16,32 +16,41 @@
  their names indented and be marked with a '-'. Email address can be added
  optionally within square brackets <email>.
  * Gates Foundation
+ * - Name Surname <name.surname@gatesfoundation.com>
 
- - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
-
+ *  - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
  --------------
  ******/
 'use strict'
 
-const handler = require('../domain/metadata/health')
-const Boom = require('@hapi/boom')
+let destinationFsp = 'dfsp2'
+let sourceFsp = 'dfsp1'
+let resource = 'transaction'
+
 /**
- * Operations on /health
+ * @function defaultHeaders
+ *
+ * @description This returns a set of default headers used for requests
+ *
+ * see https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_message_headers
+ *
+ * @param {string} version - the version for the accept and content-type headers
+ *
+ * @returns {object} Returns the default headers
  */
-module.exports = {
-  /**
-   * summary: Get Server
-   * description: The HTTP request GET /health is used to return the current status of the API.
-   * parameters:
-   * produces: application/json
-   * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
-   */
-  get: async (request, h) => {
-    try {
-      let {response, statusCode} = await handler.getHealth()
-      return h.response({ status: 'OK' }).code(statusCode)
-    } catch (e) {
-      return Boom.badRequest(e.message)
-    }
+
+function defaultHeaders(version = '1.0') {
+  // TODO: See API section 3.2.1; what should we do about X-Forwarded-For? Also, should we
+  // add/append to this field in all 'queueResponse' calls?
+  return {
+    'accept': `application/vnd.interoperability.${resource}+json;version=${version}`,
+    'fspiop-destination': destinationFsp,
+    'content-type': `application/vnd.interoperability.${resource}+json;version=${version}`,
+    'date': '2019-05-24 08:52:19',
+    'fspiop-source': sourceFsp
   }
+}
+
+module.exports = {
+  defaultHeaders
 }

@@ -16,7 +16,7 @@ module.exports = {
    */
   get: function (request, h) {
     transactionRequest.forwardTransactionRequest(request, Enum.endpoints.TRANSACTION_REQUEST_GET)
-    return h.response().code(200)
+    return h.response().code(202)
   },
   /**
    * summary: TransactionRequestsByID

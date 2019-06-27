@@ -15,6 +15,6 @@ module.exports = {
    */
   post: function (request, h) {
     transactionRequest.forwardTransactionRequest(request, Enum.endpoints.TRANSACTION_REQUEST_POST)
-    return h.response().code(201)
+    return h.response().code(202)
   }
 }

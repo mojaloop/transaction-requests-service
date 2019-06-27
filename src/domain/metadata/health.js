@@ -67,7 +67,7 @@ const serviceName = {
  * @param {*} request - the request object
  * @param {*} h       - the handler object
  */
-const getHealth = async function (request, h) {
+const getHealth = async function () {
   // Default values
   let statusCode = 200
   let status = statusEnum.OK
