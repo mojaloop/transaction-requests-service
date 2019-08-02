@@ -110,7 +110,7 @@ const ApiErrorCodes = {
 }
 
 function ApiErrorCodeFromCode (code) {
-  let ec = Object.keys(ApiErrorCodes).find(ec => {
+  const ec = Object.keys(ApiErrorCodes).find(ec => {
     return ApiErrorCodes[ec].code === code
   })
 
@@ -143,7 +143,7 @@ class FSPIOPError extends Error {
      * @returns {object}
      */
   toApiErrorObject () {
-    let e = {
+    const e = {
       errorInformation: {
         errorCode: this.apiErrorCode.code,
         errorDescription: this.apiErrorCode.message

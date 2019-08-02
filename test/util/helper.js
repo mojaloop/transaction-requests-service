@@ -23,9 +23,9 @@
  ******/
 'use strict'
 
-let destinationFsp = 'dfsp2'
-let sourceFsp = 'dfsp1'
-let resource = 'transaction'
+const destinationFsp = 'dfsp2'
+const sourceFsp = 'dfsp1'
+const resource = 'transaction'
 
 /**
  * @function defaultHeaders
@@ -39,14 +39,14 @@ let resource = 'transaction'
  * @returns {object} Returns the default headers
  */
 
-function defaultHeaders(version = '1.0') {
+function defaultHeaders (version = '1.0') {
   // TODO: See API section 3.2.1; what should we do about X-Forwarded-For? Also, should we
   // add/append to this field in all 'queueResponse' calls?
   return {
-    'accept': `application/vnd.interoperability.${resource}+json;version=${version}`,
+    accept: `application/vnd.interoperability.${resource}+json;version=${version}`,
     'fspiop-destination': destinationFsp,
     'content-type': `application/vnd.interoperability.${resource}+json;version=${version}`,
-    'date': '2019-05-24 08:52:19',
+    date: '2019-05-24 08:52:19',
     'fspiop-source': sourceFsp
   }
 }

@@ -56,6 +56,7 @@ exports.sendRequest = async (req, requestedParticipant, endpointType, method = u
     Logger.debug(`participant endpoint url: ${requestedEndpoint} for endpoint type ${endpointType}`)
     return await request.sendRequest(requestedEndpoint, req.headers, method, payload)
   } catch (e) {
+    Logger.error(e)
     throw e
   }
 }
@@ -70,7 +71,7 @@ exports.sendRequest = async (req, requestedParticipant, endpointType, method = u
  */
 exports.validateParticipant = async (fsp) => {
   try {
-    const requestedParticipantUrl = Mustache.render(Config.SWITCH_ENDPOINT + Enums.endpoints.PARTICIPANTS_GET, {fsp})
+    const requestedParticipantUrl = Mustache.render(Config.SWITCH_ENDPOINT + Enums.endpoints.PARTICIPANTS_GET, { fsp })
     Logger.debug(`validateParticipant url: ${requestedParticipantUrl}`)
     return await request.sendRequest(requestedParticipantUrl, util.defaultHeaders(Enums.apiServices.SWITCH, Enums.resources.participants, Enums.apiServices.SWITCH))
   } catch (e) {
@@ -93,7 +94,7 @@ exports.validateParticipant = async (fsp) => {
  */
 exports.sendErrorToParticipant = async (req, participantName, endpointType, errorInformation) => {
   let requestIdExists = false
-  if(req.payload && req.payload.requestId){
+  if (req.payload && req.payload.requestId) {
     requestIdExists = true
   }
   const requesterErrorEndpoint = await Cache.getEndpoint(participantName, endpointType, {

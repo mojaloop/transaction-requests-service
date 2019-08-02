@@ -68,7 +68,7 @@ setupTest.beforeEach(() => {
     SetupProxy = Proxyquire('../../src/server', {
       '@hapi/hapi': HapiStub,
       'hapi-openapi': HapiOpenAPIStub,
-      'path': PathStub,
+      path: PathStub,
       './lib/config': ConfigStub
     })
   } catch (err) {
@@ -82,7 +82,7 @@ setupTest.afterEach(() => {
 
 setupTest('initialize ', async test => {
   try {
-    let server = await SetupProxy.initialize()
+    const server = await SetupProxy.initialize()
     test.assert(server, 'return server object')
     test.assert(HapiStub.Server.called, 'Hapi.Server called once')
     test.assert(serverStub.start.calledOnce, 'server.start called once')

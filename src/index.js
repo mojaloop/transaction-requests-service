@@ -26,7 +26,7 @@
 
 const Server = require('./server')
 const PJson = require('../package.json')
-const {Command} = require('commander')
+const { Command } = require('commander')
 const Config = require('./lib/config')
 
 const Program = new Command()
@@ -41,7 +41,7 @@ Program.command('api')
 
   // function to execute when command is used
   .action(async () => {
-    let options = {
+    const options = {
       port: Config.PORT
     }
     module.exports = Server.initialize(options.port)

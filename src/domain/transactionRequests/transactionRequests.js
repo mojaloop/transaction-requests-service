@@ -41,7 +41,7 @@ const forwardTransactionRequest = async (request, path) => {
   let endpoint
   const fspiopSource = request.headers['fspiop-source']
   const fspiopDest = request.headers['fspiop-destination']
-  const payload = request.payload || {transactionRequestId: request.params.ID}
+  const payload = request.payload || { transactionRequestId: request.params.ID }
   try {
     endpoint = await participantEndpointModel.getEndpoint(fspiopDest, Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION)
     Logger.info(`Resolved PAYER party ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${payload.transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
@@ -125,7 +125,6 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
     throw err
   }
 }
-
 
 module.exports = {
   forwardTransactionRequest,

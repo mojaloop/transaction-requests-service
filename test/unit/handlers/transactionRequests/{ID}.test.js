@@ -36,7 +36,6 @@ Test.afterEach(() => {
  * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
  */
 Test.serial('test TransactionRequestsByID get operation', async function (t) {
-
   const server = new Hapi.Server()
 
   await server.register({
@@ -61,20 +60,20 @@ Test.serial('test TransactionRequestsByID get operation', async function (t) {
 
   t.pass(mock)
   t.pass(mock.request)
-  //Get the resolved path from mock request
-  //Mock request Path templates({}) are resolved using path parameters
+  // Get the resolved path from mock request
+  // Mock request Path templates({}) are resolved using path parameters
   const options = {
     method: 'get',
     url: '' + mock.request.path,
     headers: Helper.defaultHeaders()
   }
   if (mock.request.body) {
-    //Send the request body
+    // Send the request body
     options.payload = mock.request.body
   } else if (mock.request.formData) {
-    //Send the request form data
+    // Send the request form data
     options.payload = mock.request.formData
-    //Set the Content-Type as application/x-www-form-urlencoded
+    // Set the Content-Type as application/x-www-form-urlencoded
     options.headers = Helper.defaultHeaders()
   }
 
@@ -90,7 +89,6 @@ Test.serial('test TransactionRequestsByID get operation', async function (t) {
  * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
  */
 Test.serial('test TransactionRequestsByIDPut put operation', async function (t) {
-
   const server = new Hapi.Server()
 
   await server.register({
@@ -115,20 +113,20 @@ Test.serial('test TransactionRequestsByIDPut put operation', async function (t) 
 
   t.pass(mock)
   t.pass(mock.request)
-  //Get the resolved path from mock request
-  //Mock request Path templates({}) are resolved using path parameters
+  // Get the resolved path from mock request
+  // Mock request Path templates({}) are resolved using path parameters
   const options = {
     method: 'put',
     url: '' + mock.request.path,
     headers: Helper.defaultHeaders()
   }
   if (mock.request.body) {
-    //Send the request body
+    // Send the request body
     options.payload = mock.request.body
   } else if (mock.request.formData) {
-    //Send the request form data
+    // Send the request form data
     options.payload = mock.request.formData
-    //Set the Content-Type as application/x-www-form-urlencoded
+    // Set the Content-Type as application/x-www-form-urlencoded
     options.headers = Helper.defaultHeaders()
   }
 

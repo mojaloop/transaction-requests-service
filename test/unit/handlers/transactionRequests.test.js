@@ -29,7 +29,6 @@ Test.afterEach(() => {
   sandbox.restore()
 })
 
-
 /**
  * summary: TransactionRequests
  * description: The HTTP request POST /transactionRequests is used to request the creation of a transaction request for the provided financial transaction in the server.
@@ -38,7 +37,6 @@ Test.afterEach(() => {
  * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
  */
 Test('test TransactionRequests post operation', async function (t) {
-
   const server = new Hapi.Server()
 
   await server.register({
@@ -63,24 +61,23 @@ Test('test TransactionRequests post operation', async function (t) {
 
   t.pass(mock)
   t.pass(mock.request)
-  //Get the resolved path from mock request
-  //Mock request Path templates({}) are resolved using path parameters
+  // Get the resolved path from mock request
+  // Mock request Path templates({}) are resolved using path parameters
   const options = {
     method: 'post',
     url: '' + mock.request.path,
     headers: Helper.defaultHeaders()
   }
   if (mock.request.body) {
-    //Send the request body
+    // Send the request body
     options.payload = mock.request.body
   } else if (mock.request.formData) {
-    //Send the request form data
+    // Send the request form data
     options.payload = mock.request.formData
-    //Set the Content-Type as application/x-www-form-urlencoded
+    // Set the Content-Type as application/x-www-form-urlencoded
     options.headers = Helper.defaultHeaders()
   }
   const response = await server.inject(options)
   server.stop()
   t.is(response.statusCode, 202, 'Ok response status')
 })
-

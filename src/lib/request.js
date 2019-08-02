@@ -41,7 +41,7 @@ const util = require('./util')
  */
 const sendRequest = async (url, headers, method = 'get', payload = undefined) => {
   try {
-    const transformedHeaders = util.transformHeaders(headers, { httpMethod: method, sourceFsp: headers['FSPIOP-Source'], destinationFsp: headers['FSPIOP-Destination']})
+    const transformedHeaders = util.transformHeaders(headers, { httpMethod: method, sourceFsp: headers['FSPIOP-Source'], destinationFsp: headers['FSPIOP-Destination'] })
     const requestOptions = {
       url,
       method: method,

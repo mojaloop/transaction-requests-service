@@ -38,7 +38,7 @@ module.exports = {
    */
   get: async (request, h) => {
     try {
-      let {response, statusCode} = await handler.getHealth()
+      const { statusCode } = await handler.getHealth()
       return h.response({ status: 'OK' }).code(statusCode)
     } catch (e) {
       return Boom.badRequest(e.message)

@@ -25,22 +25,22 @@
 const packageJson = require('../../../package.json')
 // const Util = require('../lib//kafka/util')
 // const Kafka = require('../lib/kafka')
-const Enum = require('../../lib/enum')
+// const Enum = require('../../lib/enum')
 
-const eventType = Enum.eventType
-const eventAction = Enum.eventAction
+// const eventType = Enum.eventType
+// const eventAction = Enum.eventAction
 
 const statusEnum = {
   OK: 'OK',
   DOWN: 'DOWN'
 }
 
-const serviceName = {
-  datastore: 'datastore',
-  broker: 'broker',
-  sidecar: 'sidecar',
-  cache: 'cache'
-}
+// const serviceName = {
+//   datastore: 'datastore',
+//   broker: 'broker',
+//   sidecar: 'sidecar',
+//   cache: 'cache'
+// }
 
 /**
  * getHealth
@@ -69,9 +69,9 @@ const serviceName = {
  */
 const getHealth = async function () {
   // Default values
-  let statusCode = 200
-  let status = statusEnum.OK
-  let isHealthy = true
+  const statusCode = 200
+  const status = statusEnum.OK
+  // const isHealthy = true
   // let services = []
   // let subServices = {}
 
@@ -102,10 +102,10 @@ const getHealth = async function () {
     status,
     uptime,
     startTime,
-    versionNumber,
+    versionNumber
     // ...subServices
   }
-  return {response, statusCode}
+  return { response, statusCode }
 }
 
 // /**

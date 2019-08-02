@@ -51,7 +51,4 @@ Test('Commander should start all prepare Handlers up with invalid args', async t
   test.pass(Index)
   test.truthy(SetupStub.initialize.called)
   test.pass(process.exit.called)
-
 })
-
-

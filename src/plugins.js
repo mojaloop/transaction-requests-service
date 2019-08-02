@@ -33,8 +33,8 @@ const registerPlugins = async (server) => {
     plugin: require('hapi-swagger'),
     options: {
       info: {
-        'title': 'Event Sidecar Swagger Documentation',
-        'version': Package.version
+        title: 'Event Sidecar Swagger Documentation',
+        version: Package.version
       }
     }
   })
