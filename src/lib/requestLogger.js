@@ -28,7 +28,6 @@ const Logger = require('@mojaloop/central-services-shared').Logger
 const Util = require('util')
 
 const logResponse = function (request) {
-  const traceId = request.headers.traceid
   if (request.response) {
     let response
     try {
@@ -37,9 +36,9 @@ const logResponse = function (request) {
       response = Util.inspect(request.response.source)
     }
     if (!response) {
-      Logger.info(`TR-Trace-Id=${traceId} - Response: ${request.response}`)
+      Logger.info(`TR-Trace - Response: ${request.response}`)
     } else {
-      Logger.info(`TR-Trace-Id=${traceId} - Response: ${response} Status: ${request.response.statusCode}`)
+      Logger.info(`TR-Trace - Response: ${response} Status: ${request.response.statusCode}`)
     }
   }
 }
