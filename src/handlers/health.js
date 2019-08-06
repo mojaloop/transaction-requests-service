@@ -23,8 +23,12 @@
  ******/
 'use strict'
 
-const handler = require('../domain/metadata/health')
-const Boom = require('@hapi/boom')
+const HealthCheck = require('@mojaloop/central-services-shared').HealthCheck.HealthCheck
+const { defaultHealthHandler } = require('@mojaloop/central-services-health')
+const packageJson = require('../../package.json')
+
+const healthCheck = new HealthCheck(packageJson, [])
+
 /**
  * Operations on /health
  */
@@ -36,12 +40,5 @@ module.exports = {
    * produces: application/json
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  get: async (request, h) => {
-    try {
-      let {response, statusCode} = await handler.getHealth()
-      return h.response(response).code(statusCode)
-    } catch (e) {
-      return Boom.badRequest(e.message)
-    }
-  }
+  get: defaultHealthHandler(healthCheck)
 }

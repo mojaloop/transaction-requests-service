@@ -41,14 +41,14 @@ const forwardTransactionRequest = async (request, path) => {
   let endpoint
   const fspiopSource = request.headers['fspiop-source']
   const fspiopDest = request.headers['fspiop-destination']
-  const payload = request.payload || {transactionRequestId: request.params.ID}
+  const payload = request.payload || { transactionRequestId: request.params.ID }
   try {
     endpoint = await participantEndpointModel.getEndpoint(fspiopDest, Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION)
-    Logger.info(`Resolved PAYER party ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${payload.transactionRequestId || 'error'} to: ${util.inspect(endpoint)}`)
+    Logger.info(`Resolved PAYER party ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${payload.transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
     if (!endpoint) {
       // we didnt get an endpoint for the payee dfsp!
       // make an error callback to the initiator
-      throw new Errors.FSPIOPError(method.toUpperCase() !== Enum.restMethods.GET ? payload : undefined,
+      throw new Errors.FSPIOPError(request.method.toUpperCase() !== Enum.restMethods.GET ? payload : undefined,
         `No ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint found for transactionRequest ${payload.transactionRequestId} for ${fspiopDest}`, fspiopSource,
         Errors.ApiErrorCodes.DESTINATION_FSP_ERROR)
     }
@@ -89,7 +89,7 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
   const fspiopSource = headers['fspiop-source']
   try {
     endpoint = await participantEndpointModel.getEndpoint(to, Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION)
-    Logger.info(`Resolved PAYER party ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${transactionRequestId || 'error'} to: ${util.inspect(endpoint)}`)
+    Logger.info(`Resolved PAYER party ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
 
     if (!endpoint) {
       // we didnt get an endpoint for the payee dfsp!
@@ -125,7 +125,6 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
     throw err
   }
 }
-
 
 module.exports = {
   forwardTransactionRequest,

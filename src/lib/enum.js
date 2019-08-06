@@ -98,7 +98,7 @@ const endpoints = {
   TRANSACTION_REQUEST_GET: '/transactionRequests/{{ID}}',
   TRANSACTION_REQUEST_PUT_ERROR: '/transactionRequests/{{ID}}/error',
   PARTICIPANT_ENDPOINTS_GET: '/participants/{{fsp}}/endpoints',
-  PARTICIPANTS_GET: '/participants/{{fsp}}',
+  PARTICIPANTS_GET: '/participants/{{fsp}}'
 }
 
 module.exports = {

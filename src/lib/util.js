@@ -39,14 +39,14 @@ const Enum = require('./enum')
  *
  * @returns {object} Returns the default headers
  */
-function defaultHeaders(destination, resource, source, version = '1.0') {
+function defaultHeaders (destination, resource, source, version = '1.0') {
   // TODO: See API section 3.2.1; what should we do about X-Forwarded-For? Also, should we
   // add/append to this field in all 'queueResponse' calls?
   return {
-    'accept': `application/vnd.interoperability.${resource}+json;version=${version}`,
-    'FSPIOP-Destination': destination ? destination : '',
+    accept: `application/vnd.interoperability.${resource}+json;version=${version}`,
+    'FSPIOP-Destination': destination || '',
     'content-type': `application/vnd.interoperability.${resource}+json;version=${version}`,
-    'date': (new Date()).toUTCString(),
+    date: (new Date()).toUTCString(),
     'FSPIOP-Source': source
   }
 }
@@ -58,8 +58,8 @@ function defaultHeaders(destination, resource, source, version = '1.0') {
  *
  * @returns {object}
  */
-function removeEmptyKeys(originalObject) {
-  let obj = {...originalObject}
+function removeEmptyKeys (originalObject) {
+  const obj = { ...originalObject }
   Object.keys(obj).forEach(key => {
     if (obj[key] && typeof obj[key] === 'object') {
       if (Object.keys(obj[key]).length < 1) {
@@ -77,22 +77,21 @@ function removeEmptyKeys(originalObject) {
   return obj
 }
 
-
 /**
  * Generates and returns an object containing API spec compliant HTTP request headers
  *
  * @returns {object}
  */
-function generateRequestHeaders(headers, noAccept) {
-  let ret = {
+function generateRequestHeaders (headers, noAccept) {
+  const ret = {
     'Content-Type': 'application/vnd.interoperability.quotes+json;version=1.0',
-    'Date': new Date().toUTCString(),
+    Date: new Date().toUTCString(),
     'FSPIOP-Source': headers['fspiop-source'],
     'FSPIOP-Destination': headers['fspiop-destination'],
     'FSPIOP-HTTP-Method': headers['fspiop-http-method'],
     'FSPIOP-Signature': headers['fspiop-signature'],
     'FSPIOP-URI': headers['fspiop-uri'],
-    'Accept': null
+    Accept: null
   }
   if (!noAccept) {
     ret['Accept'] = 'application/vnd.interoperability.quotes+json;version=1'
@@ -123,17 +122,16 @@ const transformHeaders = (headers, config) => {
     }, {})
 
   // Normalized headers
-  let normalizedHeaders = {}
+  const normalizedHeaders = {}
 
   // check to see if FSPIOP-Destination header has been left out of the initial request. If so then add it.
-  if (!normalizedKeys.hasOwnProperty(Enum.headers.FSPIOP.DESTINATION)) {
+  if (!normalizedKeys[Enum.headers.FSPIOP.DESTINATION]) {
     headers[Enum.headers.FSPIOP.DESTINATION] = ''
   }
 
-  for (let headerKey in headers) {
-    if (headers.hasOwnProperty(headerKey)) {
-      const headerValue = headers[headerKey]
-      switch (headerKey.toLowerCase()) {
+  for (const headerKey in headers) {
+    const headerValue = headers[headerKey]
+    switch (headerKey.toLowerCase()) {
       case (Enum.headers.GENERAL.DATE):
         let tempDate = {}
         if (typeof headerValue === 'object' && headerValue instanceof Date) {
@@ -151,20 +149,20 @@ const transformHeaders = (headers, config) => {
         normalizedHeaders[headerKey] = tempDate
         break
       case (Enum.headers.GENERAL.CONTENT_LENGTH || Enum.headers.FSPIOP.URI || Enum.headers.GENERAL.HOST):
-        // Do nothing here, do not map. This will be inserted correctly by the Hapi framework.
+      // Do nothing here, do not map. This will be inserted correctly by the Hapi framework.
         break
       case (Enum.headers.FSPIOP.HTTP_METHOD):
         if (config.httpMethod.toLowerCase() === headerValue.toLowerCase()) {
-          // HTTP Methods match, and thus no change is required
+        // HTTP Methods match, and thus no change is required
           normalizedHeaders[headerKey] = headerValue
         } else {
-          // HTTP Methods DO NOT match, and thus a change is required for target HTTP Method
+        // HTTP Methods DO NOT match, and thus a change is required for target HTTP Method
           normalizedHeaders[headerKey] = config.httpMethod
         }
         break
       case (Enum.headers.FSPIOP.SIGNATURE):
-        // Check to see if we find a regex match the source header containing the switch name.
-        // If so we include the signature otherwise we remove it.
+      // Check to see if we find a regex match the source header containing the switch name.
+      // If so we include the signature otherwise we remove it.
 
         if (headers[normalizedKeys[Enum.headers.FSPIOP.SOURCE]].match(Enum.headers.FSPIOP.SWITCH.regex) === null) {
           normalizedHeaders[headerKey] = headerValue
@@ -183,7 +181,6 @@ const transformHeaders = (headers, config) => {
         break
       default:
         normalizedHeaders[headerKey] = headerValue
-      }
     }
   }
 
@@ -192,7 +189,6 @@ const transformHeaders = (headers, config) => {
   }
   return normalizedHeaders
 }
-
 
 module.exports = {
   defaultHeaders,

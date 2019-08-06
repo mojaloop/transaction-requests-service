@@ -76,7 +76,7 @@ const createServer = async (port) => {
             errorInformation: {
               errorCode: error.statusCode,
               errorDescription: error.message,
-              extensionList:[{
+              extensionList: [{
                 key: '',
                 value: ''
               }]
