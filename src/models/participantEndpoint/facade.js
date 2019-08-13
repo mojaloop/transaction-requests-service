@@ -31,6 +31,7 @@ const Enums = require('../../lib/enum')
 const util = require('../../lib/util')
 const Mustache = require('mustache')
 const Config = require('../../lib/config')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 /**
  * @module src/models/participantEndpoint/facade
@@ -55,9 +56,9 @@ exports.sendRequest = async (req, requestedParticipant, endpointType, method = u
     const requestedEndpoint = await Cache.getEndpoint(requestedParticipant, endpointType, options || undefined)
     Logger.debug(`participant endpoint url: ${requestedEndpoint} for endpoint type ${endpointType}`)
     return await request.sendRequest(requestedEndpoint, req.headers, method, payload)
-  } catch (e) {
-    Logger.error(e)
-    throw e
+  } catch (err) {
+    Logger.error(err)
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 

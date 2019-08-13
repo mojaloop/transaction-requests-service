@@ -26,6 +26,7 @@
 const request = require('axios')
 const Logger = require('@mojaloop/central-services-shared').Logger
 const util = require('./util')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 /**
  * @function validateParticipant
@@ -53,9 +54,9 @@ const sendRequest = async (url, headers, method = 'get', payload = undefined) =>
     const response = await request(requestOptions)
     Logger.debug(`Success: sendRequest::response`)
     return response
-  } catch (e) {
-    Logger.error(e)
-    throw e
+  } catch (err) {
+    Logger.error(err)
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
