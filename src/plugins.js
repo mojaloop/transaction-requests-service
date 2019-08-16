@@ -27,6 +27,7 @@ const Package = require('../package')
 const Inert = require('@hapi/inert')
 const Vision = require('@hapi/vision')
 const Blipp = require('blipp')
+const ErrorHandling = require('@mojaloop/central-services-error-handling')
 
 const registerPlugins = async (server) => {
   await server.register({
@@ -48,7 +49,7 @@ const registerPlugins = async (server) => {
     }
   })
 
-  await server.register([Inert, Vision, Blipp])
+  await server.register([Inert, Vision, Blipp, ErrorHandling])
 }
 
 module.exports = {

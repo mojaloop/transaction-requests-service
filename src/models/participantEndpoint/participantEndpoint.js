@@ -36,6 +36,7 @@ const clientOptions = { partition }
 const policyOptions = Config.ENDPOINT_CACHE_CONFIG
 const Mustache = require('mustache')
 const request = require('../../lib/request')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 let client
 let policy
@@ -95,7 +96,7 @@ exports.initializeCache = async () => {
     return true
   } catch (err) {
     Logger.error(`participantEndpointCache::Cache error:: ERROR:'${err}'`)
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -115,9 +116,9 @@ exports.getEndpoint = async (fsp, endpointType, options = {}) => {
   try {
     const endpoints = await policy.get(fsp)
     return Mustache.render(new Map(endpoints).get(endpointType), options)
-  } catch (e) {
-    Logger.error(`participantEndpointCache::getEndpoint:: ERROR:'${e}'`)
-    throw e
+  } catch (err) {
+    Logger.error(`participantEndpointCache::getEndpoint:: ERROR:'${err}'`)
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 

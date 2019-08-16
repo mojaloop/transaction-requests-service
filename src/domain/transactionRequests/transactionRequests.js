@@ -31,6 +31,7 @@ const util = require('util')
 const Mustache = require('mustache')
 const Utils = require('../../lib/util')
 const requests = require('../../lib/request')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 /**
  * Forwards transactionRequests endpoint requests to destination FSP for processing
@@ -75,7 +76,7 @@ const forwardTransactionRequest = async (request, path) => {
   } catch (err) {
     Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${err.stack || util.inspect(err)}`)
     forwardTransactionRequestError(request.headers, fspiopSource, Enum.endpoints.TRANSACTION_REQUEST_PUT_ERROR, Enum.restMethods.PUT, request.params.ID, err)
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
@@ -122,7 +123,7 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
     return true
   } catch (err) {
     Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${err.stack || util.inspect(err)}`)
-    throw err
+    throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
 
