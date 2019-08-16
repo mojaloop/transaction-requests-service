@@ -32,6 +32,7 @@ const Logger = require('@mojaloop/central-services-shared').Logger
 const Plugins = require('./plugins')
 const RequestLogger = require('./lib/requestLogger')
 const ParticipantEndpointCache = require('./models/participantEndpoint/participantEndpoint')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const openAPIOptions = {
   api: Path.resolve(__dirname, './interface/swagger.json'),
@@ -48,7 +49,15 @@ const openAPIOptions = {
  */
 const createServer = async (port) => {
   const server = await new Hapi.Server({
-    port
+    port,
+    routes: {
+      validate: {
+        options: ErrorHandler.validateRoutes(),
+        failAction: async (request, h, err) => {
+          throw ErrorHandler.Factory.reformatFSPIOPError(err)
+        }
+      }
+    }
   })
   await Plugins.registerPlugins(server)
   await server.register([
@@ -62,28 +71,6 @@ const createServer = async (port) => {
       type: 'onPreHandler',
       method: (request, h) => {
         RequestLogger.logResponse(request)
-        return h.continue
-      }
-    },
-    {
-      type: 'onPreResponse',
-      method: (request, h) => {
-        if (!request.response.isBoom) {
-          RequestLogger.logResponse(request.response)
-        } else {
-          const error = request.response
-          error.message = {
-            errorInformation: {
-              errorCode: error.statusCode,
-              errorDescription: error.message,
-              extensionList: [{
-                key: '',
-                value: ''
-              }]
-            }
-          }
-          error.reformat()
-        }
         return h.continue
       }
     }
