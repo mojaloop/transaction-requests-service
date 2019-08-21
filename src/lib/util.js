@@ -23,7 +23,7 @@
  ******/
 'use strict'
 
-const Enum = require('./enum')
+const Enum = require('@mojaloop/central-services-shared').Enum
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 /**
@@ -126,14 +126,14 @@ const transformHeaders = (headers, config) => {
   const normalizedHeaders = {}
 
   // check to see if FSPIOP-Destination header has been left out of the initial request. If so then add it.
-  if (!normalizedKeys[Enum.headers.FSPIOP.DESTINATION]) {
-    headers[Enum.headers.FSPIOP.DESTINATION] = ''
+  if (!normalizedKeys[Enum.Http.Headers.FSPIOP.DESTINATION]) {
+    headers[Enum.Http.Headers.FSPIOP.DESTINATION] = ''
   }
 
   for (const headerKey in headers) {
     const headerValue = headers[headerKey]
     switch (headerKey.toLowerCase()) {
-      case (Enum.headers.GENERAL.DATE):
+      case (Enum.Http.Headers.GENERAL.DATE):
         let tempDate = {}
         if (typeof headerValue === 'object' && headerValue instanceof Date) {
           tempDate = headerValue.toUTCString()
@@ -149,10 +149,10 @@ const transformHeaders = (headers, config) => {
         }
         normalizedHeaders[headerKey] = tempDate
         break
-      case (Enum.headers.GENERAL.CONTENT_LENGTH || Enum.headers.FSPIOP.URI || Enum.headers.GENERAL.HOST):
+      case (Enum.Http.Headers.GENERAL.CONTENT_LENGTH || Enum.Http.Headers.FSPIOP.URI || Enum.Http.Headers.GENERAL.HOST):
       // Do nothing here, do not map. This will be inserted correctly by the Hapi framework.
         break
-      case (Enum.headers.FSPIOP.HTTP_METHOD):
+      case (Enum.Http.Headers.FSPIOP.HTTP_METHOD):
         if (config.httpMethod.toLowerCase() === headerValue.toLowerCase()) {
         // HTTP Methods match, and thus no change is required
           normalizedHeaders[headerKey] = headerValue
@@ -161,23 +161,23 @@ const transformHeaders = (headers, config) => {
           normalizedHeaders[headerKey] = config.httpMethod
         }
         break
-      case (Enum.headers.FSPIOP.SIGNATURE):
+      case (Enum.Http.Headers.FSPIOP.SIGNATURE):
       // Check to see if we find a regex match the source header containing the switch name.
       // If so we include the signature otherwise we remove it.
 
-        if (headers[normalizedKeys[Enum.headers.FSPIOP.SOURCE]].match(Enum.headers.FSPIOP.SWITCH.regex) === null) {
+        if (headers[normalizedKeys[Enum.Http.Headers.FSPIOP.SOURCE]].match(Enum.Http.Headers.FSPIOP.SWITCH.regex) === null) {
           normalizedHeaders[headerKey] = headerValue
         }
         break
-      case (Enum.headers.FSPIOP.SOURCE):
+      case (Enum.Http.Headers.FSPIOP.SOURCE):
         normalizedHeaders[headerKey] = config.sourceFsp
         break
-      case (Enum.headers.FSPIOP.DESTINATION):
+      case (Enum.Http.Headers.FSPIOP.DESTINATION):
         if (config.destinationFsp) {
           normalizedHeaders[headerKey] = config.destinationFsp
         }
         break
-      case (Enum.headers.GENERAL.ACCEPT || Enum.headers.GENERAL.CONTENT_TYPE):
+      case (Enum.Http.Headers.GENERAL.ACCEPT || Enum.Http.Headers.GENERAL.CONTENT_TYPE):
         normalizedHeaders[headerKey] = headerValue
         break
       default:
@@ -185,8 +185,8 @@ const transformHeaders = (headers, config) => {
     }
   }
 
-  if (config && config.httpMethod !== Enum.restMethods.POST) {
-    delete normalizedHeaders[Enum.headers.GENERAL.ACCEPT]
+  if (config && config.httpMethod !== Enum.Http.RestMethods.POST) {
+    delete normalizedHeaders[Enum.Http.Headers.GENERAL.ACCEPT]
   }
   return normalizedHeaders
 }

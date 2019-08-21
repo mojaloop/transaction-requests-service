@@ -1,6 +1,6 @@
 'use strict'
 
-const Enum = require('../lib/enum')
+const Enum = require('@mojaloop/central-services-shared').Enum
 const transactionRequest = require('../domain/transactionRequests/transactionRequests')
 /**
  * Operations on /transactionRequests
@@ -14,7 +14,7 @@ module.exports = {
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
   post: function (request, h) {
-    transactionRequest.forwardTransactionRequest(request, Enum.endpoints.TRANSACTION_REQUEST_POST)
+    transactionRequest.forwardTransactionRequest(request, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST)
     return h.response().code(202)
   }
 }

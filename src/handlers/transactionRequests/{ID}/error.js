@@ -1,6 +1,6 @@
 'use strict'
 
-const Enum = require('../../../lib/enum')
+const Enum = require('@mojaloop/central-services-shared').Enum
 const transactionRequest = require('../../../domain/transactionRequests/transactionRequests')
 
 /**
@@ -15,7 +15,7 @@ module.exports = {
      * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
      */
   put: function (request, h) {
-    transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.endpoints.TRANSACTION_REQUEST_PUT_ERROR, Enum.restMethods.PUT, request.params.ID, request.payload)
+    transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, request.params.ID, request.payload)
     return h.response().code(200)
   }
 }
