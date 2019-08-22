@@ -35,8 +35,8 @@ const partition = 'endpoint-cache'
 const clientOptions = { partition }
 const policyOptions = Config.ENDPOINT_CACHE_CONFIG
 const Mustache = require('mustache')
-const request = require('../../lib/request')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const request = require('@mojaloop/central-services-shared').Util.Request
 
 let client
 let policy
@@ -56,7 +56,7 @@ const fetchEndpoints = async (fsp) => {
     const defaultHeaders = util.defaultHeaders(Enum.Http.HeaderResources.SWITCH, Enum.Http.HeaderResources.PARTICIPANTS, Enum.Http.HeaderResources.SWITCH)
     const url = Mustache.render(Config.SWITCH_ENDPOINT + Enum.EndPoints.FspEndpointTemplates.PARTICIPANT_ENDPOINTS_GET, { fsp })
     Logger.debug(`[fsp=${fsp}] ~ participantEndpointCache::fetchEndpoints := URL for FSP: ${url}`)
-    const response = await request.sendRequest(url, defaultHeaders)
+    const response = await request.sendRequest(url, defaultHeaders, Enum.Http.Headers.FSPIOP.SOURCE, Enum.Http.Headers.FSPIOP.DESTINATION)
     Logger.debug(`[fsp=${fsp}] ~ Model::participantEndpoint::fetchEndpoints := successful with body: ${JSON.stringify(response.data)}`)
     const endpoints = response.data
     const endpointMap = {}
@@ -121,15 +121,3 @@ exports.getEndpoint = async (fsp, endpointType, options = {}) => {
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
-
-// /**
-//  * @function stopCache
-//  *
-//  * @description It stops the cache client
-//  *
-//  * @returns {boolean} - Returns the status
-//  */
-// const stopCache = async () => {
-//   Logger.info('participantEndpointCache::stopCache::Stopping the cache')
-//   return client.stop()
-// }

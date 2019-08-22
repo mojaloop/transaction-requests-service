@@ -26,7 +26,7 @@
 
 const Logger = require('@mojaloop/central-services-shared').Logger
 const Cache = require('./participantEndpoint')
-const request = require('../../lib/request')
+const request = require('@mojaloop/central-services-shared').Util.Request
 const Enums = require('@mojaloop/central-services-shared').Enum
 const util = require('../../lib/util')
 const Mustache = require('mustache')
@@ -55,7 +55,7 @@ exports.sendRequest = async (req, requestedParticipant, endpointType, method = u
   try {
     const requestedEndpoint = await Cache.getEndpoint(requestedParticipant, endpointType, options || undefined)
     Logger.debug(`participant endpoint url: ${requestedEndpoint} for endpoint type ${endpointType}`)
-    return await request.sendRequest(requestedEndpoint, req.headers, method, payload)
+    return await request.sendRequest(requestedEndpoint, req.headers, Enums.Http.Headers.FSPIOP.SOURCE, Enums.Http.Headers.FSPIOP.DESTINATION, method, payload, Enums.Http.ResponseTypes.JSON)
   } catch (err) {
     Logger.error(err)
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
@@ -74,7 +74,7 @@ exports.validateParticipant = async (fsp) => {
   try {
     const requestedParticipantUrl = Mustache.render(Config.SWITCH_ENDPOINT + Enums.EndPoints.FspEndpointTemplates.PARTICIPANTS_GET, { fsp })
     Logger.debug(`validateParticipant url: ${requestedParticipantUrl}`)
-    return await request.sendRequest(requestedParticipantUrl, util.defaultHeaders(Enums.Http.HeaderResources.SWITCH, Enums.Http.HeaderResources.PARTICIPANTS, Enums.Http.HeaderResources.SWITCH))
+    return await request.sendRequest(requestedParticipantUrl, util.defaultHeaders(Enums.Http.HeaderResources.SWITCH, Enums.Http.HeaderResources.PARTICIPANTS, Enums.Http.HeaderResources.SWITCH), Enums.Http.Headers.FSPIOP.SOURCE, Enums.Http.Headers.FSPIOP.DESTINATION, Enums.Http.ResponseTypes.JSON)
   } catch (e) {
     Logger.error(e)
     return null
@@ -105,5 +105,5 @@ exports.sendErrorToParticipant = async (req, participantName, endpointType, erro
     requestId: requestIdExists ? req.payload.requestId : undefined
   })
   Logger.debug(`participant endpoint url: ${requesterErrorEndpoint} for endpoint type ${endpointType}`)
-  await request.sendRequest(requesterErrorEndpoint, req.headers, Enums.Http.RestMethods.PUT, errorInformation)
+  await request.sendRequest(requesterErrorEndpoint, req.headers, Enums.Http.Headers.FSPIOP.SOURCE, Enums.Http.Headers.FSPIOP.DESTINATION, Enums.Http.RestMethods.PUT, errorInformation, Enums.Http.ResponseTypes.JSON)
 }
