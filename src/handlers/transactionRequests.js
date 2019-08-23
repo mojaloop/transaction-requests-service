@@ -15,6 +15,6 @@ module.exports = {
    */
   post: function (request, h) {
     transactionRequest.forwardTransactionRequest(request, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST)
-    return h.response().code(202)
+    return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
   }
 }

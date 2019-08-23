@@ -75,8 +75,9 @@ exports.validateParticipant = async (fsp) => {
     const requestedParticipantUrl = Mustache.render(Config.SWITCH_ENDPOINT + Enums.EndPoints.FspEndpointTemplates.PARTICIPANTS_GET, { fsp })
     Logger.debug(`validateParticipant url: ${requestedParticipantUrl}`)
     return await request.sendRequest(requestedParticipantUrl, util.defaultHeaders(Enums.Http.HeaderResources.SWITCH, Enums.Http.HeaderResources.PARTICIPANTS, Enums.Http.HeaderResources.SWITCH), Enums.Http.Headers.FSPIOP.SOURCE, Enums.Http.Headers.FSPIOP.DESTINATION, Enums.Http.ResponseTypes.JSON)
-  } catch (e) {
-    Logger.error(e)
+  } catch (err) {
+    Logger.error(err)
+    // TODO: Evaluate if null should be returned here instead of returning a FSPIOPError
     return null
   }
 }

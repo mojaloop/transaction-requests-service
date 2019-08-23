@@ -16,7 +16,7 @@ module.exports = {
    */
   get: function (request, h) {
     transactionRequest.forwardTransactionRequest(request, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET)
-    return h.response().code(202)
+    return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
   },
   /**
    * summary: TransactionRequestsByID
@@ -27,6 +27,6 @@ module.exports = {
    */
   put: function (request, h) {
     transactionRequest.forwardTransactionRequest(request, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT)
-    return h.response().code(200)
+    return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
   }
 }

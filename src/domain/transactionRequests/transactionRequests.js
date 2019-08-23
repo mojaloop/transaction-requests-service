@@ -28,7 +28,6 @@ const participantEndpointModel = require('../../models/participantEndpoint/parti
 const Logger = require('@mojaloop/central-services-shared').Logger
 const util = require('util')
 const Mustache = require('mustache')
-const Utils = require('../../lib/util')
 const requests = require('@mojaloop/central-services-shared').Util.Request
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 

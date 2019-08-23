@@ -16,6 +16,6 @@ module.exports = {
      */
   put: function (request, h) {
     transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, request.params.ID, request.payload)
-    return h.response().code(200)
+    return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
   }
 }
