@@ -83,7 +83,7 @@ const initialize = async (port = Config.PORT) => {
   const server = await createServer(port)
   server.plugins.openapi.setHost(server.info.host + ':' + server.info.port)
   Logger.info(`Server running on ${server.info.host}:${server.info.port}`)
-  await Endpoint.initializeCache()
+  await Endpoint.initializeCache(Config.ENDPOINT_CACHE_CONFIG)
   return server
 }
 
