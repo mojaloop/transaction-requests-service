@@ -59,7 +59,7 @@
         "catbox-memory": "4.0.1",
         "docdash": "1.1.1",
         "glob": "7.1.4",
-        "hapi-openapi": "1.2.2",
+        "hapi-openapi": "1.2.3",
         "hapi-swagger": "10.1.2",
         "immutable": "3.8.2",
         "jsdoc": "3.6.3",
