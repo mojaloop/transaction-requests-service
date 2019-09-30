@@ -25,7 +25,7 @@
 
 const Enum = require('@mojaloop/central-services-shared').Enum
 const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const util = require('util')
 const Mustache = require('mustache')
 const requests = require('@mojaloop/central-services-shared').Util.Request
@@ -48,7 +48,7 @@ const forwardTransactionRequest = async (path, headers, method, params, payload)
     if (!endpoint) {
       // we didnt get an endpoint for the payee dfsp!
       // make an error callback to the initiator
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint found for transactionRequest ${payload.transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, request.method.toUpperCase() !== Enum.Http.RestMethods.GET ? payload : undefined, fspiopSource)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint found for transactionRequest ${payload.transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payload : undefined, fspiopSource)
     }
     const fullUrl = Mustache.render(endpoint + path, {
       ID: payloadLocal.transactionRequestId || params.ID
