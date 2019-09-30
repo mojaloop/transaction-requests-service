@@ -25,7 +25,7 @@
 
 const Enum = require('@mojaloop/central-services-shared').Enum
 const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const util = require('util')
 const Mustache = require('mustache')
 const requests = require('@mojaloop/central-services-shared').Util.Request
