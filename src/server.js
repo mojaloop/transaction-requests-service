@@ -28,10 +28,10 @@ const Hapi = require('@hapi/hapi')
 const HapiOpenAPI = require('hapi-openapi')
 const Path = require('path')
 const Config = require('./lib/config.js')
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const Plugins = require('./plugins')
 const RequestLogger = require('./lib/requestLogger')
-const ParticipantEndpointCache = require('./models/participantEndpoint/participantEndpoint')
+const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const openAPIOptions = {
@@ -83,7 +83,7 @@ const initialize = async (port = Config.PORT) => {
   const server = await createServer(port)
   server.plugins.openapi.setHost(server.info.host + ':' + server.info.port)
   Logger.info(`Server running on ${server.info.host}:${server.info.port}`)
-  await ParticipantEndpointCache.initializeCache()
+  await Endpoint.initializeCache(Config.ENDPOINT_CACHE_CONFIG)
   return server
 }
 

@@ -23,59 +23,54 @@
  ******/
 'use strict'
 
-const Enum = require('../../lib/enum')
-const participantEndpointModel = require('../../models/participantEndpoint/participantEndpoint')
-const Errors = require('../../lib/errors')
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Enum = require('@mojaloop/central-services-shared').Enum
+const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
+const Logger = require('@mojaloop/central-services-logger')
 const util = require('util')
 const Mustache = require('mustache')
-const Utils = require('../../lib/util')
-const requests = require('../../lib/request')
+const requests = require('@mojaloop/central-services-shared').Util.Request
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Config = require('../../lib/config.js')
 
 /**
  * Forwards transactionRequests endpoint requests to destination FSP for processing
  *
  * @returns {undefined}
  */
-const forwardTransactionRequest = async (request, path) => {
+const forwardTransactionRequest = async (path, headers, method, params, payload) => {
   let endpoint
-  const fspiopSource = request.headers['fspiop-source']
-  const fspiopDest = request.headers['fspiop-destination']
-  const payload = request.payload || { transactionRequestId: request.params.ID }
+  const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
+  const fspiopDest = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
+  const payloadLocal = payload || { transactionRequestId: params.ID }
   try {
-    endpoint = await participantEndpointModel.getEndpoint(fspiopDest, Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION)
-    Logger.info(`Resolved PAYER party ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${payload.transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
+    endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, fspiopDest, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION)
+    Logger.info(`Resolved PAYER party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${payload.transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
     if (!endpoint) {
       // we didnt get an endpoint for the payee dfsp!
       // make an error callback to the initiator
-      throw new Errors.FSPIOPError(request.method.toUpperCase() !== Enum.restMethods.GET ? payload : undefined,
-        `No ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint found for transactionRequest ${payload.transactionRequestId} for ${fspiopDest}`, fspiopSource,
-        Errors.ApiErrorCodes.DESTINATION_FSP_ERROR)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint found for transactionRequest ${payload.transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payload : undefined, fspiopSource)
     }
     const fullUrl = Mustache.render(endpoint + path, {
-      ID: payload.transactionRequestId || request.params.ID
+      ID: payloadLocal.transactionRequestId || params.ID
     })
     Logger.info(`Forwarding transaction request to endpoint: ${fullUrl}`)
     // Network errors lob an exception. Bare in mind 3xx 4xx and 5xx are not network errors
     // so we need to wrap the request below in a `try catch` to handle network errors
     let res
     try {
-      res = await requests.sendRequest(fullUrl, Utils.generateRequestHeaders(request.headers), request.method, request.method.toUpperCase() !== Enum.restMethods.GET ? payload : undefined)
+      res = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payloadLocal : undefined)
     } catch (e) {
-      throw new Errors.FSPIOPError('Network error', `Network error forwarding quote request: ${e.stack || util.inspect(e)}`,
-        fspiopSource, Errors.ApiErrorCodes.DESTINATION_COMMUNICATION_ERROR)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, `Network error forwarding quote request: ${e.stack || util.inspect(e)}`, 'Network error', fspiopSource)
     }
     Logger.info(`Forwarding transaction request ${payload.transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${res.status} ${res.statusText}`)
     // handle non network related errors below
     if (!res.ok) {
-      throw new Errors.FSPIOPError(res.statusText, 'Got non-success response forwarding transaction request',
-        fspiopSource, Errors.ApiErrorCodes.DESTINATION_COMMUNICATION_ERROR)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Got non-success response forwarding transaction request', res.statusText, fspiopSource)
     }
     return true
   } catch (err) {
     Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${err.stack || util.inspect(err)}`)
-    forwardTransactionRequestError(request.headers, fspiopSource, Enum.endpoints.TRANSACTION_REQUEST_PUT_ERROR, Enum.restMethods.PUT, request.params.ID, err)
+    forwardTransactionRequestError(headers, Enum.Http.Headers.FSPIOP.SOURCE, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, params.ID, err)
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
@@ -87,17 +82,16 @@ const forwardTransactionRequest = async (request, path) => {
  */
 const forwardTransactionRequestError = async (headers, to, path, method, transactionRequestId, payload) => {
   let endpoint
-  const fspiopSource = headers['fspiop-source']
+  const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
+  const fspiopDestination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
   try {
-    endpoint = await participantEndpointModel.getEndpoint(to, Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION)
-    Logger.info(`Resolved PAYER party ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
+    endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, to, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION)
+    Logger.info(`Resolved PAYER party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
 
     if (!endpoint) {
       // we didnt get an endpoint for the payee dfsp!
       // make an error callback to the initiator
-      throw new Errors.FSPIOPError(payload,
-        `No ${Enum.endpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint found for transactionRequest ${transactionRequestId} for ${to}`, fspiopSource,
-        Errors.ApiErrorCodes.DESTINATION_FSP_ERROR)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRANSACTION} endpoint found for transactionRequest ${transactionRequestId} for ${to}`, payload, fspiopSource)
     }
     const fullUrl = Mustache.render(endpoint + path, {
       ID: transactionRequestId
@@ -108,17 +102,15 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
     // so we need to wrap the request below in a `try catch` to handle network errors
     let res
     try {
-      res = await requests.sendRequest(fullUrl, Utils.generateRequestHeaders(headers), method, payload || undefined)
+      res = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, payload || undefined)
     } catch (e) {
-      throw new Errors.FSPIOPError('Network error', `Network error forwarding quote request: ${e.stack || util.inspect(e)}`,
-        fspiopSource, Errors.ApiErrorCodes.DESTINATION_COMMUNICATION_ERROR)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `Network error forwarding quote request: ${e.stack || util.inspect(e)}`, 'Network error', fspiopSource)
     }
     Logger.info(`Forwarding transaction request ${transactionRequestId} from ${fspiopSource} to ${to} got response ${res.status} ${res.statusText}`)
 
     // handle non network related errors below
     if (!res.ok) {
-      throw new Errors.FSPIOPError(res.statusText, 'Got non-success response forwarding transaction request',
-        fspiopSource, Errors.ApiErrorCodes.DESTINATION_COMMUNICATION_ERROR)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Got non-success response forwarding transaction request', res.statusText, fspiopSource)
     }
     return true
   } catch (err) {

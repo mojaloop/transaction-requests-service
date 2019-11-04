@@ -6,7 +6,7 @@ const Hapi = require('@hapi/hapi')
 const HapiOpenAPI = require('hapi-openapi')
 const Path = require('path')
 const Mockgen = require('../../../../util/mockgen.js')
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 const Handler = require('../../../../../src/domain/transactionRequests/transactionRequests')
 const Helper = require('../../../../util/helper')
 

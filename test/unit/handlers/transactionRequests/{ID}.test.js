@@ -8,7 +8,7 @@ const Path = require('path')
 const Mockgen = require('../../../util/mockgen.js')
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/transactionRequests/transactionRequests')
-const Logger = require('@mojaloop/central-services-shared').Logger
+const Logger = require('@mojaloop/central-services-logger')
 
 let sandbox
 /**
