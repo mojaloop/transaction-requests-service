@@ -1,2 +1,14 @@
 {
+  "decisions": {
+    "1300|hapi-swagger>handlebars": {
+      "decision": "postpone",
+      "madeAt": 1573137040005
+    },
+    "1300|nyc>istanbul-reports>handlebars": {
+      "decision": "postpone",
+      "madeAt": 1573137040005
+    }
+  },
+  "rules": {},
+  "version": 1
 }
