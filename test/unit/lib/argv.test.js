@@ -3,11 +3,8 @@
  --------------
  Copyright © 2017 Bill & Melinda Gates Foundation
  The Mojaloop files are made available by the Bill & Melinda Gates Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
-
  http://www.apache.org/licenses/LICENSE-2.0
-
  Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
  Contributors
  --------------
  This is the official list of the Mojaloop project contributors for this file.
@@ -18,42 +15,26 @@
  Gates Foundation organization for an example). Those individuals should have
  their names indented and be marked with a '-'. Email address can be added
  optionally within square brackets <email>.
-
  * Gates Foundation
  - Name Surname <name.surname@gatesfoundation.com>
 
- * Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+ * Crosslake
+ - Lewis Daly <lewisd@crosslaketech.com>
 
  --------------
  ******/
 
 'use strict'
-const SwagMock = require('swagmock')
-const Path = require('path')
-const apiPath = Path.resolve(__dirname, '../../src/interface/swagger.json')
-let mockGen
 
-/**
- * Global MockGenerator Singleron
- */
-module.exports = function () {
-  if (mockGen) {
-    return mockGen
-  }
+const Argv = require('../../../src/lib/argv')
 
-  mockGen = SwagMock(apiPath)
+describe('Argv', () => {
+  it('getArgs returns the args', async () => {
+    // Arrange
+    // Act
+    const result = Argv.getArgs()
 
-  /**
-   * Add an async version of requests
-   */
-  mockGen.requestsAsync = async (path, operation) => {
-    return new Promise((resolve, reject) => {
-      mockGen.requests(
-        { path, operation },
-        (error, mock) => error ? reject(error) : resolve(mock)
-      )
-    })
-  }
-
-  return mockGen
-}
+    // Assert
+    expect(result.length > 0).toBe(true)
+  })
+})

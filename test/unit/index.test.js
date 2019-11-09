@@ -1,54 +1,89 @@
-'use strict'
+/*****
+ License
+ --------------
+ Copyright © 2017 Bill & Melinda Gates Foundation
+ The Mojaloop files are made available by the Bill & Melinda Gates Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
+ http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ Contributors
+ --------------
+ This is the official list of the Mojaloop project contributors for this file.
+ Names of the original copyright holders (individuals or organizations)
+ should be listed with a '*' in the first column. People who have
+ contributed from an organization can be listed under the organization
+ that actually holds the copyright for their contributions (see the
+ Gates Foundation organization for an example). Those individuals should have
+ their names indented and be marked with a '-'. Email address can be added
+ optionally within square brackets <email>.
+ * Gates Foundation
+ - Name Surname <name.surname@gatesfoundation.com>
 
-const Test = require('ava')
-const Sinon = require('sinon')
-const Config = require('../../src/lib/config')
-const Proxyquire = require('proxyquire')
+ * ModusBox
+ - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
 
+ * Crosslake
+ - Lewis Daly <lewisd@crosslaketech.com>
+
+ --------------
+ ******/
+
+/*
+  For testing the server imports, we need to use jest.resetModules() between tests
+  This means specifying future imports here and actually doing the importing in `beforeEach`
+*/
+let Sinon
+let Command
 let sandbox
-let SetupStub
 
-Test.beforeEach(() => {
-  sandbox = Sinon.createSandbox()
-  SetupStub = {
-    initialize: sandbox.stub().returns(Promise.resolve())
-  }
-  process.argv = []
-  Proxyquire.noPreserveCache() // enable no caching for module requires
-})
+describe('Base Tests', () => {
+  beforeEach(() => {
+    jest.resetModules()
 
-Test.afterEach(() => {
-  sandbox.restore()
-  Proxyquire.preserveCache()
-})
+    Sinon = require('sinon')
+    Command = require('commander').Command
 
-Test('Commander should start all Handlers up via all switches', async test => {
-  process.argv = [
-    'node',
-    'index.js',
-    'api'
-  ]
-  const Index = Proxyquire('../../src/index', {
-    './server': SetupStub
-  })
-  const initOptions = {
-    port: Config.PORT
-  }
-  test.pass(await Index)
-  test.pass(SetupStub.initialize.calledWith(initOptions))
-})
-
-Test('Commander should start all prepare Handlers up with invalid args', async test => {
-  // stub process.exit
-  sandbox.stub(process, 'exit')
-
-  const argv = []
-  process.argv = argv
-  const Index = Proxyquire('../../src/index', {
-    './server': SetupStub
+    sandbox = Sinon.createSandbox()
   })
 
-  test.pass(Index)
-  test.truthy(SetupStub.initialize.called)
-  test.pass(process.exit.called)
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should display help if called with no args', () => {
+    // Arrange
+    const sandbox = Sinon.createSandbox()
+    const mockInitStub = sandbox.stub()
+    const helpStub = sandbox.stub(Command.prototype, 'help').returns(true)
+
+    jest.mock('../../src/server.js', () => ({ initialize: mockInitStub }))
+    jest.mock('../../src/lib/argv.js', () => ({
+      getArgs: () => []
+    }))
+
+    // Act
+    require('../../src/index')
+    // Assert
+    // When starting with help, the help() method gets called
+    expect(helpStub.callCount).toBe(1)
+  })
+
+  it('should start the server with the default config', () => {
+    // Arrange
+    const mockInitStub = sandbox.stub()
+    const mockArgs = [
+      'node',
+      'src/index.js',
+      'api'
+    ]
+    jest.mock('../../src/server.js', () => ({ initialize: mockInitStub }))
+    jest.mock('../../src/lib/argv.js', () => ({
+      getArgs: () => mockArgs
+    }))
+
+    // Act
+    require('../../src/index.js')
+
+    // Assert
+    expect(mockInitStub.callCount).toBe(1)
+  })
 })

@@ -18,10 +18,18 @@
  * Gates Foundation
  * - Name Surname <name.surname@gatesfoundation.com>
 
- *  - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+ * ModusBox
+ - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+
+ * Crosslake
+ - Lewis Daly <lewisd@crosslaketech.com>
+
  --------------
  ******/
 'use strict'
+
+const HapiOpenAPI = require('hapi-openapi')
+const Path = require('path')
 
 const destinationFsp = 'dfsp2'
 const sourceFsp = 'dfsp1'
@@ -29,13 +37,9 @@ const resource = 'transaction'
 
 /**
  * @function defaultHeaders
- *
  * @description This returns a set of default headers used for requests
- *
- * see https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_message_headers
- *
+ *   see https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_message_headers
  * @param {string} version - the version for the accept and content-type headers
- *
  * @returns {object} Returns the default headers
  */
 
@@ -51,6 +55,16 @@ function defaultHeaders (version = '1.0') {
   }
 }
 
+const defaultServerOptions = {
+  plugin: HapiOpenAPI,
+  options: {
+    api: Path.resolve(__dirname, '../../src/interface/swagger.json'),
+    handlers: Path.join(__dirname, '../../src/handlers'),
+    outputvalidation: true
+  }
+}
+
 module.exports = {
-  defaultHeaders
+  defaultHeaders,
+  defaultServerOptions
 }

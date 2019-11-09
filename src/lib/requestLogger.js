@@ -28,7 +28,7 @@ const Logger = require('@mojaloop/central-services-logger')
 const Util = require('util')
 
 const logResponse = function (request) {
-  if (request.response) {
+  if (request && request.response) {
     let response
     try {
       response = JSON.stringify(request.response.source)
