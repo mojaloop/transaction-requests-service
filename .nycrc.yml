@@ -7,7 +7,7 @@ functions: 90
 branches: 90
 all: true
 include: [
-  "src/**/*.js"
+  "./src/**/*.js"
 ]
 reporter: [
   "lcov",
