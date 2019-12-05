@@ -24,13 +24,13 @@
 
 'use strict'
 
-const Hapi = require('@hapi/hapi')
+const { Server } = require('@hapi/hapi')
 const HapiOpenAPI = require('hapi-openapi')
 const Path = require('path')
 const Config = require('./lib/config.js')
 const Logger = require('@mojaloop/central-services-logger')
 const Plugins = require('./plugins')
-const RequestLogger = require('./lib/requestLogger')
+const ServerHandler = require('./handlers/server')
 const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
@@ -48,17 +48,16 @@ const openAPIOptions = {
  * @returns {Promise<Server>} Returns the Server object
  */
 const createServer = async (port) => {
-  const server = await new Hapi.Server({
+  const server = await new Server({
     port,
     routes: {
       validate: {
         options: ErrorHandler.validateRoutes(),
-        failAction: async (request, h, err) => {
-          throw ErrorHandler.Factory.reformatFSPIOPError(err)
-        }
+        failAction: ServerHandler.failActionHandler
       }
     }
   })
+
   await Plugins.registerPlugins(server)
   await server.register([
     {
@@ -69,10 +68,7 @@ const createServer = async (port) => {
   await server.ext([
     {
       type: 'onPreHandler',
-      method: (request, h) => {
-        RequestLogger.logResponse(request)
-        return h.continue
-      }
+      method: ServerHandler.onPreHandler
     }
   ])
   await server.start()
@@ -88,5 +84,6 @@ const initialize = async (port = Config.PORT) => {
 }
 
 module.exports = {
+  createServer, // exported for testing only
   initialize
 }

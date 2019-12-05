@@ -168,14 +168,11 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: Install ava tap tap-xunit
-          command: npm install -g ava tap tap-xunit
-      - run:
           name: Create dir for test results
           command: mkdir -p ./test/results
       - run:
           name: Execute unit tests
-          command: ava --tap | tap-xunit > ./test/results/ava.xml
+          command: JEST_JUNIT_OUTPUT_DIR='./test/results' JEST_JUNIT_OUTPUT_NAME='junit.xml' npm run test:junit
       - store_artifacts:
           path: ./test/results
           prefix: test
@@ -218,25 +215,25 @@ jobs:
             else
                 echo "Not a release (env CIRCLE_BRANCH != 'master'), skipping sending lcov.info to SonarQube."
             fi
-  test-integration:
-    machine: true
-    <<: *defaults_working_directory
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: Create dir for test results
-          command: mkdir -p ./test/results
-      - run:
-          name: Execute integration tests
-          command: npm -s run test:integration
-          no_output_timeout: 25m
-      - store_artifacts:
-          path: ./test/results
-          prefix: test
-      - store_test_results:
-          path: ./test/results
+#  test-integration:
+#    machine: true
+#    <<: *defaults_working_directory
+#    steps:
+#      - checkout
+#      - restore_cache:
+#          key: dependency-cache-{{ checksum "package.json" }}
+#      - run:
+#          name: Create dir for test results
+#          command: mkdir -p ./test/results
+#      - run:
+#          name: Execute integration tests
+#          command: npm -s run test:integration
+#          no_output_timeout: 25m
+#      - store_artifacts:
+#          path: ./test/results
+#          prefix: test
+#      - store_test_results:
+#          path: ./test/results
 
 #  test-functional:
 #    machine: true
@@ -600,17 +597,17 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-      - test-integration:
-          context: org-global
-          requires:
-            - setup
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore:
-                - /feature*/
-                - /bugfix*/
+#      - test-integration:
+#          context: org-global
+#          requires:
+#            - setup
+#          filters:
+#            tags:
+#              only: /.*/
+#            branches:
+#              ignore:
+#                - /feature*/
+#                - /bugfix*/
 #      - test-functional:
 #          context: org-global
 #          requires:
@@ -650,7 +647,7 @@ workflows:
             - setup
             - test-unit
             - test-coverage
-            - test-integration
+#            - test-integration
             - vulnerability-check
             - audit-licenses
           filters:
@@ -675,8 +672,8 @@ workflows:
             - setup
             - test-unit
             - test-coverage
-            - test-integration
-            - test-functional
+#            - test-integration
+#            - test-functional
             - vulnerability-check
             - audit-licenses
           filters:
@@ -701,8 +698,8 @@ workflows:
             - setup
             - test-unit
             - test-coverage
-            - test-integration
-            - test-functional
+#            - test-integration
+#            - test-functional
             - vulnerability-check
             - audit-licenses
           filters:
@@ -727,7 +724,7 @@ workflows:
             - setup
             - test-unit
             - test-coverage
-            - test-integration
+#            - test-integration
             - vulnerability-check
             - audit-licenses
           filters:
@@ -752,7 +749,7 @@ workflows:
             - setup
             - test-unit
             - test-coverage
-            - test-integration
+#            - test-integration
             - vulnerability-check
             - audit-licenses
           filters:
@@ -762,10 +759,10 @@ workflows:
               ignore:
                 - /.*/
 
-      - test-functional:
-          context: org-global
-          requires:
-            - setup
+#      - test-functional:
+#          context: org-global
+#          requires:
+#            - setup
       - deploy:
           context: org-global
           requires:

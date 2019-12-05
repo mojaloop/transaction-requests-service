@@ -16,79 +16,63 @@
  their names indented and be marked with a '-'. Email address can be added
  optionally within square brackets <email>.
  * Gates Foundation
- - Name Surname <name.surname@gatesfoundation.com>
 
- * Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+ * Crosslake
+ - Lewis Daly <lewisd@crosslaketech.com>
+
  --------------
  ******/
-
 'use strict'
 
-const setupTest = require('ava')
-const Sinon = require('sinon')
-const Logger = require('@mojaloop/central-services-logger')
-const Proxyquire = require('proxyquire')
-const Path = require('path')
-const Config = require('../../src/lib/config')
+jest.mock('@mojaloop/central-services-logger', () => {
+  return {
+    info: jest.fn() // suppress info output
+  }
+})
 
-let sandbox
-let serverStub
-let HapiStub
-let HapiOpenAPIStub
-let PathStub
-let ConfigStub
-let SetupProxy
-
-setupTest.beforeEach(() => {
-  try {
-    sandbox = Sinon.createSandbox()
-
-    serverStub = {
-      register: sandbox.stub(),
-      method: sandbox.stub(),
-      start: sandbox.stub(),
-      log: sandbox.stub(),
-      plugins: {
-        openapi: {
-          setHost: Sinon.spy()
-        }
-      },
-      info: {
-        port: Config.PORT
-      },
-      ext: Sinon.spy()
+/* Mock out the Hapi Server */
+const mockStart = jest.fn()
+jest.mock('@hapi/hapi', () => ({
+  Server: jest.fn().mockImplementation(() => ({
+    register: jest.fn(),
+    ext: jest.fn(),
+    start: mockStart,
+    plugins: {
+      openapi: {
+        setHost: jest.fn()
+      }
+    },
+    info: {
+      host: 'localhost',
+      port: 3000
     }
-    HapiStub = {
-      Server: sandbox.stub().returns(serverStub)
-    }
-    HapiOpenAPIStub = sandbox.stub()
-    PathStub = Path
-    ConfigStub = Config
+  }))
+}))
 
-    SetupProxy = Proxyquire('../../src/server', {
-      '@hapi/hapi': HapiStub,
-      'hapi-openapi': HapiOpenAPIStub,
-      path: PathStub,
-      './lib/config': ConfigStub
+const { initialize } = require('../../src/server')
+
+describe('server', () => {
+  afterEach(() => {
+    mockStart.mockClear()
+  })
+
+  describe('initialize', () => {
+    it('initializes the server', async () => {
+      // Arrange
+      // Act
+      await initialize(3000)
+
+      // Assert
+      expect(mockStart).toHaveBeenCalled()
     })
-  } catch (err) {
-    Logger.error(`setupTest failed with error - ${err}`)
-  }
-})
 
-setupTest.afterEach(() => {
-  sandbox.restore()
-})
+    it('initializes the server when no port is set', async () => {
+      // Arrange
+      // Act
+      await initialize()
 
-setupTest('initialize ', async test => {
-  try {
-    const server = await SetupProxy.initialize()
-    test.assert(server, 'return server object')
-    test.assert(HapiStub.Server.called, 'Hapi.Server called once')
-    test.assert(serverStub.start.calledOnce, 'server.start called once')
-    test.assert(serverStub.plugins.openapi.setHost.calledOnce, 'server.plugins.openapi.setHost called once')
-  } catch (err) {
-    Logger.error(`init failed with error - ${err}`)
-    test.fail()
-  }
+      // Assert
+      expect(mockStart).toHaveBeenCalled()
+    })
+  })
 })

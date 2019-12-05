@@ -28,6 +28,7 @@ const Server = require('./server')
 const PJson = require('../package.json')
 const { Command } = require('commander')
 const Config = require('./lib/config')
+const argv = require('./lib/argv').getArgs()
 
 const Program = new Command()
 
@@ -47,9 +48,9 @@ Program.command('api')
     module.exports = Server.initialize(options.port)
   })
 
-if (Array.isArray(process.argv) && process.argv.length > 1) {
+if (Array.isArray(argv) && argv.length > 1) {
   // parse command line vars
-  Program.parse(process.argv)
+  Program.parse(argv)
 } else {
   // display default help
   Program.help()
