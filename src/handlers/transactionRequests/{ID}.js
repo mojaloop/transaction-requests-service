@@ -15,7 +15,7 @@ module.exports = {
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
   get: function (request, h) {
-    transactionRequest.forwardTransactionRequest(request, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET)
+    transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET, request.headers, Enum.Http.RestMethods.GET, request.params, request.payload)
     return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
   },
   /**
@@ -26,7 +26,7 @@ module.exports = {
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
   put: function (request, h) {
-    transactionRequest.forwardTransactionRequest(request, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT)
+    transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT, request.headers, Enum.Http.RestMethods.PUT, request.params, request.payload)
     return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
   }
 }
