@@ -35,8 +35,12 @@ const { getStackOrInspect } = require('../../lib/util')
 
 /**
  * Forwards GET authorizations endpoint requests to destination FSP for processing
- *
- * @returns {undefined}
+ * @param {object} headers Headers object of the request
+ * @param {string} transactionRequestId Transaction request id that the authorization is for
+ * @param {object} payload Body of the PUT request or the query parameters in an object for a GET request
+ * @param {string} method The http method (GET or PUT)
+ * @throws {FSPIOPError} Will throw an error if no endpoint to forward the authorization message to is found, if there are network errors or if there is a bad response
+ * @returns {Promise<true>}
  */
 const forwardAuthorizationMessage = async (headers, transactionRequestId, payload, method) => {
   let endpoint
@@ -70,10 +74,11 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
     return true
   } catch (err) {
     Logger.info(`Error forwarding authorization ${messageType} to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
-    const errorHeaders = Object.assign({}, headers, {
+    const errorHeaders = {
+      ...headers,
       'fspiop-source': Enum.Http.Headers.FSPIOP.SWITCH.value,
       'fspiop-destination': fspiopSource
-    })
+    }
     forwardAuthorizationError(errorHeaders, transactionRequestId, err)
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
@@ -81,8 +86,11 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
 
 /**
  * Forwards PUT authorization errors to destination FSP
- *
- * @returns {undefined}
+ * @param {object} headers Headers object of the request
+ * @param {string} transactionRequestId Transaction request id that the authorization is for
+ * @param {object} payload Body of the request
+ * @throws {FSPIOPError} Will throw an error if no endpoint to forward the authorization error to is found, if there are network errors or if there is a bad response.
+ * @returns {Promise<true>}
  */
 const forwardAuthorizationError = async (headers, transactionRequestId, payload) => {
   let endpoint
