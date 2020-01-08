@@ -93,7 +93,7 @@ describe('transactionRequests', () => {
       const action = async () => TransactionRequests.forwardTransactionRequest(...options)
 
       // Assert
-      await expect(action()).rejects.toThrowError(new RegExp('No FSPIOP_CALLBACK_URL_TRANSACTION endpoint found for transactionRequest'))
+      await expect(action()).rejects.toThrowError(new RegExp('No FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE endpoint found for transactionRequest'))
     })
 
     it('handles when the the request fails', async () => {
