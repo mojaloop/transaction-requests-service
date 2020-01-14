@@ -51,35 +51,33 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
 
   try {
     endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, fspiopDest, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS)
+
     Logger.info(`Resolved party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint for authorizations ${messageType} ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
+
     if (!endpoint) {
       throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint found for transactionRequest ${transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, undefined, fspiopSource)
     }
+
     const query = method === Enum.Http.RestMethods.GET ? '?' + (new URLSearchParams(payload).toString()) : ''
     const fullUrl = `${endpoint}/authorizations/${transactionRequestId}${query}`
+
     Logger.info(`Forwarding authorization request to endpoint: ${fullUrl}`)
-    // Network errors lob an exception. Bare in mind 3xx 4xx and 5xx are not network errors
-    // so we need to wrap the request below in a `try catch` to handle network errors
-    let res
-    try {
-      res = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, payloadLocal)
-    } catch (e) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, `Network error forwarding authorization ${messageType}: ${getStackOrInspect(e)}`, 'Network error', fspiopSource)
-    }
-    Logger.info(`Forwarding authorization ${messageType} for transactionRequestId ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${res.status} ${res.statusText}`)
-    // handle non network related errors below
-    if (!res.ok) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Got non-success response forwarding authorization ' + messageType, res.statusText, fspiopSource)
-    }
+
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, payloadLocal)
+
+    Logger.info(`Forwarding authorization ${messageType} for transactionRequestId ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${response.status} ${response.statusText}`)
+
     return true
   } catch (err) {
     Logger.info(`Error forwarding authorization ${messageType} to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
+
     const errorHeaders = {
       ...headers,
       'fspiop-source': Enum.Http.Headers.FSPIOP.SWITCH.value,
       'fspiop-destination': fspiopSource
     }
-    forwardAuthorizationError(errorHeaders, transactionRequestId, err)
+
+    await forwardAuthorizationError(errorHeaders, transactionRequestId, err)
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
@@ -96,6 +94,7 @@ const forwardAuthorizationError = async (headers, transactionRequestId, payload)
   let endpoint
   const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
   const fspiopDestination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
+
   try {
     endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, fspiopDestination, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS)
     Logger.info(`Resolved party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint for authorization error for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
@@ -106,20 +105,11 @@ const forwardAuthorizationError = async (headers, transactionRequestId, payload)
     const fullUrl = `${endpoint}/authorizations/${transactionRequestId}/error`
 
     Logger.info(`Forwarding authorization error to endpoint: ${fullUrl}`)
-    // Network errors lob an exception. Bare in mind 3xx 4xx and 5xx are not network errors
-    // so we need to wrap the request below in a `try catch` to handle network errors
-    let res
-    try {
-      res = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, Enum.Http.RestMethods.PUT, payload || undefined)
-    } catch (e) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `Network error forwarding authorization error: ${getStackOrInspect(e)}`, 'Network error', fspiopSource)
-    }
-    Logger.info(`Forwarding authorization error response for transactionRequest ${transactionRequestId} from ${fspiopSource} to ${fspiopDestination} got response ${res.status} ${res.statusText}`)
 
-    // handle non network related errors below
-    if (!res.ok) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Got non-success response forwarding authorization error response', res.statusText, fspiopSource)
-    }
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, Enum.Http.RestMethods.PUT, payload || undefined)
+
+    Logger.info(`Forwarding authorization error response for transactionRequest ${transactionRequestId} from ${fspiopSource} to ${fspiopDestination} got response ${response.status} ${response.statusText}`)
+
     return true
   } catch (err) {
     Logger.info(`Error forwarding authorization error response to endpoint ${endpoint}: ${getStackOrInspect(err)}`)

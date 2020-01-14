@@ -38,6 +38,7 @@ jest.mock('@mojaloop/central-services-shared', () => {
 const Enum = require('@mojaloop/central-services-shared').Enum
 const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
 const Request = require('@mojaloop/central-services-shared').Util.Request
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const Authorizations = require('../../../../src/domain/authorizations/authorizations')
 const TestHelper = require('../../../util/helper')
@@ -148,39 +149,8 @@ describe('Authorizations', () => {
         authenticationType: '0'
       }
       Endpoint.getEndpoint = jest.fn().mockResolvedValueOnce('http://dfsp2').mockResolvedValue('http://dfsp1')
-      Request.sendRequest = jest.fn().mockImplementationOnce(() => { throw new Error('Error with request.') }).mockResolvedValue({
-        ok: true,
-        status: 202,
-        statusText: 'Accepted'
-      })
-
-      // Act
-      await expect(Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, queryParams, Enum.Http.RestMethods.GET)).rejects.toThrowError(new RegExp('Network error forwarding authorization request: Error: Error with request'))
-
-      // Assert
-      const expectedErrorHeaders = Object.assign(headers, { 'fspiop-source': Enum.Http.Headers.FSPIOP.SWITCH.value, 'fspiop-destination': headers['fspiop-source'] })
-      expect(Request.sendRequest).toHaveBeenCalledTimes(2)
-      expect(Request.sendRequest.mock.calls[1][0]).toEqual('http://dfsp1/authorizations/aef-123/error')
-      expect(Request.sendRequest.mock.calls[1][1]).toEqual(expectedErrorHeaders)
-      expect(Request.sendRequest.mock.calls[1][2]).toEqual(Enum.Http.Headers.FSPIOP.SWITCH.value)
-      expect(Request.sendRequest.mock.calls[1][3]).toEqual(headers[Enum.Http.Headers.FSPIOP.DESTINATION])
-    })
-
-    it('sends authorization error response to the source if forwarding request was successful, but response was not', async () => {
-      // Arrange
-      const headers = TestHelper.defaultHeaders()
-      const transactionRequestId = 'aef-123'
-      const queryParams = {
-        amount: '101.00',
-        currency: 'USD',
-        retriesLeft: '3',
-        authenticationType: '0'
-      }
-      Endpoint.getEndpoint = jest.fn().mockResolvedValueOnce('http://dfsp2').mockResolvedValue('http://dfsp1')
-      Request.sendRequest = jest.fn().mockResolvedValueOnce({
-        ok: false,
-        status: 404,
-        statusText: 'Not Found'
+      Request.sendRequest = jest.fn().mockImplementationOnce(() => {
+        throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error(), headers['fspiop-source'], [{ key: 'cause', value: {} }])
       }).mockResolvedValue({
         ok: true,
         status: 202,
@@ -188,7 +158,7 @@ describe('Authorizations', () => {
       })
 
       // Act
-      await expect(Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, queryParams, Enum.Http.RestMethods.GET)).rejects.toThrowError(new RegExp('Got non-success response forwarding authorization request'))
+      await expect(Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, queryParams, Enum.Http.RestMethods.GET)).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
 
       // Assert
       const expectedErrorHeaders = Object.assign(headers, { 'fspiop-source': Enum.Http.Headers.FSPIOP.SWITCH.value, 'fspiop-destination': headers['fspiop-source'] })
@@ -234,23 +204,12 @@ describe('Authorizations', () => {
     it('throws error if if the request fails', async () => {
       // Arrange
       Endpoint.getEndpoint = jest.fn().mockResolvedValue('http://dfsp2')
-      Request.sendRequest = jest.fn().mockImplementationOnce(() => { throw new Error('Error with request.') })
-
-      // Act, Assert
-      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', new Error('Error'))).rejects.toThrowError(new RegExp('Network error forwarding authorization error'))
-    })
-
-    it('throws error if forwarding request was successful, but response was not', async () => {
-      // Arrange
-      Endpoint.getEndpoint = jest.fn().mockResolvedValue('http://dfsp2')
-      Request.sendRequest = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 404,
-        statusText: 'Not Found'
+      Request.sendRequest = jest.fn().mockImplementationOnce(() => {
+        throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error(), '', [{ key: 'cause', value: {} }])
       })
 
       // Act, Assert
-      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', new Error('Error'))).rejects.toThrowError(new RegExp('Got non-success response forwarding authorization error response'))
+      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', new Error('Error'))).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
     })
   })
 })
