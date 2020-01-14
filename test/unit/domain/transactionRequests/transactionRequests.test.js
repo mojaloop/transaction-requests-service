@@ -35,6 +35,7 @@ const Sinon = require('sinon')
 const Enum = require('@mojaloop/central-services-shared').Enum
 const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
 const Request = require('@mojaloop/central-services-shared').Util.Request
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const TransactionRequests = require('../../../../src/domain/transactionRequests/transactionRequests')
 const TestHelper = require('../../../util/helper')
@@ -99,7 +100,8 @@ describe('transactionRequests', () => {
     it('handles when the the request fails', async () => {
       // Arrange
       sandbox.stub(Endpoint, 'getEndpoint').resolves('http://localhost:3000')
-      sandbox.stub(Request, 'sendRequest').throws(new Error('Error with request.'))
+      sandbox.stub(Request, 'sendRequest').throws(ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error(), '', [{ key: 'cause', value: {} }])
+      )
       const options = [
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST,
         TestHelper.defaultHeaders(),
@@ -112,30 +114,7 @@ describe('transactionRequests', () => {
       const action = async () => TransactionRequests.forwardTransactionRequest(...options)
 
       // Assert
-      await expect(action()).rejects.toThrowError(new RegExp('Network error forwarding quote request:'))
-    })
-
-    it('handles when forwarding request was successful, but response was not', async () => {
-      // Arrange
-      sandbox.stub(Endpoint, 'getEndpoint').resolves('http://localhost:3000')
-      sandbox.stub(Request, 'sendRequest').resolves({
-        ok: false,
-        status: 404,
-        statusText: 'Not Found'
-      })
-      const options = [
-        Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST,
-        TestHelper.defaultHeaders(),
-        'post',
-        { ID: '12345' },
-        null
-      ]
-
-      // Act
-      const action = async () => TransactionRequests.forwardTransactionRequest(...options)
-
-      // Assert
-      await expect(action()).rejects.toThrowError(new RegExp('Got non-success response forwarding transaction request'))
+      await expect(action()).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
     })
 
     it('handles missing payload and params.ID', async () => {

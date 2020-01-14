@@ -58,23 +58,16 @@ const forwardTransactionRequest = async (path, headers, method, params, payload)
       ID: transactionRequestId
     })
     Logger.info(`Forwarding transaction request to endpoint: ${fullUrl}`)
-    // Network errors lob an exception. Bare in mind 3xx 4xx and 5xx are not network errors
-    // so we need to wrap the request below in a `try catch` to handle network errors
-    let res
-    try {
-      res = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payloadLocal : undefined)
-    } catch (e) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, `Network error forwarding quote request: ${getStackOrInspect(e)}`, 'Network error', fspiopSource)
-    }
-    Logger.info(`Forwarding transaction request ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${res.status} ${res.statusText}`)
-    // handle non network related errors below
-    if (!res.ok) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Got non-success response forwarding transaction request', res.statusText, fspiopSource)
-    }
+
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payloadLocal : undefined)
+
+    Logger.info(`Forwarded transaction request ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${response.status} ${response.statusText}`)
+
     return true
   } catch (err) {
     Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
-    forwardTransactionRequestError(headers, Enum.Http.Headers.FSPIOP.SOURCE, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, params.ID, err)
+    await forwardTransactionRequestError(headers, fspiopSource, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, params.ID, err)
+    console.log(err)
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
@@ -101,24 +94,15 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
       ID: transactionRequestId
     })
 
-    Logger.info(`Forwarding transaction request to endpoint: ${fullUrl}`)
-    // Network errors lob an exception. Bare in mind 3xx 4xx and 5xx are not network errors
-    // so we need to wrap the request below in a `try catch` to handle network errors
-    let res
-    try {
-      res = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, payload || undefined)
-    } catch (e) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `Network error forwarding quote request: ${getStackOrInspect(e)}`, 'Network error', fspiopSource)
-    }
-    Logger.info(`Forwarding transaction request ${transactionRequestId} from ${fspiopSource} to ${to} got response ${res.status} ${res.statusText}`)
+    Logger.info(`Forwarding transaction request error to endpoint: ${fullUrl}`)
 
-    // handle non network related errors below
-    if (!res.ok) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Got non-success response forwarding transaction request', res.statusText, fspiopSource)
-    }
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, payload || undefined)
+
+    Logger.info(`Forwarding transaction request error for ${transactionRequestId} from ${fspiopSource} to ${to} got response ${response.status} ${response.statusText}`)
+
     return true
   } catch (err) {
-    Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
+    Logger.info(`Error forwarding transaction request error to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }
