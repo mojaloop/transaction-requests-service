@@ -89,7 +89,7 @@ describe('requestLogger', () => {
       // Assert
       expect(stub.calledOnce).toBe(true)
       const firstCallArgs = stub.getCall(0).args
-      expect(firstCallArgs).toEqual(['TR-Trace - Response: { itemA: \'localhost:3000\',\n  nested: { response: { source: [Circular], statusCode: 404 } } } Status: 404'])
+      expect(firstCallArgs).toEqual(['TR-Trace - Response: {\n  itemA: \'localhost:3000\',\n  nested: { response: { source: [Circular], statusCode: 404 } }\n} Status: 404'])
     })
 
     it('handles an undefined response', () => {
