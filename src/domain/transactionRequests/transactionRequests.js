@@ -67,7 +67,6 @@ const forwardTransactionRequest = async (path, headers, method, params, payload)
   } catch (err) {
     Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
     await forwardTransactionRequestError(headers, fspiopSource, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, transactionRequestId, err)
-    console.log(err)
     throw ErrorHandler.Factory.reformatFSPIOPError(err)
   }
 }

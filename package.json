@@ -6,7 +6,8 @@
   "author": "ModusBox",
   "contributors": [
     "Rajiv Mothilal <rajiv.mothilal@modusbox.com>",
-    "Lewis Daly <lewisd@crosslaketech.com>"
+    "Lewis Daly <lewisd@crosslaketech.com>",
+    "Steven Oderayi <steven.oderayi@modusbox.com>"
   ],
   "repository": {
     "type": "git",
@@ -59,14 +60,14 @@
     "@mojaloop/central-services-logger": "9.1.0",
     "@mojaloop/central-services-shared": "9.1.4",
     "blipp": "4.0.1",
+    "commander": "4.1.1",
     "docdash": "1.2.0",
     "hapi-openapi": "1.2.6",
     "hapi-swagger": "11.1.0",
     "jsdoc": "3.6.3",
     "mustache": "4.0.0",
     "parse-strings-in-object": "2.0.0",
-    "rc": "1.2.8",
-    "commander": "4.1.1"
+    "rc": "1.2.8"
   },
   "devDependencies": {
     "eslint": "6.8.0",
