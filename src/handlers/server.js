@@ -29,7 +29,7 @@ const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const RequestLogger = require('../lib/requestLogger')
 
 async function failActionHandler (request, h, err) {
-  throw ErrorHandler.Factory.reformatFSPIOPError(err)
+  throw ErrorHandler.Factory.reformatFSPIOPError(err, ErrorHandler.Enums.FSPIOPErrorCodes.VALIDATION_ERROR)
 }
 
 async function onPreHandler (request, h) {

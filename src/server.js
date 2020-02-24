@@ -31,7 +31,8 @@ const Config = require('./lib/config.js')
 const Logger = require('@mojaloop/central-services-logger')
 const Plugins = require('./plugins')
 const ServerHandler = require('./handlers/server')
-const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
+const Endpoints = require('@mojaloop/central-services-shared').Util.Endpoints
+const HeaderValidation = require('@mojaloop/central-services-shared').Util.Hapi.FSPIOPHeaderValidation
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const openAPIOptions = {
@@ -63,6 +64,9 @@ const createServer = async (port) => {
     {
       plugin: HapiOpenAPI,
       options: openAPIOptions
+    },
+    {
+      plugin: HeaderValidation
     }
   ])
   await server.ext([
@@ -79,7 +83,7 @@ const initialize = async (port = Config.PORT) => {
   const server = await createServer(port)
   server.plugins.openapi.setHost(server.info.host + ':' + server.info.port)
   Logger.info(`Server running on ${server.info.host}:${server.info.port}`)
-  await Endpoint.initializeCache(Config.ENDPOINT_CACHE_CONFIG)
+  await Endpoints.initializeCache(Config.ENDPOINT_CACHE_CONFIG)
   return server
 }
 
