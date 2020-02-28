@@ -182,7 +182,7 @@ describe('Authorizations', () => {
       const headers = TestHelper.defaultHeaders()
 
       // Act
-      const result = await Authorizations.forwardAuthorizationError(headers, 'aef-123', new Error('Error'))
+      const result = await Authorizations.forwardAuthorizationError(headers, 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'))
 
       // Assert
       expect(result).toBe(true)
@@ -195,7 +195,7 @@ describe('Authorizations', () => {
       Request.sendRequest = jest.fn()
 
       // Act
-      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', new Error('Error'))).rejects.toThrowError(new RegExp('No FSPIOP_CALLBACK_URL_AUTHORIZATIONS endpoint found to send authorization error for transaction request aef-123 for FSP dfsp2'))
+      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'))).rejects.toThrowError(new RegExp('No FSPIOP_CALLBACK_URL_AUTHORIZATIONS endpoint found to send authorization error for transaction request aef-123 for FSP dfsp2'))
 
       // Assert
       expect(Request.sendRequest).not.toHaveBeenCalled()
@@ -209,7 +209,7 @@ describe('Authorizations', () => {
       })
 
       // Act, Assert
-      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', new Error('Error'))).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
+      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'))).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
     })
   })
 })
