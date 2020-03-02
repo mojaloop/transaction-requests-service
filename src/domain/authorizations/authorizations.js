@@ -106,7 +106,7 @@ const forwardAuthorizationError = async (headers, transactionRequestId, payload)
 
     Logger.info(`Forwarding authorization error to endpoint: ${fullUrl}`)
 
-    const errorInfo = ErrorHandler.Factory.reformatFSPIOPError(payload).toApiErrorObject(Config.ERROR_HANDLING) || undefined
+    const errorInfo = payload ? ErrorHandler.Factory.reformatFSPIOPError(payload).toApiErrorObject(Config.ERROR_HANDLING) : undefined
 
     const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, Enum.Http.RestMethods.PUT, errorInfo)
 

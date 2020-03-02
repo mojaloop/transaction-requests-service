@@ -39,6 +39,7 @@ const Enum = require('@mojaloop/central-services-shared').Enum
 const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
 const Request = require('@mojaloop/central-services-shared').Util.Request
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Config = require('../../../../src/lib/config')
 
 const Authorizations = require('../../../../src/domain/authorizations/authorizations')
 const TestHelper = require('../../../util/helper')
@@ -186,7 +187,7 @@ describe('Authorizations', () => {
 
       // Assert
       expect(result).toBe(true)
-      expect(Request.sendRequest).toHaveBeenCalledWith('http://dfsp2/authorizations/aef-123/error', headers, headers['fspiop-source'], headers['fspiop-destination'], Enum.Http.RestMethods.PUT, new Error('Error'))
+      expect(Request.sendRequest).toHaveBeenCalledWith('http://dfsp2/authorizations/aef-123/error', headers, headers['fspiop-source'], headers['fspiop-destination'], Enum.Http.RestMethods.PUT, ErrorHandler.Factory.reformatFSPIOPError(new Error('Error')).toApiErrorObject(Config.ERROR_HANDLING))
     })
 
     it('throws error if no destination endpoint is found', async () => {
