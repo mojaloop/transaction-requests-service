@@ -156,7 +156,7 @@ describe('transactionRequests', () => {
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR,
         Enum.Http.RestMethods.PUT,
         '12345',
-        new Error('Could not find endpoints')
+        ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, 'Could not find endpoint')
       ]
 
       // Act
