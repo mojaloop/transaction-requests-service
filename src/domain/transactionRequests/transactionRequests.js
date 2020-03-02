@@ -66,8 +66,9 @@ const forwardTransactionRequest = async (path, headers, method, params, payload)
     return true
   } catch (err) {
     Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
-    await forwardTransactionRequestError(headers, fspiopSource, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, transactionRequestId, err)
-    throw ErrorHandler.Factory.reformatFSPIOPError(err)
+    const fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
+    await forwardTransactionRequestError(headers, fspiopSource, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, transactionRequestId, fspiopError.toApiErrorObject(Config.ERROR_HANDLING))
+    throw fspiopError
   }
 }
 
@@ -95,9 +96,7 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
 
     Logger.info(`Forwarding transaction request error to endpoint: ${fullUrl}`)
 
-    const errorInfo = payload ? ErrorHandler.Factory.reformatFSPIOPError(payload).toApiErrorObject(Config.ERROR_HANDLING) : undefined
-
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, errorInfo)
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, payload || undefined)
 
     Logger.info(`Forwarding transaction request error for ${transactionRequestId} from ${fspiopSource} to ${to} got response ${response.status} ${response.statusText}`)
 
