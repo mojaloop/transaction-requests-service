@@ -95,7 +95,9 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
 
     Logger.info(`Forwarding transaction request error to endpoint: ${fullUrl}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, payload || undefined)
+    const errorInfo = ErrorHandler.Factory.reformatFSPIOPError(payload).toApiErrorObject(Config.ERROR_HANDLING) || undefined
+
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, errorInfo)
 
     Logger.info(`Forwarding transaction request error for ${transactionRequestId} from ${fspiopSource} to ${to} got response ${response.status} ${response.statusText}`)
 
