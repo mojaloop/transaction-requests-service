@@ -205,7 +205,7 @@ describe('Authorizations', () => {
       // Arrange
       Endpoint.getEndpoint = jest.fn().mockResolvedValue('http://dfsp2')
       Request.sendRequest = jest.fn().mockImplementationOnce(() => {
-        throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error(), '', [{ key: 'cause', value: {} }])
+        throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error('Error'), '', [{ key: 'cause', value: {} }])
       })
 
       // Act, Assert

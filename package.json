@@ -1,12 +1,13 @@
 {
   "name": "transaction-requests-service",
   "description": "An asynchronous pass through transaction request API for merchant payment initiated requests.",
-  "version": "9.2.3",
+  "version": "9.3.0",
   "license": "Apache-2.0",
   "author": "ModusBox",
   "contributors": [
     "Rajiv Mothilal <rajiv.mothilal@modusbox.com>",
-    "Lewis Daly <lewisd@crosslaketech.com>"
+    "Lewis Daly <lewisd@crosslaketech.com>",
+    "Steven Oderayi <steven.oderayi@modusbox.com>"
   ],
   "repository": {
     "type": "git",
@@ -75,7 +76,7 @@
     "jest-junit": "10.0.0",
     "license-checker": "25.0.1",
     "npm-audit-resolver": "2.2.0",
-    "npm-check-updates": "4.0.2",
+    "npm-check-updates": "4.0.3",
     "pre-commit": "1.2.2",
     "sinon": "9.0.0",
     "standard": "14.3.1",

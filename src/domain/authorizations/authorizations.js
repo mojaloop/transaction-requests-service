@@ -76,9 +76,9 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
       'fspiop-source': Enum.Http.Headers.FSPIOP.SWITCH.value,
       'fspiop-destination': fspiopSource
     }
-
-    await forwardAuthorizationError(errorHeaders, transactionRequestId, err)
-    throw ErrorHandler.Factory.reformatFSPIOPError(err)
+    const fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
+    await forwardAuthorizationError(errorHeaders, transactionRequestId, fspiopError.toApiErrorObject(Config.ERROR_HANDLING))
+    throw fspiopError
   }
 }
 
