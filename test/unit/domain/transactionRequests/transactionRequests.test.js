@@ -41,6 +41,7 @@ const TransactionRequests = require('../../../../src/domain/transactionRequests/
 const TestHelper = require('../../../util/helper')
 
 let sandbox
+
 describe('transactionRequests', () => {
   beforeAll(() => {
     sandbox = Sinon.createSandbox()

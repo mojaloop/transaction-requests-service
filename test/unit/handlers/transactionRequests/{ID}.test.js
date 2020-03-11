@@ -2,7 +2,8 @@
 
 jest.mock('@mojaloop/central-services-logger', () => {
   return {
-    info: jest.fn() // suppress info output
+    info: jest.fn(), // suppress info output
+    debug: jest.fn()
   }
 })
 
@@ -12,6 +13,7 @@ const Hapi = require('@hapi/hapi')
 const Mockgen = require('../../../util/mockgen.js')
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/transactionRequests/transactionRequests')
+const Plugins = require('../../../../src/plugins')
 
 let sandbox
 const server = new Hapi.Server()
@@ -22,6 +24,7 @@ const server = new Hapi.Server()
 describe('/transactionRequests/{ID}', () => {
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
+    await Plugins.registerPlugins(server)
     await server.register(Helper.defaultServerOptions)
   })
 

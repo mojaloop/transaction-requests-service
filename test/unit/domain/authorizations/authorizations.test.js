@@ -42,8 +42,20 @@ const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const Authorizations = require('../../../../src/domain/authorizations/authorizations')
 const TestHelper = require('../../../util/helper')
+let SpanMock
 
 describe('Authorizations', () => {
+  beforeEach(() => {
+    SpanMock = {
+      audit: jest.fn(),
+      error: jest.fn(),
+      finish: jest.fn(),
+      debug: jest.fn(),
+      info: jest.fn(),
+      getChild: jest.fn().mockResolvedValue(SpanMock),
+      setTags: jest.fn()
+    }
+  })
   describe('forwardAuthorization', () => {
     it('forwards a GET request', async () => {
       Endpoint.getEndpoint = jest.fn().mockResolvedValue('http://dfsp2')
@@ -62,7 +74,7 @@ describe('Authorizations', () => {
       }
 
       // Act
-      const response = await Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, queryParams, Enum.Http.RestMethods.GET)
+      const response = await Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, queryParams, Enum.Http.RestMethods.GET, SpanMock)
 
       // Assert
       expect(response).toBe(true)
@@ -72,7 +84,9 @@ describe('Authorizations', () => {
         headers[Enum.Http.Headers.FSPIOP.SOURCE],
         headers[Enum.Http.Headers.FSPIOP.DESTINATION],
         Enum.Http.RestMethods.GET,
-        undefined
+        undefined,
+        'json',
+        SpanMock
       )
     })
 
@@ -95,7 +109,7 @@ describe('Authorizations', () => {
       }
 
       // Act
-      const response = await Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, payload, Enum.Http.RestMethods.PUT)
+      const response = await Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, payload, Enum.Http.RestMethods.PUT, SpanMock)
 
       // Assert
       expect(response).toBe(true)
@@ -105,7 +119,9 @@ describe('Authorizations', () => {
         headers[Enum.Http.Headers.FSPIOP.SOURCE],
         headers[Enum.Http.Headers.FSPIOP.DESTINATION],
         Enum.Http.RestMethods.PUT,
-        payload
+        payload,
+        'json',
+        SpanMock
       )
     })
 
@@ -182,11 +198,11 @@ describe('Authorizations', () => {
       const headers = TestHelper.defaultHeaders()
 
       // Act
-      const result = await Authorizations.forwardAuthorizationError(headers, 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'))
+      const result = await Authorizations.forwardAuthorizationError(headers, 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'), SpanMock)
 
       // Assert
       expect(result).toBe(true)
-      expect(Request.sendRequest).toHaveBeenCalledWith('http://dfsp2/authorizations/aef-123/error', headers, headers['fspiop-source'], headers['fspiop-destination'], Enum.Http.RestMethods.PUT, new Error('Error'))
+      expect(Request.sendRequest).toHaveBeenCalledWith('http://dfsp2/authorizations/aef-123/error', headers, headers['fspiop-source'], headers['fspiop-destination'], Enum.Http.RestMethods.PUT, new Error('Error'), 'json', SpanMock)
     })
 
     it('throws error if no destination endpoint is found', async () => {
@@ -195,7 +211,7 @@ describe('Authorizations', () => {
       Request.sendRequest = jest.fn()
 
       // Act
-      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'))).rejects.toThrowError(new RegExp('No FSPIOP_CALLBACK_URL_AUTHORIZATIONS endpoint found to send authorization error for transaction request aef-123 for FSP dfsp2'))
+      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'), SpanMock)).rejects.toThrowError(new RegExp('No FSPIOP_CALLBACK_URL_AUTHORIZATIONS endpoint found to send authorization error for transaction request aef-123 for FSP dfsp2'))
 
       // Assert
       expect(Request.sendRequest).not.toHaveBeenCalled()
@@ -209,7 +225,7 @@ describe('Authorizations', () => {
       })
 
       // Act, Assert
-      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'))).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
+      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'), SpanMock)).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
     })
   })
 })

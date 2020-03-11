@@ -2,7 +2,8 @@
 
 jest.mock('@mojaloop/central-services-logger', () => {
   return {
-    info: jest.fn() // suppress info output
+    info: jest.fn(), // suppress info output
+    debug: jest.fn()
   }
 })
 const Hapi = require('@hapi/hapi')
@@ -11,6 +12,7 @@ const queryString = require('querystring')
 const Mockgen = require('../../../util/mockgen.js')
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/authorizations/authorizations')
+const Plugins = require('../../../../src/plugins')
 
 const server = new Hapi.Server()
 
@@ -19,6 +21,7 @@ const server = new Hapi.Server()
  */
 describe('/authorizations/{ID}', () => {
   beforeAll(async () => {
+    await Plugins.registerPlugins(server)
     await server.register(Helper.defaultServerOptions)
   })
 

@@ -24,7 +24,8 @@
  ******/
 'use strict'
 
-const { getStackOrInspect } = require('../../../src/lib/util')
+const { getStackOrInspect, getSpanTags } = require('../../../src/lib/util')
+const Helper = require('../../util/helper')
 
 describe('util', () => {
   describe('getStackOrInspect', () => {
@@ -39,6 +40,42 @@ describe('util', () => {
 
       // Assert
       expect(output).toBe(expected)
+    })
+  })
+  describe('getSpanTags', () => {
+    it('create correct span tags', () => {
+      // Arrange
+      const headers = Helper.defaultHeaders()
+      const transactionType = 'transactionRequests'
+      const transactionAction = 'POST'
+      const expected = {
+        source: 'dfsp1',
+        destination: 'dfsp2',
+        transactionType,
+        transactionAction
+      }
+
+      // Act
+      const output = getSpanTags({ headers }, transactionType, transactionAction)
+
+      // Assert
+      expect(output).toStrictEqual(expected)
+    })
+    it('create correct span tags when headers are not set', () => {
+      // Arrange
+      const headers = null
+      const transactionType = 'transactionRequests'
+      const transactionAction = 'POST'
+      const expected = {
+        transactionType,
+        transactionAction
+      }
+
+      // Act
+      const output = getSpanTags({ headers }, transactionType, transactionAction)
+
+      // Assert
+      expect(output).toStrictEqual(expected)
     })
   })
 })

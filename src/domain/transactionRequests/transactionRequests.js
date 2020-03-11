@@ -39,7 +39,7 @@ const { getStackOrInspect } = require('../../lib/util')
  *
  * @returns {undefined}
  */
-const forwardTransactionRequest = async (path, headers, method, params, payload) => {
+const forwardTransactionRequest = async (path, headers, method, params, payload, span = null) => {
   let endpoint
   const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
   const fspiopDest = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
@@ -59,7 +59,7 @@ const forwardTransactionRequest = async (path, headers, method, params, payload)
     })
     Logger.info(`Forwarding transaction request to endpoint: ${fullUrl}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payloadLocal : undefined)
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payloadLocal : undefined, Enum.Http.ResponseTypes.JSON, span)
 
     Logger.info(`Forwarded transaction request ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${response.status} ${response.statusText}`)
 
@@ -67,7 +67,7 @@ const forwardTransactionRequest = async (path, headers, method, params, payload)
   } catch (err) {
     Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
     const fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
-    await forwardTransactionRequestError(headers, fspiopSource, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, transactionRequestId, fspiopError.toApiErrorObject(Config.ERROR_HANDLING))
+    await forwardTransactionRequestError(headers, fspiopSource, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, transactionRequestId, fspiopError.toApiErrorObject(Config.ERROR_HANDLING), span)
     throw fspiopError
   }
 }
@@ -77,7 +77,7 @@ const forwardTransactionRequest = async (path, headers, method, params, payload)
  *
  * @returns {undefined}
  */
-const forwardTransactionRequestError = async (headers, to, path, method, transactionRequestId, payload) => {
+const forwardTransactionRequestError = async (headers, to, path, method, transactionRequestId, payload, span = null) => {
   let endpoint
   const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
   const fspiopDestination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
@@ -96,7 +96,7 @@ const forwardTransactionRequestError = async (headers, to, path, method, transac
 
     Logger.info(`Forwarding transaction request error to endpoint: ${fullUrl}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, payload || undefined)
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, payload || undefined, Enum.Http.ResponseTypes.JSON, span)
 
     Logger.info(`Forwarding transaction request error for ${transactionRequestId} from ${fspiopSource} to ${to} got response ${response.status} ${response.statusText}`)
 

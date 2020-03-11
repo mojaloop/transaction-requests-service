@@ -25,6 +25,7 @@
 'use strict'
 
 const util = require('util')
+const Enum = require('@mojaloop/central-services-shared').Enum
 
 /**
  * @function getStackOrInspect
@@ -35,6 +36,29 @@ function getStackOrInspect (err) {
   return err.stack || util.inspect(err)
 }
 
+/**
+ * @function getSpanTags
+ * @description Returns span tags based on headers, transactionType and action.
+ * @param {Object} param
+ * @param {string} transactionType
+ * @param {string} transactionAction
+ * @returns {Object}
+ */
+const getSpanTags = ({ headers }, transactionType, transactionAction) => {
+  const tags = {
+    transactionType,
+    transactionAction
+  }
+  if (headers && headers[Enum.Http.Headers.FSPIOP.SOURCE]) {
+    tags.source = headers[Enum.Http.Headers.FSPIOP.SOURCE]
+  }
+  if (headers && headers[Enum.Http.Headers.FSPIOP.DESTINATION]) {
+    tags.destination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
+  }
+  return tags
+}
+
 module.exports = {
-  getStackOrInspect
+  getStackOrInspect,
+  getSpanTags
 }

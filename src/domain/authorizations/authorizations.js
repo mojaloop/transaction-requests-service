@@ -17,7 +17,11 @@
  optionally within square brackets <email>.
  * Gates Foundation
 
- * Donovan Changfoot <don@coil.com>
+ * Coil
+ - Donovan Changfoot <don@coil.com>
+
+ * ModusBox
+ - Steven Oderayi <steven.oderayi@modusbox.com>
 
  --------------
  ******/
@@ -42,7 +46,7 @@ const { getStackOrInspect } = require('../../lib/util')
  * @throws {FSPIOPError} Will throw an error if no endpoint to forward the authorization message to is found, if there are network errors or if there is a bad response
  * @returns {Promise<true>}
  */
-const forwardAuthorizationMessage = async (headers, transactionRequestId, payload, method) => {
+const forwardAuthorizationMessage = async (headers, transactionRequestId, payload, method, span = null) => {
   let endpoint
   const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
   const fspiopDest = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
@@ -63,7 +67,7 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
 
     Logger.info(`Forwarding authorization request to endpoint: ${fullUrl}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, payloadLocal)
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, payloadLocal, Enum.Http.ResponseTypes.JSON, span)
 
     Logger.info(`Forwarding authorization ${messageType} for transactionRequestId ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${response.status} ${response.statusText}`)
 
@@ -90,7 +94,7 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
  * @throws {FSPIOPError} Will throw an error if no endpoint to forward the authorization error to is found, if there are network errors or if there is a bad response.
  * @returns {Promise<true>}
  */
-const forwardAuthorizationError = async (headers, transactionRequestId, payload) => {
+const forwardAuthorizationError = async (headers, transactionRequestId, payload, span = null) => {
   let endpoint
   const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
   const fspiopDestination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
@@ -106,7 +110,7 @@ const forwardAuthorizationError = async (headers, transactionRequestId, payload)
 
     Logger.info(`Forwarding authorization error to endpoint: ${fullUrl}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, Enum.Http.RestMethods.PUT, payload || undefined)
+    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, Enum.Http.RestMethods.PUT, payload || undefined, Enum.Http.ResponseTypes.JSON, span)
 
     Logger.info(`Forwarding authorization error response for transactionRequest ${transactionRequestId} from ${fspiopSource} to ${fspiopDestination} got response ${response.status} ${response.statusText}`)
 
