@@ -34,6 +34,7 @@ const ServerHandler = require('./handlers/server')
 const Endpoints = require('@mojaloop/central-services-shared').Util.Endpoints
 const HeaderValidation = require('@mojaloop/central-services-shared').Util.Hapi.FSPIOPHeaderValidation
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Sidecar = require('./lib/sidecar')
 
 const openAPIOptions = {
   api: Path.resolve(__dirname, './interface/swagger.json'),
@@ -80,6 +81,7 @@ const createServer = async (port) => {
 }
 
 const initialize = async (port = Config.PORT) => {
+  await Sidecar.connect()
   const server = await createServer(port)
   server.plugins.openapi.setHost(server.info.host + ':' + server.info.port)
   Logger.info(`Server running on ${server.info.host}:${server.info.port}`)

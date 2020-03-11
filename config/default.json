@@ -9,6 +9,13 @@
     "includeCauseExtension": true,
     "truncateExtensions": true
   },
+  "SIDECAR": {
+    "DISABLED": true,
+    "HOST": "localhost",
+    "PORT": 5678,
+    "CONNECT_TIMEOUT": 45000,
+    "RECONNECT_INTERVAL": 5000
+  },
   "INSTRUMENTATION": {
     "METRICS": {
       "DISABLED": false,
