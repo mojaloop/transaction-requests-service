@@ -17,7 +17,11 @@
  optionally within square brackets <email>.
  * Gates Foundation
 
- * Donovan Changfoot <don@coil.com>
+ * Coil
+ - Donovan Changfoot <don@coil.com>
+
+ * ModusBox
+ - Steven Oderayi <steven.oderayi@modusbox.com>
 
  --------------
  ******/

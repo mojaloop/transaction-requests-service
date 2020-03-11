@@ -20,6 +20,9 @@
  * Crosslake
  - Lewis Daly <lewisd@crosslaketech.com>
 
+ * ModusBox
+ - Steven Oderayi <steven.oderayi@modusbox.com>
+
  --------------
  ******/
 'use strict'
