@@ -18,12 +18,44 @@
  * Gates Foundation
  - Name Surname <name.surname@gatesfoundation.com>
 
- 
+ * ModusBox
+ - Steven Oderayi <steven.oderayi@modusbox.com>
+
  --------------
  ******/
 
 'use strict'
 
-const src = '../../../../src'
 const Logger = require('@mojaloop/central-services-logger')
-const NullClient = require(`${src}/lib/sidecar/nullClient`)
+const NullClient = require('../../../../src/lib/sidecar/nullClient')
+
+Logger.debug = jest.fn()
+
+/**
+ * Tests for NullClient
+ */
+describe('Sidecar NullClient', () => {
+  describe('', () => {
+    describe('create() should', () => {
+      it('instantiate new NullClient', () => {
+        const client = NullClient.create()
+        expect(client).toBeTruthy()
+      })
+    })
+    describe('connect() should', () => {
+      it('log sidecar status and return resolved promise', async () => {
+        const client = NullClient.create()
+        await client.connect()
+        expect(Logger.debug).toHaveBeenCalledWith('Sidecar disabled: connecting in NullClient')
+      })
+    })
+    describe('write(...) should', () => {
+      it('log message passed in', async () => {
+        const client = NullClient.create()
+        const msg = 'Test log'
+        client.write(msg)
+        expect(Logger.debug).toHaveBeenCalledWith(`Sidecar disabled: writing message ${msg} in NullClient`)
+      })
+    })
+  })
+})
