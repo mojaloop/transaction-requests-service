@@ -26,6 +26,7 @@
 
 'use strict'
 
+jest.mock('moment')
 jest.mock('@mojaloop/forensic-logging-client', () => {
   return {
     create: jest.fn().mockReturnValue({ on: jest.fn() }),
@@ -35,8 +36,9 @@ jest.mock('@mojaloop/forensic-logging-client', () => {
 })
 jest.mock('../../../../src/lib/sidecar/nullClient')
 
-const src = '../../../../src'
+const Moment = require('moment')
 const Client = require('@mojaloop/forensic-logging-client')
+const src = '../../../../src'
 const NullClient = require(`${src}/lib/sidecar/nullClient`)
 const Config = require('../../../../src/lib/config')
 
@@ -101,6 +103,42 @@ describe('Sidecar client', () => {
 
       // Assert
       expect(sidecarStub.write).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('logRequest should', () => {
+    it('write request details to sidecar client', () => {
+      // Arrange
+      let Sidecar
+      const sidecarStub = { on: jest.fn(), write: jest.fn() }
+
+      Client.create.mockReturnValue(sidecarStub)
+      jest.isolateModules(() => { Sidecar = require(`${src}/lib/sidecar`) })
+
+      const now = new Date()
+      Moment.utc.mockReturnValue(now)
+
+      const request = {
+        method: 'PUT',
+        url: {
+          path: '/transactionRequests'
+        },
+        body: 'Test body',
+        auth: 'OTP'
+      }
+      const expected = {
+        method: 'PUT',
+        timestamp: now.toISOString(),
+        url: '/transactionRequests',
+        body: 'Test body',
+        auth: 'OTP'
+      }
+
+      // Act
+      Sidecar.logRequest(request)
+
+      // Assert
+      expect(sidecarStub.write).toHaveBeenCalledWith(JSON.stringify(expected))
     })
   })
 })
