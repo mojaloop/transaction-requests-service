@@ -120,12 +120,11 @@ describe('Sidecar client', () => {
 
       const request = {
         method: 'PUT',
-        url: {
-          path: '/transactionRequests'
-        },
+        url: { path: '/transactionRequests' },
         body: 'Test body',
         auth: 'OTP'
       }
+
       const expected = {
         method: 'PUT',
         timestamp: now.toISOString(),
