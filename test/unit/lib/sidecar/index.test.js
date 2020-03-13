@@ -27,7 +27,11 @@
 'use strict'
 
 jest.mock('@mojaloop/forensic-logging-client', () => {
-  return { create: jest.fn().mockReturnValue({ on: jest.fn() }) }
+  return {
+    create: jest.fn().mockReturnValue({ on: jest.fn() }),
+    connect: jest.fn(),
+    write: jest.fn()
+  }
 })
 jest.mock('../../../../src/lib/sidecar/nullClient')
 
@@ -40,12 +44,13 @@ const Config = require('../../../../src/lib/config')
  * Tests for Sidecar client
  */
 describe('Sidecar client', () => {
-  describe('connect should', () => {
-    beforeEach(() => {
-      Client.create.mockClear()
-      NullClient.create.mockClear()
-    })
-    it('call sidecar client connect', () => {
+  beforeEach(() => {
+    jest.setMock(`${src}/lib/config`, { ...Config, SIDECAR_DISABLED: false })
+    Client.create.mockClear()
+    NullClient.create.mockClear()
+  })
+  describe('import should', () => {
+    it('return NullClient if sidecar is disabled', () => {
       // Arrange
       jest.setMock(`${src}/lib/config`, { ...Config, SIDECAR_DISABLED: true })
 
@@ -56,16 +61,46 @@ describe('Sidecar client', () => {
       expect(NullClient.create).toHaveBeenCalledTimes(1)
       expect(Client.create).not.toHaveBeenCalled()
     })
-    it('call sidecar client connect', () => {
-      // Arrange
-      jest.setMock(`${src}/lib/config`, { ...Config, SIDECAR_DISABLED: false })
-
+    it('return sidecar client if sidecar is not disabled', () => {
       // Act
       jest.isolateModules(() => { require(`${src}/lib/sidecar`) })
 
       // Assert
       expect(Client.create).toHaveBeenCalledTimes(1)
       expect(NullClient.create).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('connect should', () => {
+    it('call sidecar client connect', () => {
+      // Arrange
+      let Sidecar
+      const sidecarStub = { on: jest.fn(), connect: jest.fn() }
+      Client.create.mockReturnValue(sidecarStub)
+      jest.isolateModules(() => { Sidecar = require(`${src}/lib/sidecar`) })
+
+      // Act
+      Sidecar.connect()
+
+      // Assert
+      expect(sidecarStub.connect).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('write should', () => {
+    it('write to sidecar client', () => {
+      // Arrange
+      let Sidecar
+      const sidecarStub = { on: jest.fn(), write: jest.fn() }
+      Client.create.mockReturnValue(sidecarStub)
+      jest.isolateModules(() => { Sidecar = require(`${src}/lib/sidecar`) })
+
+      // Act
+      const msg = 'Test message'
+      Sidecar.write(msg)
+
+      // Assert
+      expect(sidecarStub.write).toHaveBeenCalledTimes(1)
     })
   })
 })
