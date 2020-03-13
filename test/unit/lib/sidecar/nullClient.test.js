@@ -42,6 +42,7 @@ describe('Sidecar NullClient', () => {
         expect(client).toBeTruthy()
       })
     })
+
     describe('connect() should', () => {
       it('log sidecar status and return resolved promise', async () => {
         const client = NullClient.create()
@@ -49,6 +50,7 @@ describe('Sidecar NullClient', () => {
         expect(Logger.debug).toHaveBeenCalledWith('Sidecar disabled: connecting in NullClient')
       })
     })
+
     describe('write(...) should', () => {
       it('log message passed in', async () => {
         const client = NullClient.create()
