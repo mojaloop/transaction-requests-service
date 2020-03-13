@@ -37,6 +37,7 @@ jest.mock('@mojaloop/forensic-logging-client', () => {
 jest.mock('../../../../src/lib/sidecar/nullClient')
 
 const Moment = require('moment')
+const EventEmitter = require('events')
 const Client = require('@mojaloop/forensic-logging-client')
 const src = '../../../../src'
 const NullClient = require(`${src}/lib/sidecar/nullClient`)
@@ -111,7 +112,6 @@ describe('Sidecar client', () => {
       // Arrange
       let Sidecar
       const sidecarStub = { on: jest.fn(), write: jest.fn() }
-
       Client.create.mockReturnValue(sidecarStub)
       jest.isolateModules(() => { Sidecar = require(`${src}/lib/sidecar`) })
 
@@ -138,6 +138,24 @@ describe('Sidecar client', () => {
 
       // Assert
       expect(sidecarStub.write).toHaveBeenCalledWith(JSON.stringify(expected))
+    })
+  })
+
+  describe('receiving close event should', () => {
+    it('throw error', () => {
+      // Arrange
+      let Sidecar
+      const sidecarStub = new EventEmitter()
+      sidecarStub.connect = jest.fn()
+      Client.create.mockReturnValue(sidecarStub)
+
+      jest.isolateModules(() => { Sidecar = require(`${src}/lib/sidecar`) })
+
+      // Act
+      Sidecar.connect()
+
+      // Assert
+      expect(() => sidecarStub.emit('close')).toThrow('Sidecar connection closed')
     })
   })
 })
