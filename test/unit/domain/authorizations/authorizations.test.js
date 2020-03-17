@@ -48,7 +48,7 @@ const Authorizations = require('../../../../src/domain/authorizations/authorizat
 const TestHelper = require('../../../util/helper')
 const MockSpan = require('../../../util/mockgen').mockSpan
 
-let SpanMock
+let SpanMock = MockSpan()
 
 describe('Authorizations', () => {
   beforeEach(() => {
@@ -172,7 +172,7 @@ describe('Authorizations', () => {
       })
 
       // Act
-      await expect(Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, queryParams, Enum.Http.RestMethods.GET)).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
+      await expect(Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, queryParams, Enum.Http.RestMethods.GET, SpanMock)).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
 
       // Assert
       const expectedErrorHeaders = Object.assign(headers, { 'fspiop-source': Enum.Http.Headers.FSPIOP.SWITCH.value, 'fspiop-destination': headers['fspiop-source'] })
