@@ -9,7 +9,7 @@ jest.mock('@mojaloop/central-services-logger', () => {
 const Hapi = require('@hapi/hapi')
 const queryString = require('querystring')
 
-const Mockgen = require('../../../util/mockgen.js')
+const Mockgen = require('../../../util/mockgen.js').mockRequest
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/authorizations/authorizations')
 const Plugins = require('../../../../src/plugins')

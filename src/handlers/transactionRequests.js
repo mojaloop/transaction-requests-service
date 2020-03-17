@@ -4,7 +4,6 @@ const EventSdk = require('@mojaloop/event-sdk')
 const Enum = require('@mojaloop/central-services-shared').Enum
 const transactionRequest = require('../domain/transactionRequests/transactionRequests')
 const LibUtil = require('../lib/util')
-const Sidecar = require('../lib/sidecar')
 
 /**
  * Operations on /transactionRequests
@@ -18,7 +17,6 @@ module.exports = {
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
   post: async (request, h) => {
-    Sidecar.logRequest(request)
     const span = request.span
     const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.POST)
     span.setTags(tags)

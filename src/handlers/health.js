@@ -25,37 +25,10 @@
 'use strict'
 
 const HealthCheck = require('@mojaloop/central-services-shared').HealthCheck.HealthCheck
-const { responseCode, statusEnum, serviceName } = require('@mojaloop/central-services-shared').HealthCheck.HealthCheckEnums
-const Logger = require('@mojaloop/central-services-logger')
+const { defaultHealthHandler } = require('@mojaloop/central-services-health')
 const packageJson = require('../../package.json')
-const Sidecar = require('../lib/sidecar')
-const Config = require('../lib/config')
 
-/**
- * @function getSubServiceHealthSidecar
- *
- * @description
- *   Gets the health of the Sidecar
- *
- * @returns Promise<SubServiceHealth> The SubService health object for the Sidecar
- */
-const getSubServiceHealthSidecar = async () => {
-  let status = statusEnum.OK
-
-  try {
-    if (await Sidecar.connect()) {
-      status = statusEnum.DOWN
-    }
-  } catch (err) {
-    Logger.debug(`getSubServiceHealthSidecar failed with error ${err.message}.`)
-    status = statusEnum.DOWN
-  }
-
-  return {
-    name: serviceName.sidecar,
-    status
-  }
-}
+const healthCheck = new HealthCheck(packageJson, [])
 
 /**
  * Operations on /health
@@ -68,23 +41,5 @@ module.exports = {
    * produces: application/json
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  get: async (_, h) => {
-    let serviceList = []
-
-    if (!Config.SIDECAR_DISABLED) {
-      serviceList = [
-        async () => getSubServiceHealthSidecar()
-      ]
-    }
-
-    const healthCheck = new HealthCheck(packageJson, serviceList)
-    const healthCheckResponse = await healthCheck.getHealth()
-    let code = responseCode.success
-
-    if (!healthCheckResponse || healthCheckResponse.status !== statusEnum.OK) {
-      code = responseCode.gatewayTimeout
-    }
-
-    return h.response(healthCheckResponse).code(code)
-  }
+  get: defaultHealthHandler(healthCheck)
 }

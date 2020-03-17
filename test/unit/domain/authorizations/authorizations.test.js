@@ -46,21 +46,15 @@ const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const Authorizations = require('../../../../src/domain/authorizations/authorizations')
 const TestHelper = require('../../../util/helper')
+const MockSpan = require('../../../util/mockgen').mockSpan
+
 let SpanMock
 
 describe('Authorizations', () => {
   beforeEach(() => {
-    SpanMock = {
-      audit: jest.fn(),
-      error: jest.fn(),
-      finish: jest.fn(),
-      debug: jest.fn(),
-      info: jest.fn(),
-      getChild: jest.fn().mockResolvedValue(SpanMock),
-      setTags: jest.fn()
-    }
+    SpanMock = MockSpan()
   })
-  describe('forwardAuthorization', () => {
+  describe('forwardAuthorizationMessage', () => {
     it('forwards a GET request', async () => {
       Endpoint.getEndpoint = jest.fn().mockResolvedValue('http://dfsp2')
       Request.sendRequest = jest.fn().mockResolvedValue({

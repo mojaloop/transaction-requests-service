@@ -34,9 +34,42 @@ const apiPath = Path.resolve(__dirname, '../../src/interface/swagger.json')
 let mockGen
 
 /**
+ * Mock Span
+ */
+class Span {
+  constructor () {
+    this.isFinished = false
+  }
+
+  audit () {
+    return jest.fn()
+  }
+
+  error () {
+    return jest.fn()
+  }
+
+  finish () {
+    return jest.fn()
+  }
+
+  debug () {
+    return jest.fn()
+  }
+
+  info () {
+    return jest.fn()
+  }
+
+  getChild () {
+    return new Span()
+  }
+}
+
+/**
  * Global MockGenerator Singleron
  */
-module.exports = function () {
+const mockRequest = () => {
   if (mockGen) {
     return mockGen
   }
@@ -56,4 +89,13 @@ module.exports = function () {
   }
 
   return mockGen
+}
+
+const mockSpan = () => {
+  return new Span()
+}
+
+module.exports = {
+  mockRequest,
+  mockSpan
 }

@@ -31,7 +31,6 @@ const EventSdk = require('@mojaloop/event-sdk')
 const Enum = require('@mojaloop/central-services-shared').Enum
 const authorizations = require('../../domain/authorizations/authorizations')
 const LibUtil = require('../../lib/util')
-const Sidecar = require('../../lib/sidecar')
 
 /**
  * Operations on /authorizations/{ID}
@@ -45,7 +44,6 @@ module.exports = {
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
   get: async (request, h) => {
-    Sidecar.logRequest(request)
     const span = request.span
     const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.LOOKUP)
     span.setTags(tags)
@@ -64,7 +62,6 @@ module.exports = {
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
   put: async (request, h) => {
-    Sidecar.logRequest(request)
     const span = request.span
     const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
     span.setTags(tags)
