@@ -51,11 +51,13 @@ describe('util', () => {
       const headers = Helper.defaultHeaders()
       const transactionType = 'transactionRequests'
       const transactionAction = 'POST'
+      const transactionId = undefined
       const expected = {
         source: 'dfsp1',
         destination: 'dfsp2',
         transactionType,
-        transactionAction
+        transactionAction,
+        transactionId
       }
 
       // Act
@@ -69,9 +71,11 @@ describe('util', () => {
       const headers = null
       const transactionType = 'transactionRequests'
       const transactionAction = 'POST'
+      const transactionId = undefined
       const expected = {
         transactionType,
-        transactionAction
+        transactionAction,
+        transactionId
       }
 
       // Act

@@ -51,7 +51,7 @@ const getSpanTags = ({ headers, payload, params }, transactionType, transactionA
   const tags = {
     transactionType,
     transactionAction,
-    transactionId: payload.transactionRequestId || params.ID || headers.ID || undefined
+    transactionId: (payload && payload.transactionRequestId) || (params && params.ID) || (headers && headers.ID) || undefined
   }
   if (headers && headers[Enum.Http.Headers.FSPIOP.SOURCE]) {
     tags.source = headers[Enum.Http.Headers.FSPIOP.SOURCE]
