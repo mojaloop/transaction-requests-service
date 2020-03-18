@@ -47,10 +47,11 @@ function getStackOrInspect (err) {
  * @param {string} transactionAction
  * @returns {Object}
  */
-const getSpanTags = ({ headers }, transactionType, transactionAction) => {
+const getSpanTags = ({ headers, payload, params }, transactionType, transactionAction) => {
   const tags = {
     transactionType,
-    transactionAction
+    transactionAction,
+    transactionId: payload.transactionRequestId || params.ID || headers.ID || undefined
   }
   if (headers && headers[Enum.Http.Headers.FSPIOP.SOURCE]) {
     tags.source = headers[Enum.Http.Headers.FSPIOP.SOURCE]
