@@ -40,7 +40,7 @@ const { getStackOrInspect } = require('../../lib/util')
 /**
  * Forwards transactionRequests endpoint requests to destination FSP for processing
  *
- * @returns {undefined}err
+ * @returns {boolean}
  */
 const forwardTransactionRequest = async (path, headers, method, params, payload, span = null) => {
   const childSpan = span ? span.getChild('forwardTransactionRequest') : undefined
