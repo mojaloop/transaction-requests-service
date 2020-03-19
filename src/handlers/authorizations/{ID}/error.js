@@ -17,14 +17,20 @@
  optionally within square brackets <email>.
  * Gates Foundation
 
- * Donovan Changfoot <don@coil.com>
+  * Coil
+ - Donovan Changfoot <don@coil.com>
+
+ * ModusBox
+ - Steven Oderayi <steven.oderayi@modusbox.com>
 
  --------------
  ******/
 'use strict'
 
+const EventSdk = require('@mojaloop/event-sdk')
 const Enum = require('@mojaloop/central-services-shared').Enum
 const authorizations = require('../../../domain/authorizations/authorizations')
+const LibUtil = require('../../../lib/util')
 
 /**
  * Operations on /authorizations/{ID}/error
@@ -37,8 +43,15 @@ module.exports = {
      * produces: application/json
      * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
      */
-  put: function (request, h) {
-    authorizations.forwardAuthorizationError(request.headers, request.params.ID, request.payload)
+  put: async (request, h) => {
+    const span = request.span
+    const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
+    span.setTags(tags)
+    await span.audit({
+      headers: request.headers,
+      payload: request.payload
+    }, EventSdk.AuditEventAction.start)
+    authorizations.forwardAuthorizationError(request.headers, request.params.ID, request.payload, span)
     return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
   }
 }

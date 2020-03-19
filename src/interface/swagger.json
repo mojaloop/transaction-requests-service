@@ -22,7 +22,8 @@
                     "application/json"
                 ],
                 "tags": [
-                    "health"
+                    "health",
+                    "sampled"
                 ],
                 "responses": {
                     "200": {
@@ -64,7 +65,8 @@
                     "application/json"
                 ],
                 "tags": [
-                    "transactionRequests"
+                    "transactionRequests",
+                    "sampled"
                 ],
                 "parameters": [
                     {
@@ -201,7 +203,8 @@
                     "application/json"
                 ],
                 "tags": [
-                    "transactionRequests"
+                    "transactionRequests",
+                    "sampled"
                 ],
                 "parameters": [
                     {
@@ -246,7 +249,8 @@
                     "application/json"
                 ],
                 "tags": [
-                    "transactionRequests"
+                    "transactionRequests",
+                    "sampled"
                 ],
                 "parameters": [
                     {
@@ -319,7 +323,8 @@
                     "application/json"
                 ],
                 "tags": [
-                    "transactionRequests"
+                    "transactionRequests",
+                    "sampled"
                 ],
                 "parameters": [
                     {
@@ -549,6 +554,10 @@
                 }
             ],
             "get": {
+                "tags": [
+                    "authorizations",
+                    "sampled"
+                ],
                 "parameters": [
                     {
                         "name": "authenticationType",
@@ -616,6 +625,10 @@
                 "description": "The HTTP request GET /authorizations/<ID> is used to request authorization for a specified transaction request. The <ID> in the URI should contain the transactionRequestId for which authorization is being requested."
             },
             "put": {
+                "tags": [
+                    "authorizations",
+                    "sampled"
+                ],
                 "parameters": [
                     {
                         "name": "body",
@@ -666,7 +679,8 @@
                     "application/json"
                 ],
                 "tags": [
-                    "transactionRequests"
+                    "authorizations",
+                    "sampled"
                 ],
                 "parameters": [
                     {

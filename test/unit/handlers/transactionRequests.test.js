@@ -3,9 +3,10 @@
 const Sinon = require('sinon')
 const Hapi = require('@hapi/hapi')
 
-const Mockgen = require('../../util/mockgen.js')
+const Mockgen = require('../../util/mockgen.js').mockRequest
 const Helper = require('../../util/helper')
 const Handler = require('../../../src/domain/transactionRequests/transactionRequests')
+const Plugins = require('../../../src/plugins')
 
 let sandbox
 const server = new Hapi.Server()
@@ -16,6 +17,7 @@ const server = new Hapi.Server()
 describe('/transactionRequests', () => {
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
+    await Plugins.registerPlugins(server)
     await server.register(Helper.defaultServerOptions)
   })
 

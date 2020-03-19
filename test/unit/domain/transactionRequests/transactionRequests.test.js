@@ -20,6 +20,9 @@
  * Crosslake
  - Lewis Daly <lewisd@crosslaketech.com>
 
+ * ModusBox
+ - Steven Oderayi <steven.oderayi@modusbox.com>
+
  --------------
  ******/
 
@@ -39,8 +42,11 @@ const ErrorHandler = require('@mojaloop/central-services-error-handling')
 
 const TransactionRequests = require('../../../../src/domain/transactionRequests/transactionRequests')
 const TestHelper = require('../../../util/helper')
+const MockSpan = require('../../../util/mockgen').mockSpan
 
 let sandbox
+let SpanMock = MockSpan()
+
 describe('transactionRequests', () => {
   beforeAll(() => {
     sandbox = Sinon.createSandbox()
@@ -48,6 +54,7 @@ describe('transactionRequests', () => {
 
   afterEach(() => {
     sandbox.restore()
+    SpanMock = MockSpan()
   })
 
   describe('forwardTransactionRequest', () => {
@@ -64,7 +71,8 @@ describe('transactionRequests', () => {
         TestHelper.defaultHeaders(),
         'post',
         { ID: '12345' },
-        null
+        null,
+        SpanMock
       ]
 
       // Act
@@ -77,6 +85,7 @@ describe('transactionRequests', () => {
     it('handles when the endpoint could not be found', async () => {
       // Arrange
       sandbox.stub(Endpoint, 'getEndpoint').resolves(undefined)
+      sandbox.stub(TransactionRequests, 'forwardTransactionRequestError').resolves({})
       sandbox.stub(Request, 'sendRequest').resolves({
         ok: true,
         status: 202,
@@ -87,7 +96,8 @@ describe('transactionRequests', () => {
         TestHelper.defaultHeaders(),
         'post',
         { ID: '12345' },
-        { transactionRequestId: '12345' }
+        { transactionRequestId: '12345' },
+        SpanMock
       ]
 
       // Act
@@ -100,14 +110,14 @@ describe('transactionRequests', () => {
     it('handles when the the request fails', async () => {
       // Arrange
       sandbox.stub(Endpoint, 'getEndpoint').resolves('http://localhost:3000')
-      sandbox.stub(Request, 'sendRequest').throws(ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error(), '', [{ key: 'cause', value: {} }])
-      )
+      sandbox.stub(Request, 'sendRequest').throws(ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error(), '', [{ key: 'cause', value: {} }]))
       const options = [
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST,
         TestHelper.defaultHeaders(),
         'post',
         { ID: '12345' },
-        { transactionRequestId: '12345' }
+        { transactionRequestId: '12345' },
+        SpanMock
       ]
 
       // Act
@@ -130,7 +140,8 @@ describe('transactionRequests', () => {
         TestHelper.defaultHeaders(),
         'get',
         { },
-        null
+        null,
+        SpanMock
       ]
 
       // Act
@@ -138,6 +149,49 @@ describe('transactionRequests', () => {
 
       // Assert
       expect(result).toBe(true)
+    })
+
+    it('handles when span is undefined', async () => {
+      // Arrange
+      sandbox.stub(Endpoint, 'getEndpoint').resolves('http://localhost:3000')
+      sandbox.stub(Request, 'sendRequest').resolves({
+        ok: true,
+        status: 202,
+        statusText: 'Accepted'
+      })
+      const options = [
+        Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET,
+        TestHelper.defaultHeaders(),
+        'get',
+        { ID: '1234' },
+        { transactionRequestId: '12345' }
+      ]
+
+      // Act
+      const result = await TransactionRequests.forwardTransactionRequest(...options)
+
+      // Assert
+      expect(result).toBe(true)
+    })
+
+    it('handles when the the request fails and span is undefined', async () => {
+      // Arrange
+      sandbox.stub(Endpoint, 'getEndpoint').resolves('http://localhost:3000')
+      sandbox.stub(Request, 'sendRequest').throws(ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error(), '', [{ key: 'cause', value: {} }]))
+      sandbox.stub(TransactionRequests, 'forwardTransactionRequestError').resolves(true)
+      const options = [
+        Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST,
+        TestHelper.defaultHeaders(),
+        'post',
+        { ID: '12345' },
+        { transactionRequestId: '12345' }
+      ]
+
+      // Act
+      const action = async () => TransactionRequests.forwardTransactionRequest(...options)
+
+      // Assert
+      await expect(action()).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
     })
   })
 
@@ -156,11 +210,11 @@ describe('transactionRequests', () => {
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR,
         Enum.Http.RestMethods.PUT,
         '12345',
-        ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, 'Could not find endpoint')
+        ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, 'Could not find endpoint'),
+        SpanMock
       ]
 
       // Act
-      // const action = async () => await TransactionRequests.forwardTransactionRequestError(...options)
       const result = await TransactionRequests.forwardTransactionRequestError(...options)
 
       // Assert
@@ -180,11 +234,12 @@ describe('transactionRequests', () => {
         Enum.Http.Headers.FSPIOP.SOURCE,
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR,
         Enum.Http.RestMethods.PUT,
-        '12345'
+        '12345',
+        undefined,
+        SpanMock
       ]
 
       // Act
-      // const action = async () => await TransactionRequests.forwardTransactionRequestError(...options)
       const result = await TransactionRequests.forwardTransactionRequestError(...options)
 
       // Assert
@@ -203,11 +258,13 @@ describe('transactionRequests', () => {
         TestHelper.defaultHeaders(),
         Enum.Http.Headers.FSPIOP.SOURCE,
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR,
-        Enum.Http.RestMethods.PUT
+        Enum.Http.RestMethods.PUT,
+        undefined,
+        undefined,
+        SpanMock
       ]
 
       // Act
-      // const action = async () => await TransactionRequests.forwardTransactionRequestError(...options)
       const result = await TransactionRequests.forwardTransactionRequestError(...options)
 
       // Assert

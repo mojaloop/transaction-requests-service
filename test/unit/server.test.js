@@ -26,7 +26,8 @@
 
 jest.mock('@mojaloop/central-services-logger', () => {
   return {
-    info: jest.fn() // suppress info output
+    info: jest.fn(), // suppress info output
+    debug: jest.fn()
   }
 })
 

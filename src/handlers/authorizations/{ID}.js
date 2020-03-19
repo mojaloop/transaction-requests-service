@@ -17,14 +17,20 @@
  optionally within square brackets <email>.
  * Gates Foundation
 
- * Donovan Changfoot <don@coil.com>
+  * Coil
+ - Donovan Changfoot <don@coil.com>
+
+ * ModusBox
+ - Steven Oderayi <steven.oderayi@modusbox.com>
 
  --------------
  ******/
 'use strict'
 
+const EventSdk = require('@mojaloop/event-sdk')
 const Enum = require('@mojaloop/central-services-shared').Enum
 const authorizations = require('../../domain/authorizations/authorizations')
+const LibUtil = require('../../lib/util')
 
 /**
  * Operations on /authorizations/{ID}
@@ -37,8 +43,15 @@ module.exports = {
    * produces: application/json
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  get: function (request, h) {
-    authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET)
+  get: async (request, h) => {
+    const span = request.span
+    const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.LOOKUP)
+    span.setTags(tags)
+    await span.audit({
+      headers: request.headers,
+      payload: request.payload
+    }, EventSdk.AuditEventAction.start)
+    authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET, span)
     return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
   },
   /**
@@ -48,8 +61,15 @@ module.exports = {
    * produces: application/json
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  put: function (request, h) {
-    authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT)
+  put: async (request, h) => {
+    const span = request.span
+    const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
+    span.setTags(tags)
+    await span.audit({
+      headers: request.headers,
+      payload: request.payload
+    }, EventSdk.AuditEventAction.start)
+    authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT, span)
     return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
   }
 }

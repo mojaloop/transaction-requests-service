@@ -3,7 +3,7 @@
 const Sinon = require('sinon')
 const Hapi = require('@hapi/hapi')
 
-const Mockgen = require('../../util/mockgen.js')
+const Mockgen = require('../../util/mockgen.js').mockRequest
 const Helper = require('../../util/helper')
 
 let sandbox
