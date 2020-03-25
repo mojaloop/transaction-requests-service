@@ -32,6 +32,10 @@ describe('/transactionRequests', () => {
     await server.register(Helper.defaultServerOptions)
   })
 
+  beforeEach(() => {
+    sandbox.stub(Handler, 'forwardTransactionRequest').returns(Promise.resolve())
+  })
+
   afterAll(() => {
     server.stop()
   })
@@ -52,7 +56,6 @@ describe('/transactionRequests', () => {
         headers: Helper.defaultHeaders(),
         payload: mock.request.body || mock.request.formData
       }
-      sandbox.stub(Handler, 'forwardTransactionRequest').returns(Promise.resolve())
 
       // Act
       const response = await server.inject(options)
@@ -71,7 +74,7 @@ describe('/transactionRequests', () => {
         payload: mock.request.body || mock.request.formData
       }
       const err = new Error('Error occured')
-      sandbox.stub(Handler, 'forwardTransactionRequest').throws(err)
+      Handler.forwardTransactionRequest = sandbox.stub().throws(err)
 
       // Act
       const response = await server.inject(options)

@@ -34,7 +34,6 @@ describe('/authorizations/{ID}', () => {
     await Plugins.registerPlugins(server)
     await server.register(Helper.defaultServerOptions)
   })
-  Logger.error = jest.fn()
 
   afterAll(() => {
     server.stop()
