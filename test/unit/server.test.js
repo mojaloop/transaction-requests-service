@@ -31,6 +31,12 @@ jest.mock('@mojaloop/central-services-logger', () => {
   }
 })
 
+jest.mock('@mojaloop/central-services-metrics', () => {
+  return {
+    setup: jest.fn()
+  }
+})
+
 /* Mock out the Hapi Server */
 const mockStart = jest.fn()
 jest.mock('@hapi/hapi', () => ({
