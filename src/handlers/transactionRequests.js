@@ -2,6 +2,9 @@
 
 const EventSdk = require('@mojaloop/event-sdk')
 const Enum = require('@mojaloop/central-services-shared').Enum
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Logger = require('@mojaloop/central-services-logger')
+const Metrics = require('@mojaloop/central-services-metrics')
 const transactionRequest = require('../domain/transactionRequests/transactionRequests')
 const LibUtil = require('../lib/util')
 
@@ -17,14 +20,27 @@ module.exports = {
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
   post: async (request, h) => {
+    const histTimerEnd = Metrics.getHistogram(
+      'transaction_requests_get',
+      'Post transaction request',
+      ['success']
+    ).startTimer()
     const span = request.span
-    const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.POST)
-    span.setTags(tags)
-    await span.audit({
-      headers: request.headers,
-      payload: request.payload
-    }, EventSdk.AuditEventAction.start)
-    transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST, request.headers, Enum.Http.RestMethods.POST, request.params, request.payload, span)
-    return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
+    try {
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.POST)
+      span.setTags(tags)
+      await span.audit({
+        headers: request.headers,
+        payload: request.payload
+      }, EventSdk.AuditEventAction.start)
+      await transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST, request.headers, Enum.Http.RestMethods.POST, request.params, request.payload, span)
+      histTimerEnd({ success: true })
+      return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
+    } catch (err) {
+      const fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
+      Logger.error(fspiopError)
+      histTimerEnd({ success: false })
+      throw fspiopError
+    }
   }
 }

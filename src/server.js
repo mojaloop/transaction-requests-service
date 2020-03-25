@@ -29,6 +29,7 @@ const HapiOpenAPI = require('hapi-openapi')
 const Path = require('path')
 const Config = require('./lib/config.js')
 const Logger = require('@mojaloop/central-services-logger')
+const Metrics = require('@mojaloop/central-services-metrics')
 const Plugins = require('./plugins')
 const ServerHandler = require('./handlers/server')
 const Endpoints = require('@mojaloop/central-services-shared').Util.Endpoints
@@ -79,11 +80,18 @@ const createServer = async (port) => {
   return server
 }
 
+const initializeInstrumentation = () => {
+  if (!Config.INSTRUMENTATION_METRICS_DISABLED) {
+    Metrics.setup(Config.INSTRUMENTATION_METRICS_CONFIG)
+  }
+}
+
 const initialize = async (port = Config.PORT) => {
   const server = await createServer(port)
   server.plugins.openapi.setHost(server.info.host + ':' + server.info.port)
   Logger.info(`Server running on ${server.info.host}:${server.info.port}`)
   await Endpoints.initializeCache(Config.ENDPOINT_CACHE_CONFIG)
+  initializeInstrumentation()
   return server
 }
 
