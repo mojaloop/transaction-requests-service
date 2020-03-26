@@ -59,6 +59,49 @@
                 "description": "The HTTP request GET /health is used to return the current status of the API."
             }
         },
+        "/metrics": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics",
+                    "sampled"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/ResponseHealth200"
+                    },
+                    "400": {
+                        "$ref": "#/responses/ErrorResponse400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/ErrorResponse401"
+                    },
+                    "403": {
+                        "$ref": "#/responses/ErrorResponse403"
+                    },
+                    "404": {
+                        "$ref": "#/responses/ErrorResponse404"
+                    },
+                    "405": {
+                        "$ref": "#/responses/ErrorResponse405"
+                    },
+                    "406": {
+                        "$ref": "#/responses/ErrorResponse406"
+                    },
+                    "501": {
+                        "$ref": "#/responses/ErrorResponse501"
+                    },
+                    "503": {
+                        "$ref": "#/responses/ErrorResponse503"
+                    }
+                },
+                "operationId": "MetricsGet",
+                "summary": "Prometheus metrics endpoint",
+                "description": "The HTTP request GET /metrics is used to return metrics for the API."
+            }
+        },
         "/transactionRequests/{ID}/error": {
             "put": {
                 "produces": [

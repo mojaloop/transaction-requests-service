@@ -3,11 +3,21 @@
 jest.mock('@mojaloop/central-services-logger', () => {
   return {
     info: jest.fn(), // suppress info output
-    debug: jest.fn()
+    debug: jest.fn(),
+    error: jest.fn()
   }
 })
+
+jest.mock('../../../../src/domain/authorizations/authorizations', () => {
+  return {
+    forwardAuthorizationMessage: jest.fn()
+  }
+})
+
 const Hapi = require('@hapi/hapi')
 const queryString = require('querystring')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Logger = require('@mojaloop/central-services-logger')
 
 const Mockgen = require('../../../util/mockgen.js').mockRequest
 const Helper = require('../../../util/helper')
@@ -57,6 +67,26 @@ describe('/authorizations/{ID}', () => {
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(query)
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('GET')
     })
+
+    it('handles when an error is thrown', async () => {
+      // Arrange
+      const mock = await requests
+      const headers = Helper.defaultHeaders()
+      const options = {
+        method: 'get',
+        url: '' + mock.request.path,
+        headers
+      }
+      const err = new Error('Error occured')
+      Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
+
+      // Act
+      const response = await server.inject(options)
+
+      // Assert
+      expect(response.statusCode).toBe(500)
+      expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
+    })
   })
 
   describe('PUT', () => {
@@ -80,6 +110,26 @@ describe('/authorizations/{ID}', () => {
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(mock.request.body)
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
+    })
+
+    it('handles when an error is thrown', async () => {
+      // Arrange
+      const mock = await requests
+      const options = {
+        method: 'put',
+        url: '' + mock.request.path,
+        headers: Helper.defaultHeaders(),
+        payload: mock.request.body
+      }
+      const err = new Error('Error occured')
+      Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
+
+      // Act
+      const response = await server.inject(options)
+
+      // Assert
+      expect(response.statusCode).toBe(500)
+      expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
     })
   })
 })
