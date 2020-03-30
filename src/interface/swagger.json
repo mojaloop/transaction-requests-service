@@ -22,8 +22,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "health",
-                    "sampled"
+                    "health"
                 ],
                 "responses": {
                     "200": {
@@ -65,8 +64,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "metrics",
-                    "sampled"
+                    "metrics"
                 ],
                 "responses": {
                     "200": {
@@ -153,6 +151,7 @@
                     {
                         "$ref": "#/parameters/FSPIOP-HTTP-Method"
                     }
+
                 ],
                 "responses": {
                     "200": {
