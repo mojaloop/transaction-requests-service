@@ -22,8 +22,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "health",
-                    "sampled"
+                    "health"
                 ],
                 "responses": {
                     "200": {
