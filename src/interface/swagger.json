@@ -727,10 +727,7 @@
                 "operationId": "AuthorizationsIDPutResponse",
                 "summary": "/authorizations/<ID>",
                 "description": "The callback PUT /authorizations/<ID> is used to inform the client of an authorization result for a transactionRequest. The <ID> in the URI should contain the transactionRequestId that was used for the creation of the transaction request, or the <ID> that was used in the GET /transactionRequests/<ID>."
-            },
-            "parameters": [
-                
-            ]
+            }
         },
         "/authorizations/{ID}/error": {
             "put": {
