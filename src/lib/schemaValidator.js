@@ -10,11 +10,13 @@ function updateDefinition (obj, flags) {
     if (typeof obj[i] === 'object') {
       objects = objects.concat(updateDefinition(obj[i], key))
     } else if (i === key) {
-      obj.regexp = {
-        pattern: obj[i],
-        flags
+      if (!obj.regexp && !obj.flags) {
+        obj.regexp = {
+          pattern: obj[i],
+          flags
+        }
+        delete obj.pattern
       }
-      obj.pattern = undefined
     }
   }
 }

@@ -94,7 +94,8 @@ const createServer = async (port) => {
   server.route({
     method: ['GET', 'POST', 'PUT', 'DELETE'],
     path: '/{path*}',
-    handler: (req, h) =>
+    handler: (req, h) => {
+      // server.register(EventPlugin)
       api.handleRequest(
         {
           method: req.method,
@@ -106,6 +107,8 @@ const createServer = async (port) => {
         req,
         h
       )
+      // TODO: follow instructions https://github.com/anttiviljami/openapi-backend/blob/master/DOCS.md#postresponsehandler-handler
+    }
   })
 
   await server.start()

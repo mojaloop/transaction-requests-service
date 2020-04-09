@@ -26,7 +26,6 @@
 'use strict'
 
 const Logger = require('@mojaloop/central-services-logger')
-
 const transactionRequests = require('./transactionRequests')
 const transactionRequestsId = require('./transactionRequests/{ID}')
 const transactionRequestsErrorByID = require('./transactionRequests/{ID}/error')
@@ -43,12 +42,12 @@ module.exports = {
   AuthorizationsIDResponse: authorizationsId.get,
   AuthorizationsIDPutResponse: authorizationsId.put,
   AuthorizationsErrorByID: authorizationsIdError.put,
-  validationFail: async (context, req, h) => {
+  validationFail: async (context, req, res) => {
     Logger.info('Validation Error')
-    throw new Error(context.validation.errors[0].message)
+    return res.response({ status: 400, err: context.validation.errors })
   },
-  notFound: async (context, req, h) => {
+  notFound: async (context, req, res) => {
     Logger.info('Not Found error')
-    h.response({ context, err: 'not found' }).code(404)
+    return res.response({ status: 400, err: 'not found' })
   }
 }
