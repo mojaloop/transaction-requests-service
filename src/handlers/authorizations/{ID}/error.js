@@ -43,7 +43,7 @@ module.exports = {
      * produces: application/json
      * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
      */
-  put: async (request, h) => {
+  put: async (c, request, h) => {
     const span = request.span
     const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
     span.setTags(tags)

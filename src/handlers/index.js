@@ -19,29 +19,36 @@
 
  * ModusBox
  - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
- - Steven Oderayi <steven.oderayi@modusbox.com>
 
  --------------
  ******/
+
 'use strict'
 
-const HealthCheck = require('@mojaloop/central-services-shared').HealthCheck.HealthCheck
-const packageJson = require('../../package.json')
+const Logger = require('@mojaloop/central-services-logger')
 
-const healthCheck = new HealthCheck(packageJson, [])
+const transactionRequests = require('./transactionRequests')
+const transactionRequestsId = require('./transactionRequests/{ID}')
+const transactionRequestsErrorByID = require('./transactionRequests/{ID}/error')
+const health = require('./health')
+const authorizationsId = require('./authorizations/{ID}')
+const authorizationsIdError = require('./authorizations/{ID}/error')
 
-/**
- * Operations on /health
- */
 module.exports = {
-  /**
-   * summary: Get Server
-   * description: The HTTP request GET /health is used to return the current status of the API.
-   * parameters:
-   * produces: application/json
-   * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
-   */
-  get: async (c, req, h) => {
-    return h.response(await healthCheck.getHealth()).code(200)
+  HealthGet: health.get,
+  TransactionRequestsErrorByID: transactionRequestsErrorByID.put,
+  TransactionRequestsByID: transactionRequestsId.get,
+  TransactionRequestsByIDPut: transactionRequestsId.put,
+  TransactionRequests: transactionRequests.post,
+  AuthorizationsIDResponse: authorizationsId.get,
+  AuthorizationsIDPutResponse: authorizationsId.put,
+  AuthorizationsErrorByID: authorizationsIdError.put,
+  validationFail: async (context, req, h) => {
+    Logger.info('Validation Error')
+    throw new Error(context.validation.errors[0].message)
+  },
+  notFound: async (context, req, h) => {
+    Logger.info('Not Found error')
+    h.response({ context, err: 'not found' }).code(404)
   }
 }
