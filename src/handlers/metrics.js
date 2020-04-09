@@ -17,69 +17,27 @@
  optionally within square brackets <email>.
  * Gates Foundation
 
- * Crosslake
- - Lewis Daly <lewisd@crosslaketech.com>
+ * ModusBox
+ - Steven Oderayi <steven.oderayi@modusbox.com>
 
  --------------
  ******/
 'use strict'
 
-jest.mock('@mojaloop/central-services-logger', () => {
-  return {
-    info: jest.fn(), // suppress info output
-    debug: jest.fn()
+const Metrics = require('@mojaloop/central-services-metrics')
+
+/**
+ * Prometheus metrics endpoint
+ */
+module.exports = {
+  /**
+   * summary: Get Metrics
+   * description: The HTTP request GET /metrics is used to return metrics for the API.
+   * parameters:
+   * produces: application/json
+   * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
+   */
+  get: (_, h) => {
+    return h.response(Metrics.getMetricsForPrometheus()).code(200)
   }
-})
-
-jest.mock('@mojaloop/central-services-metrics', () => {
-  return {
-    setup: jest.fn()
-  }
-})
-
-/* Mock out the Hapi Server */
-const mockStart = jest.fn()
-jest.mock('@hapi/hapi', () => ({
-  Server: jest.fn().mockImplementation(() => ({
-    register: jest.fn(),
-    ext: jest.fn(),
-    start: mockStart,
-    plugins: {
-      openapi: {
-        setHost: jest.fn()
-      }
-    },
-    info: {
-      host: 'localhost',
-      port: 3000
-    }
-  }))
-}))
-
-const { initialize } = require('../../src/server')
-
-describe('server', () => {
-  afterEach(() => {
-    mockStart.mockClear()
-  })
-
-  describe('initialize', () => {
-    it('initializes the server', async () => {
-      // Arrange
-      // Act
-      await initialize(3000)
-
-      // Assert
-      expect(mockStart).toHaveBeenCalled()
-    })
-
-    it('initializes the server when no port is set', async () => {
-      // Arrange
-      // Act
-      await initialize()
-
-      // Assert
-      expect(mockStart).toHaveBeenCalled()
-    })
-  })
-})
+}

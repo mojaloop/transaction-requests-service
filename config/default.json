@@ -17,7 +17,7 @@
       },
       "config": {
         "timeout": 5000,
-        "prefix": "moja_",
+        "prefix": "moja_trs_",
         "defaultLabels": {
           "serviceName": "transaction-requests"
         }

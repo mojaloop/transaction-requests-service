@@ -30,6 +30,9 @@
 const EventSdk = require('@mojaloop/event-sdk')
 const Enum = require('@mojaloop/central-services-shared').Enum
 const authorizations = require('../../domain/authorizations/authorizations')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Logger = require('@mojaloop/central-services-logger')
+const Metrics = require('@mojaloop/central-services-metrics')
 const LibUtil = require('../../lib/util')
 
 /**
@@ -44,15 +47,28 @@ module.exports = {
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
   get: async (c, request, h) => {
+    const histTimerEnd = Metrics.getHistogram(
+      'authorization_get',
+      'Get authorization by Id',
+      ['success']
+    ).startTimer()
     const span = request.span
-    const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.LOOKUP)
-    span.setTags(tags)
-    await span.audit({
-      headers: request.headers,
-      payload: request.payload
-    }, EventSdk.AuditEventAction.start)
-    authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET, span)
-    return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
+    try {
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.LOOKUP)
+      span.setTags(tags)
+      await span.audit({
+        headers: request.headers,
+        payload: request.payload
+      }, EventSdk.AuditEventAction.start)
+      await authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET, span)
+      histTimerEnd({ success: true })
+      return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
+    } catch (err) {
+      const fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
+      Logger.error(fspiopError)
+      histTimerEnd({ success: false })
+      throw fspiopError
+    }
   },
   /**
    * summary: AuthorizationsByID
@@ -62,14 +78,27 @@ module.exports = {
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
   put: async (c, request, h) => {
+    const histTimerEnd = Metrics.getHistogram(
+      'authorization_put',
+      'Put authorization by Id',
+      ['success']
+    ).startTimer()
     const span = request.span
-    const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
-    span.setTags(tags)
-    await span.audit({
-      headers: request.headers,
-      payload: request.payload
-    }, EventSdk.AuditEventAction.start)
-    authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT, span)
-    return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
+    try {
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
+      span.setTags(tags)
+      await span.audit({
+        headers: request.headers,
+        payload: request.payload
+      }, EventSdk.AuditEventAction.start)
+      await authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT, span)
+      histTimerEnd({ success: true })
+      return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
+    } catch (err) {
+      const fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
+      Logger.error(fspiopError)
+      histTimerEnd({ success: false })
+      throw fspiopError
+    }
   }
 }

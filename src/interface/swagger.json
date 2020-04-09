@@ -22,8 +22,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "health",
-                    "sampled"
+                    "health"
                 ],
                 "responses": {
                     "200": {
@@ -57,6 +56,48 @@
                 "operationId": "HealthGet",
                 "summary": "Get Server",
                 "description": "The HTTP request GET /health is used to return the current status of the API."
+            }
+        },
+        "/metrics": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/responses/ResponseHealth200"
+                    },
+                    "400": {
+                        "$ref": "#/responses/ErrorResponse400"
+                    },
+                    "401": {
+                        "$ref": "#/responses/ErrorResponse401"
+                    },
+                    "403": {
+                        "$ref": "#/responses/ErrorResponse403"
+                    },
+                    "404": {
+                        "$ref": "#/responses/ErrorResponse404"
+                    },
+                    "405": {
+                        "$ref": "#/responses/ErrorResponse405"
+                    },
+                    "406": {
+                        "$ref": "#/responses/ErrorResponse406"
+                    },
+                    "501": {
+                        "$ref": "#/responses/ErrorResponse501"
+                    },
+                    "503": {
+                        "$ref": "#/responses/ErrorResponse503"
+                    }
+                },
+                "operationId": "MetricsGet",
+                "summary": "Prometheus metrics endpoint",
+                "description": "The HTTP request GET /metrics is used to return metrics for the API."
             }
         },
         "/transactionRequests/{ID}/error": {
@@ -166,38 +207,6 @@
             }
         },
         "/transactionRequests/{ID}": {
-            "parameters": [
-                {
-                    "$ref": "#/parameters/ID"
-                },
-                {
-                    "$ref": "#/parameters/Content-Type"
-                },
-                {
-                    "$ref": "#/parameters/Date"
-                },
-                {
-                    "$ref": "#/parameters/X-Forwarded-For"
-                },
-                {
-                    "$ref": "#/parameters/FSPIOP-Source"
-                },
-                {
-                    "$ref": "#/parameters/FSPIOP-Destination"
-                },
-                {
-                    "$ref": "#/parameters/FSPIOP-Encryption"
-                },
-                {
-                    "$ref": "#/parameters/FSPIOP-Signature"
-                },
-                {
-                    "$ref": "#/parameters/FSPIOP-URI"
-                },
-                {
-                    "$ref": "#/parameters/FSPIOP-HTTP-Method"
-                }
-            ],
             "get": {
                 "produces": [
                     "application/json"
@@ -209,6 +218,36 @@
                 "parameters": [
                     {
                         "$ref": "#/parameters/Accept"
+                    },
+                    {
+                        "$ref": "#/parameters/ID"
+                    },
+                    {
+                        "$ref": "#/parameters/Content-Type"
+                    },
+                    {
+                        "$ref": "#/parameters/Date"
+                    },
+                    {
+                        "$ref": "#/parameters/X-Forwarded-For"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Source"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Destination"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Encryption"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Signature"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-URI"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-HTTP-Method"
                     }
                 ],
                 "responses": {
@@ -263,6 +302,36 @@
                     },
                     {
                         "$ref": "#/parameters/Content-Length"
+                    },
+                    {
+                        "$ref": "#/parameters/ID"
+                    },
+                    {
+                        "$ref": "#/parameters/Content-Type"
+                    },
+                    {
+                        "$ref": "#/parameters/Date"
+                    },
+                    {
+                        "$ref": "#/parameters/X-Forwarded-For"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Source"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Destination"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Encryption"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Signature"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-URI"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-HTTP-Method"
                     }
                 ],
                 "responses": {
@@ -467,92 +536,6 @@
             }
         },
         "/authorizations/{ID}": {
-            "parameters": [
-                {
-                    "name": "ID",
-                    "description": "Transaction Request ID",
-                    "in": "path",
-                    "required": true,
-                    "type": "string"
-                },
-                {
-                    "name": "accept",
-                    "description": "The Accept header field indicates the version of the API the client would like the server to use.",
-                    "in": "header",
-                    "required": true,
-                    "type": "string"
-                },
-                {
-                    "name": "content-length",
-                    "description": "The Content-Length header field indicates the anticipated size of the payload body. Only sent if there is a body. Note - The API supports a maximum size of 5242880 bytes (5 Megabytes)",
-                    "in": "header",
-                    "required": false,
-                    "type": "integer"
-                },
-                {
-                    "name": "content-type",
-                    "description": "The Content-Type header indicates the specific version of the API used to send the payload body.",
-                    "in": "header",
-                    "required": true,
-                    "type": "string"
-                },
-                {
-                    "name": "date",
-                    "description": "The Date header field indicates the date when the request was sent.",
-                    "in": "header",
-                    "required": true,
-                    "type": "string"
-                },
-                {
-                    "name": "x-forwarded-for",
-                    "description": "The X-Forwarded-For header field is an unofficially accepted standard used for informational purposes of the originating client IP address, as a request might pass multiple proxies, firewalls, and so on. Multiple X-Forwarded-For values as in the example shown here should be expected and supported by implementers of the API. Note - An alternative to X-Forwarded-For is defined in RFC 7239. However, to this point RFC 7239 is less-used and supported than X-Forwarded-For.",
-                    "in": "header",
-                    "required": false,
-                    "type": "string"
-                },
-                {
-                    "name": "fspiop-source",
-                    "description": "The FSPIOP-Source header field is a non-HTTP standard field used by the API for identifying the sender of the HTTP request. The field should be set by the original sender of the request. Required for routing and signature verification (see header field FSPIOP-Signature).",
-                    "in": "header",
-                    "required": true,
-                    "type": "string"
-                },
-                {
-                    "name": "fspiop-destination",
-                    "description": "The FSPIOP-Destination header field is a non-HTTP standard field used by the API for HTTP header based routing of requests and responses to the destination. The field should be set by the original sender of the request (if known), so that any entities between the client and the server do not need to parse the payload for routing purposes.",
-                    "in": "header",
-                    "required": false,
-                    "type": "string"
-                },
-                {
-                    "name": "fspiop-encryption",
-                    "description": "The FSPIOP-Encryption header field is a non-HTTP standard field used by the API for applying end-to-end encryption of the request.",
-                    "in": "header",
-                    "required": false,
-                    "type": "string"
-                },
-                {
-                    "name": "fspiop-signature",
-                    "description": "The FSPIOP-Signature header field is a non-HTTP standard field used by the API for applying an end-to-end request signature.",
-                    "in": "header",
-                    "required": false,
-                    "type": "string"
-                },
-                {
-                    "name": "fspiop-uri",
-                    "description": "The FSPIOP-URI header field is a non-HTTP standard field used by the API for signature verification, should contain the service URI. Required if signature verification is used, for more information see API Signature document.",
-                    "in": "header",
-                    "required": false,
-                    "type": "string"
-                },
-                {
-                    "name": "fspiop-http-method",
-                    "description": "The FSPIOP-HTTP-Method header field is a non-HTTP standard field used by the API for signature verification, should contain the service HTTP method. Required if signature verification is used, for more information see API Signature document.",
-                    "in": "header",
-                    "required": false,
-                    "type": "string"
-                }
-            ],
             "get": {
                 "tags": [
                     "authorizations",
@@ -590,6 +573,43 @@
                         "in": "query",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/ID"
+                    },
+                    {
+                        "$ref": "#/parameters/Accept"
+                    },
+                    {
+                        "$ref": "#/parameters/Content-Length"
+                    },
+                    {
+                        "$ref": "#/parameters/Content-Type"
+                    },
+                    {
+                        "$ref": "#/parameters/Date"
+                    },
+                    {
+                        "$ref": "#/parameters/X-Forwarded-For"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Source"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Destination",
+                        "required": true
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Encryption"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Signature"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-URI"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-HTTP-Method"
                     }
                 ],
                 "responses": {
@@ -637,6 +657,42 @@
                         },
                         "in": "body",
                         "required": true
+                    },
+                    {
+                        "$ref": "#/parameters/ID"
+                    },
+                    {
+                        "$ref": "#/parameters/Accept"
+                    },
+                    {
+                        "$ref": "#/parameters/Content-Length"
+                    },
+                    {
+                        "$ref": "#/parameters/Content-Type"
+                    },
+                    {
+                        "$ref": "#/parameters/Date"
+                    },
+                    {
+                        "$ref": "#/parameters/X-Forwarded-For"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Source"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Destination"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Encryption"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-Signature"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-URI"
+                    },
+                    {
+                        "$ref": "#/parameters/FSPIOP-HTTP-Method"
                     }
                 ],
                 "responses": {

@@ -4,6 +4,9 @@ const EventSdk = require('@mojaloop/event-sdk')
 const Enum = require('@mojaloop/central-services-shared').Enum
 const transactionRequest = require('../../../domain/transactionRequests/transactionRequests')
 const LibUtil = require('../../../lib/util')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Logger = require('@mojaloop/central-services-logger')
+const Metrics = require('@mojaloop/central-services-metrics')
 
 /**
  * Operations on /transactionRequests/{ID}/error
@@ -17,14 +20,27 @@ module.exports = {
      * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
      */
   put: async (c, request, h) => {
+    const histTimerEnd = Metrics.getHistogram(
+      'transaction_requests_error_put',
+      'Put Transaction Request error by Id',
+      ['success']
+    ).startTimer()
     const span = request.span
-    const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.PUT)
-    span.setTags(tags)
-    await span.audit({
-      headers: request.headers,
-      payload: request.payload
-    }, EventSdk.AuditEventAction.start)
-    transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, request.params.ID, request.payload, span)
-    return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
+    try {
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.PUT)
+      span.setTags(tags)
+      await span.audit({
+        headers: request.headers,
+        payload: request.payload
+      }, EventSdk.AuditEventAction.start)
+      await transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, request.params.ID, request.payload, span)
+      histTimerEnd({ success: true })
+      return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
+    } catch (err) {
+      const fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
+      Logger.error(fspiopError)
+      histTimerEnd({ success: false })
+      throw fspiopError
+    }
   }
 }
