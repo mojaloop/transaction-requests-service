@@ -6,7 +6,7 @@
   },
   "SWITCH_ENDPOINT": "http://central-ledger.local:3001",
   "ERROR_HANDLING": {
-    "includeCauseExtension": false,
+    "includeCauseExtension": true,
     "truncateExtensions": true
   },
   "INSTRUMENTATION": {
