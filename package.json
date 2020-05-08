@@ -1,7 +1,7 @@
 {
   "name": "transaction-requests-service",
   "description": "An asynchronous pass through transaction request API for merchant payment initiated requests.",
-  "version": "10.1.0",
+  "version": "10.1.1",
   "license": "Apache-2.0",
   "author": "ModusBox",
   "contributors": [
@@ -57,7 +57,7 @@
     "@hapi/hapi": "18.4.1",
     "@hapi/inert": "5.2.2",
     "@hapi/vision": "5.5.4",
-    "@mojaloop/central-services-error-handling": "9.1.0",
+    "@mojaloop/central-services-error-handling": "10.1.0",
     "@mojaloop/central-services-health": "10.1.0",
     "@mojaloop/central-services-logger": "9.5.1",
     "@mojaloop/central-services-metrics": "9.5.0",
