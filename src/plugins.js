@@ -28,9 +28,9 @@ const Inert = require('@hapi/inert')
 const Vision = require('@hapi/vision')
 const Blipp = require('blipp')
 const ErrorHandling = require('@mojaloop/central-services-error-handling')
-const EventPlugin = require('@mojaloop/central-services-shared').Util.Hapi.HapiEventPlugin
+const EventPlugin = require('@mojaloop/central-services-shared').Util.Hapi.HapiOpenapiEventPlugin
 
-const registerPlugins = async (server) => {
+const registerPlugins = async (server, openAPIBackend) => {
   await server.register({
     plugin: require('hapi-swagger'),
     options: {
@@ -47,6 +47,20 @@ const registerPlugins = async (server) => {
       ops: {
         interval: 10000
       }
+    }
+  })
+
+  await server.register({
+    plugin: {
+      name: 'openapi',
+      version: '1.0.0',
+      multiple: true,
+      register: function (server, options) {
+        server.expose('openapi', options.openapi)
+      }
+    },
+    options: {
+      openapi: openAPIBackend
     }
   })
 

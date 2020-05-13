@@ -577,7 +577,7 @@ components:
       in: header
       required: false
       schema:
-        type: integer
+        type: number
     Content-Type:
       name: content-type
       description: >-
@@ -1567,6 +1567,7 @@ components:
       required:
         - responseType
       type: object
+      additionalProperties: false
       properties:
         authenticationInfo:
           $ref: '#/components/schemas/AuthenticationInfo'
@@ -1584,6 +1585,7 @@ components:
         - payer
         - individualQuotes
       type: object
+      additionalProperties: false
       properties:
         bulkQuoteId:
           description: >-
@@ -1615,6 +1617,7 @@ components:
       required:
         - expiration
       type: object
+      additionalProperties: false
       properties:
         individualQuoteResults:
           description: >-
@@ -1642,6 +1645,7 @@ components:
         - individualTransfers
         - expiration
       type: object
+      additionalProperties: false
       properties:
         bulkTransferId:
           description: >-
@@ -1677,6 +1681,7 @@ components:
       required:
         - bulkTransferState
       type: object
+      additionalProperties: false
       properties:
         completedTimestamp:
           description: Time and date when the bulk transaction was completed.
@@ -1699,6 +1704,7 @@ components:
         - errorCode
         - errorDescription
       type: object
+      additionalProperties: false
       properties:
         errorCode:
           description: Specific error number.
@@ -1711,6 +1717,7 @@ components:
     ErrorInformationObject:
       title: ErrorInformationObject
       description: Data model for the complex type object that contains ErrorInformation.
+      additionalProperties: false
       required:
         - errorInformation
       type: object
@@ -1723,6 +1730,7 @@ components:
         Data model for the complex type object that contains an optional element
         ErrorInformation used along with 4xx and 5xx responses.
       type: object
+      additionalProperties: false
       properties:
         errorInformation:
           $ref: '#/components/schemas/ErrorInformation'
@@ -1733,6 +1741,7 @@ components:
         - key
         - value
       type: object
+      additionalProperties: false
       properties:
         key:
           description: Extension key.
@@ -1746,6 +1755,7 @@ components:
       required:
         - extension
       type: object
+      additionalProperties: false
       properties:
         extension:
           description: Number of Extension elements
@@ -1763,6 +1773,7 @@ components:
         - latitude
         - longitude
       type: object
+      additionalProperties: false
       properties:
         latitude:
           description: Latitude of the Party.
@@ -1781,6 +1792,7 @@ components:
         - amount
         - transactionType
       type: object
+      additionalProperties: false
       properties:
         quoteId:
           description: Identifies quote message.
@@ -1810,6 +1822,7 @@ components:
       required:
         - quoteId
       type: object
+      additionalProperties: false
       properties:
         quoteId:
           description: Identifies quote message.
@@ -1843,6 +1856,7 @@ components:
         - ilpPacket
         - condition
       type: object
+      additionalProperties: false
       properties:
         transferId:
           description: Identifies messages related to the same /transfers sequence.
@@ -1865,6 +1879,7 @@ components:
       required:
         - transferId
       type: object
+      additionalProperties: false
       properties:
         transferId:
           description: Identifies messages related to the same /transfers sequence.
@@ -1885,6 +1900,7 @@ components:
         - currency
         - amount
       type: object
+      additionalProperties: false
       properties:
         currency:
           description: Currency of the amount.
@@ -1898,6 +1914,7 @@ components:
       required:
         - fspId
       type: object
+      additionalProperties: false
       properties:
         fspId:
           description: FSP Identifier that the Party belongs to.
@@ -1909,6 +1926,7 @@ components:
       title: ParticipantsTypeIDPutResponse
       description: 'PUT /participants/{Type}/{ID}/{SubId}, /participants/{Type}/{ID} object'
       type: object
+      additionalProperties: false
       properties:
         fspId:
           description: FSP Identifier that the Party belongs to.
@@ -1919,6 +1937,7 @@ components:
       required:
         - partyList
       type: object
+      additionalProperties: false
       properties:
         partyList:
           description: >-
@@ -1941,6 +1960,7 @@ components:
         - requestId
         - partyList
       type: object
+      additionalProperties: false
       properties:
         requestId:
           description: >-
@@ -1967,6 +1987,7 @@ components:
       required:
         - partyIdInfo
       type: object
+      additionalProperties: false
       properties:
         partyIdInfo:
           $ref: '#/components/schemas/PartyIdInfo'
@@ -1984,6 +2005,7 @@ components:
       title: PartyComplexName
       description: Data model for the complex type PartyComplexName.
       type: object
+      additionalProperties: false
       properties:
         firstName:
           $ref: '#/components/schemas/FirstName'
@@ -1998,6 +2020,7 @@ components:
         - partyIdType
         - partyIdentifier
       type: object
+      additionalProperties: false
       properties:
         partyIdType:
           description: Type of the identifier.
@@ -2017,6 +2040,7 @@ components:
       required:
         - party
       type: object
+      additionalProperties: false
       properties:
         party:
           $ref: '#/components/schemas/Party'
@@ -2024,6 +2048,7 @@ components:
       title: PartyPersonalInfo
       description: Data model for the complex type PartyPersonalInfo.
       type: object
+      additionalProperties: false
       properties:
         complexName:
           $ref: '#/components/schemas/PartyComplexName'
@@ -2036,6 +2061,7 @@ components:
       required:
         - partyId
       type: object
+      additionalProperties: false
       properties:
         partyId:
           $ref: '#/components/schemas/PartyIdInfo'
@@ -2053,6 +2079,7 @@ components:
         - amount
         - transactionType
       type: object
+      additionalProperties: false
       properties:
         quoteId:
           description: >-
@@ -2108,6 +2135,7 @@ components:
         - ilpPacket
         - condition
       type: object
+      additionalProperties: false
       properties:
         transferAmount:
           $ref: '#/components/schemas/Money'
@@ -2138,6 +2166,7 @@ components:
       required:
         - originalTransactionId
       type: object
+      additionalProperties: false
       properties:
         originalTransactionId:
           description: >-
@@ -2151,6 +2180,7 @@ components:
       title: Status
       description: Data model for the api status.
       type: object
+      additionalProperties: false
       properties:
         status:
           description: 'The return status, usually "OK"'
@@ -2183,6 +2213,7 @@ components:
         - amount
         - transactionType
       type: object
+      additionalProperties: false
       properties:
         transactionId:
           description: >-
@@ -2213,6 +2244,7 @@ components:
       required:
         - transactionRequestState
       type: object
+      additionalProperties: false
       properties:
         transactionId:
           description: >-
@@ -2230,6 +2262,7 @@ components:
       required:
         - transactionState
       type: object
+      additionalProperties: false
       properties:
         completedTimestamp:
           description: Time and date when the transaction was completed.
@@ -2252,6 +2285,7 @@ components:
         - initiator
         - initiatorType
       type: object
+      additionalProperties: false
       properties:
         scenario:
           description: 'Deposit, withdrawal, refund, …'
@@ -2282,6 +2316,7 @@ components:
         - condition
         - expiration
       type: object
+      additionalProperties: false
       properties:
         transferId:
           description: >-
@@ -2317,6 +2352,7 @@ components:
     TransactionRequestsPostRequest:
       title: TransactionRequestsPostRequest
       description: POST /transactionRequests object
+      additionalProperties: false
       required:
         - transactionRequestId
         - payee
@@ -2359,6 +2395,7 @@ components:
     TransfersIDPutResponse:
       title: TransfersIDPutResponse
       description: 'PUT /transfers/{ID} object'
+      additionalProperties: false
       required:
         - transferState
       type: object

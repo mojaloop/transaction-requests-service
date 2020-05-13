@@ -19,21 +19,21 @@ module.exports = {
    * produces: application/json
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  post: async (c, request, h) => {
+  post: async (c, req, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'transaction_requests_get',
       'Post transaction request',
       ['success']
     ).startTimer()
-    const span = request.span
+    const span = req.span
     try {
-      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.POST)
+      const tags = LibUtil.getSpanTags(req, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.POST)
       span.setTags(tags)
       await span.audit({
-        headers: request.headers,
-        payload: request.payload
+        headers: req.headers,
+        payload: req.payload
       }, EventSdk.AuditEventAction.start)
-      await transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST, request.headers, Enum.Http.RestMethods.POST, request.params, request.payload, span)
+      transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST, req.headers, Enum.Http.RestMethods.POST, req.params, req.payload, span)
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
     } catch (err) {

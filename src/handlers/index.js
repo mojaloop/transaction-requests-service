@@ -26,6 +26,7 @@
 'use strict'
 
 const Logger = require('@mojaloop/central-services-logger')
+const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const transactionRequests = require('./transactionRequests')
 const transactionRequestsId = require('./transactionRequests/{ID}')
 const transactionRequestsErrorByID = require('./transactionRequests/{ID}/error')
@@ -42,9 +43,11 @@ module.exports = {
   AuthorizationsIDResponse: authorizationsId.get,
   AuthorizationsIDPutResponse: authorizationsId.put,
   AuthorizationsErrorByID: authorizationsIdError.put,
-  validationFail: async (context, req, res) => {
+  validationFail: async (context) => {
     Logger.info('Validation Error')
-    return res.response({ status: 400, err: context.validation.errors })
+    const fspiopError = ErrorHandler.Factory.createFSPIOPErrorFromOpenapiError(context.validation.errors)
+    Logger.error(fspiopError)
+    throw fspiopError
   },
   notFound: async (context, req, res) => {
     Logger.info('Not Found error')

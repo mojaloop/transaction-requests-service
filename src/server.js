@@ -27,7 +27,9 @@
 const { Server } = require('@hapi/hapi')
 const OpenAPIBackend = require('openapi-backend').default
 const OpenAPIValidator = require('openapi-backend').OpenAPIValidator
+const Ajv = require('ajv')
 const Path = require('path')
+
 const Config = require('./lib/config.js')
 const Logger = require('@mojaloop/central-services-logger')
 const Metrics = require('@mojaloop/central-services-metrics')
@@ -37,8 +39,7 @@ const Endpoints = require('@mojaloop/central-services-shared').Util.Endpoints
 const HeaderValidation = require('@mojaloop/central-services-shared').Util.Hapi.FSPIOPHeaderValidation
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Handlers = require('./handlers')
-const schemaValidator = require('./lib/schemaValidator')
-
+const schemaValidator = require('@mojaloop/central-services-shared').Util.Schema.OpenapiSchemaValidator
 /**
  * @function createServer
  *
@@ -57,16 +58,16 @@ const createServer = async (port) => {
       }
     }
   })
-
+  let ajv = new Ajv({coerceTypes: true})
+  require('ajv-keywords')(ajv)
   const api = new OpenAPIBackend({
     definition: Path.resolve(__dirname, './interface/TransactionRequestsService-swagger.yaml'),
-    strict: true,
+    strict: false,
     validate: true,
     ajvOpts: {
-      unicode: true
+      coerceTypes: true
     },
-    customRegex: true,
-    regexFlags: 'u',
+    customizeAjv: () => ajv,
     handlers: Handlers
   })
   await api.init()
@@ -74,10 +75,11 @@ const createServer = async (port) => {
   api.validator = new OpenAPIValidator({
     definition: updatedDefinition,
     ajvOpts: {
-      unicode: true
-    }
+      coerceTypes: true
+    },
+    customizeAjv: () => ajv
   })
-  await Plugins.registerPlugins(server)
+  await Plugins.registerPlugins(server, api)
   await server.register([
     {
       plugin: HeaderValidation
@@ -95,8 +97,7 @@ const createServer = async (port) => {
     method: ['GET', 'POST', 'PUT', 'DELETE'],
     path: '/{path*}',
     handler: (req, h) => {
-      // server.register(EventPlugin)
-      api.handleRequest(
+      return api.handleRequest(
         {
           method: req.method,
           path: req.path,
@@ -110,7 +111,6 @@ const createServer = async (port) => {
       // TODO: follow instructions https://github.com/anttiviljami/openapi-backend/blob/master/DOCS.md#postresponsehandler-handler
     }
   })
-
   await server.start()
   return server
 }
