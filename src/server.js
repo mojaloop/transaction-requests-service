@@ -25,21 +25,18 @@
 'use strict'
 
 const { Server } = require('@hapi/hapi')
-const OpenAPIBackend = require('openapi-backend').default
-const OpenAPIValidator = require('openapi-backend').OpenAPIValidator
-const Ajv = require('ajv')
-const Path = require('path')
-
-const Config = require('./lib/config.js')
 const Logger = require('@mojaloop/central-services-logger')
 const Metrics = require('@mojaloop/central-services-metrics')
-const Plugins = require('./plugins')
-const ServerHandler = require('./handlers/server')
 const Endpoints = require('@mojaloop/central-services-shared').Util.Endpoints
 const HeaderValidation = require('@mojaloop/central-services-shared').Util.Hapi.FSPIOPHeaderValidation
+const OpenapiBackend = require('@mojaloop/central-services-shared').Util.OpenapiBackend
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Path = require('path')
+
 const Handlers = require('./handlers')
-const schemaValidator = require('@mojaloop/central-services-shared').Util.Schema.OpenapiSchemaValidator
+const Plugins = require('./plugins')
+const ServerHandler = require('./handlers/server')
+const Config = require('./lib/config.js')
 /**
  * @function createServer
  *
@@ -58,27 +55,7 @@ const createServer = async (port) => {
       }
     }
   })
-  let ajv = new Ajv({coerceTypes: true})
-  require('ajv-keywords')(ajv)
-  const api = new OpenAPIBackend({
-    definition: Path.resolve(__dirname, './interface/TransactionRequestsService-swagger.yaml'),
-    strict: false,
-    validate: true,
-    ajvOpts: {
-      coerceTypes: true
-    },
-    customizeAjv: () => ajv,
-    handlers: Handlers
-  })
-  await api.init()
-  const updatedDefinition = schemaValidator.generateNewDefinition(api.definition)
-  api.validator = new OpenAPIValidator({
-    definition: updatedDefinition,
-    ajvOpts: {
-      coerceTypes: true
-    },
-    customizeAjv: () => ajv
-  })
+  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, './interface/TransactionRequestsService-swagger.yaml'), Handlers)
   await Plugins.registerPlugins(server, api)
   await server.register([
     {
