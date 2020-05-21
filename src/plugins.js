@@ -31,7 +31,6 @@ const ErrorHandling = require('@mojaloop/central-services-error-handling')
 const EventPlugin = require('@mojaloop/central-services-shared').Util.Hapi.HapiEventPlugin
 const OpenapiBackendValidator = require('@mojaloop/central-services-shared').Util.Hapi.OpenapiBackendValidator
 const registerPlugins = async (server, openAPIBackend) => {
-
   await server.register(OpenapiBackendValidator)
 
   await server.register({
