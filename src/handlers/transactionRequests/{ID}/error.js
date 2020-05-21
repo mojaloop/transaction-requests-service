@@ -33,7 +33,7 @@ module.exports = {
         headers: request.headers,
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      await transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, request.params.ID, request.payload, span)
+      transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, request.params.ID, request.payload, span)
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
     } catch (err) {

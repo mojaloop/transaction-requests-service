@@ -60,7 +60,7 @@ module.exports = {
         headers: request.headers,
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      await authorizations.forwardAuthorizationError(request.headers, request.params.ID, request.payload, span)
+      authorizations.forwardAuthorizationError(request.headers, request.params.ID, request.payload, span)
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
     } catch (err) {

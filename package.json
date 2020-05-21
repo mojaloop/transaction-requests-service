@@ -52,6 +52,7 @@
     "dep:update": "npx ncu -u"
   },
   "dependencies": {
+    "@hapi/boom": "9.1.0",
     "@hapi/good": "9.0.0",
     "@hapi/hapi": "19.1.1",
     "@hapi/inert": "6.0.1",
@@ -63,7 +64,7 @@
     "@mojaloop/central-services-shared": "10.2.0",
     "@mojaloop/event-sdk": "9.4.1",
     "blipp": "4.0.1",
-    "commander": "5.0.0",
+    "commander": "5.1.0",
     "docdash": "1.2.0",
     "hapi-openapi": "1.2.6",
     "hapi-swagger": "13.0.0",
@@ -73,15 +74,20 @@
     "rc": "1.2.8"
   },
   "devDependencies": {
-    "eslint": "6.8.0",
-    "jest": "25.3.0",
+    "eslint": "7.0.0",
+    "eslint-config-standard": "14.1.1",
+    "eslint-plugin-import": "2.20.2",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-standard": "4.0.1",
+    "jest": "26.0.1",
     "jest-junit": "10.0.0",
     "license-checker": "25.0.1",
     "npm-audit-resolver": "2.2.0",
-    "npm-check-updates": "4.1.2",
+    "npm-check-updates": "6.0.0",
     "pre-commit": "1.2.2",
     "sinon": "9.0.2",
-    "standard": "14.3.3",
+    "standard": "14.3.4",
     "swagmock": "1.0.0"
   },
   "generator-swaggerize": {
