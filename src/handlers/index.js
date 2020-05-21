@@ -45,7 +45,7 @@ module.exports = {
   AuthorizationsErrorByID: authorizationsIdError.put,
   validationFail: async (context) => {
     Logger.info('Validation Error')
-    const fspiopError = ErrorHandler.Factory.createFSPIOPErrorFromOpenapiError(context.validation.errors)
+    const fspiopError = ErrorHandler.Factory.createFSPIOPErrorFromOpenapiError(context.validation.errors[0])
     Logger.error(fspiopError)
     throw fspiopError
   },
