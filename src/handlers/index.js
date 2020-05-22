@@ -25,17 +25,18 @@
 
 'use strict'
 
-const Logger = require('@mojaloop/central-services-logger')
-const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const OpenapiBackend = require('@mojaloop/central-services-shared').Util.OpenapiBackend
 const transactionRequests = require('./transactionRequests')
 const transactionRequestsId = require('./transactionRequests/{ID}')
 const transactionRequestsErrorByID = require('./transactionRequests/{ID}/error')
 const health = require('./health')
+const metrics = require('./metrics')
 const authorizationsId = require('./authorizations/{ID}')
 const authorizationsIdError = require('./authorizations/{ID}/error')
 
 module.exports = {
   HealthGet: health.get,
+  MetricsGet: metrics.get,
   TransactionRequestsErrorByID: transactionRequestsErrorByID.put,
   TransactionRequestsByID: transactionRequestsId.get,
   TransactionRequestsByIDPut: transactionRequestsId.put,
@@ -43,14 +44,7 @@ module.exports = {
   AuthorizationsIDResponse: authorizationsId.get,
   AuthorizationsIDPutResponse: authorizationsId.put,
   AuthorizationsErrorByID: authorizationsIdError.put,
-  validationFail: async (context) => {
-    Logger.info('Validation Error')
-    const fspiopError = ErrorHandler.Factory.createFSPIOPErrorFromOpenapiError(context.validation.errors[0])
-    Logger.error(fspiopError)
-    throw fspiopError
-  },
-  notFound: async (context, req, res) => {
-    Logger.info('Not Found error')
-    return res.response({ status: 400, err: 'not found' })
-  }
+  validationFail: OpenapiBackend.validationFail,
+  notFound: OpenapiBackend.notFound,
+  methodNotAllowed: OpenapiBackend.methodNotAllowed
 }

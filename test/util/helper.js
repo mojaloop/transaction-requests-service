@@ -28,8 +28,11 @@
  ******/
 'use strict'
 
-const HapiOpenAPI = require('hapi-openapi')
 const Path = require('path')
+const OpenapiBackend = require('@mojaloop/central-services-shared').Util.OpenapiBackend
+
+const Plugins = require('../../src/plugins')
+const Handlers = require('../../src/handlers')
 
 const destinationFsp = 'dfsp2'
 const sourceFsp = 'dfsp1'
@@ -55,16 +58,31 @@ function defaultHeaders (version = '1.0') {
   }
 }
 
-const defaultServerOptions = {
-  plugin: HapiOpenAPI,
-  options: {
-    api: Path.resolve(__dirname, '../../src/interface/swagger.json'),
-    handlers: Path.join(__dirname, '../../src/handlers'),
-    outputvalidation: true
-  }
+const serverSetup = async (server) => {
+  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, '../../src/interface/TransactionRequestsService-swagger.yaml'), Handlers)
+  await Plugins.registerPlugins(server, api)
+  // use as a catch-all handler
+  server.route({
+    method: ['GET', 'POST', 'PUT', 'DELETE'],
+    path: '/{path*}',
+    handler: (req, h) => {
+      return api.handleRequest(
+        {
+          method: req.method,
+          path: req.path,
+          body: req.payload,
+          query: req.query,
+          headers: req.headers
+        },
+        req,
+        h
+      )
+      // TODO: follow instructions https://github.com/anttiviljami/openapi-backend/blob/master/DOCS.md#postresponsehandler-handler
+    }
+  })
 }
 
 module.exports = {
   defaultHeaders,
-  defaultServerOptions
+  serverSetup
 }
