@@ -44,8 +44,8 @@
     "package-lock": "docker run --rm -it transaction-requests-service:local cat package-lock.json > package-lock.json",
     "docker:up": "docker-compose -f docker-compose.yml -f docker-compose.base.yml up",
     "docker:stop": "docker-compose -f docker-compose.yml -f docker-compose.base.yml stop",
-    "audit:resolve": "SHELL=sh resolve-audit",
-    "audit:check": "SHELL=sh check-audit",
+    "audit:resolve": "SHELL=sh resolve-audit --production",
+    "audit:check": "SHELL=sh check-audit --production",
     "license:list": "license-checker . --excludePackages `cat .licenseignore | grep '^[^#;]' | awk 'BEGIN { ORS=\"\" } { print p$0\";\"; } END { print \n }'` --production --csv",
     "license:check": "npm run license:list -- --failOn `cat .licensebanned | grep '^[^#;]' | awk 'BEGIN { ORS=\"\" } { print p$0\";\"; } END { print \n }'`",
     "dep:check": "npx ncu -e 2",
@@ -57,7 +57,7 @@
     "@hapi/hapi": "19.1.1",
     "@hapi/inert": "6.0.1",
     "@hapi/vision": "6.0.0",
-    "@mojaloop/central-services-error-handling": "10.2.3",
+    "@mojaloop/central-services-error-handling": "10.3.0",
     "@mojaloop/central-services-health": "10.1.0",
     "@mojaloop/central-services-logger": "9.5.1",
     "@mojaloop/central-services-metrics": "9.5.0",
@@ -74,7 +74,7 @@
     "rc": "1.2.8"
   },
   "devDependencies": {
-    "eslint": "7.0.0",
+    "eslint": "7.1.0",
     "eslint-config-standard": "14.1.1",
     "eslint-plugin-import": "2.20.2",
     "eslint-plugin-node": "11.1.0",
