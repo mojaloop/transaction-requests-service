@@ -27,11 +27,10 @@ defaults_Dependencies: &defaults_Dependencies |
 defaults_awsCliDependencies: &defaults_awsCliDependencies |
     apk --no-cache add \
             python3 \
-            python3-pip \
             groff \
             less \
             mailcap
-    pip3 install --upgrade pip awscli==1.14.5 s3cmd==2.0.1 python-magic
+    python3 -m pip install --upgrade pip awscli==1.14.5 s3cmd==2.0.1 python-magic
 
 defaults_license_scanner: &defaults_license_scanner
   name: Install and set up license-scanner
