@@ -28,7 +28,7 @@ defaults_awsCliDependencies: &defaults_awsCliDependencies |
     apk upgrade --no-cache
     apk --no-cache add \
             python3 \
-            python3-dev \
+            py3-pip \
             groff \
             less \
             mailcap
