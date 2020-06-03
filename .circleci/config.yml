@@ -26,8 +26,7 @@ defaults_Dependencies: &defaults_Dependencies |
 
 defaults_awsCliDependencies: &defaults_awsCliDependencies |
     apk --no-cache add \
-            python \
-            py-pip \
+            python3 \
             groff \
             less \
             mailcap
@@ -217,10 +216,6 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
-      - run:
-          name: Install docker dependencies for anchore
-          command: |
-            apk add --update py-pip docker python-dev libffi-dev openssl-dev gcc libc-dev make jq npm
       - run:
           name: Install AWS CLI dependencies
           command: *defaults_awsCliDependencies
