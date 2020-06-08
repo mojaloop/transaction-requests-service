@@ -22,6 +22,7 @@
 
  * ModusBox
  - Steven Oderayi <steven.oderayi@modusbox.com>
+ - Paweł Marzec <pawel.marzec@modusbo.com>
 
  --------------
  ******/
@@ -38,31 +39,43 @@ const util = require('util')
 const Config = require('../../lib/config.js')
 const { getStackOrInspect } = require('../../lib/util')
 
+const fspiopCallbackUrlAuthorizations = Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS
+const fspiopDestitationFSPError = ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR
 /**
- * Forwards GET authorizations endpoint requests to destination FSP for processing
+ * Forwards GET/POST/PUT authorizations endpoint requests to destination FSP for processing
  * @param {object} headers Headers object of the request
  * @param {string} transactionRequestId Transaction request id that the authorization is for
- * @param {object} payload Body of the PUT request or the query parameters in an object for a GET request
+ * @param {object} payload Body of the PUT/POST request or the query parameters in an object for a GET request
  * @param {string} method The http method (GET or PUT)
  * @throws {FSPIOPError} Will throw an error if no endpoint to forward the authorization message to is found, if there are network errors or if there is a bad response
  * @returns {Promise<true>}
  */
-const forwardAuthorizationMessage = async (headers, transactionRequestId, payload, method, span = null) => {
+
+async function forwardAuthorizationMessage (headers, transactionRequestId, payload, method, span = null) {
   const childSpan = span ? span.getChild('forwardAuthorizationMessage') : undefined
-  let endpoint
   const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
   const fspiopDest = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
   const messageType = method === Enum.Http.RestMethods.GET ? 'request' : 'response'
   const payloadLocal = method === Enum.Http.RestMethods.GET ? undefined : payload
   let fspiopError
+  let endpoint
 
   try {
-    endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, fspiopDest, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS)
+    endpoint = await Endpoint.getEndpoint(
+      Config.SWITCH_ENDPOINT,
+      fspiopDest,
+      fspiopCallbackUrlAuthorizations
+    )
 
-    Logger.info(`Resolved party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint for authorizations ${messageType} ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
+    Logger.info(`Resolved party ${fspiopCallbackUrlAuthorizations} endpoint for authorizations ${messageType} ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
 
     if (!endpoint) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint found for transactionRequest ${transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, undefined, fspiopSource)
+      throw ErrorHandler.Factory.createFSPIOPError(
+        fspiopDestitationFSPError,
+        `No ${fspiopCallbackUrlAuthorizations} endpoint found for transactionRequest ${transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`,
+        undefined,
+        fspiopSource
+      )
     }
 
     const query = method === Enum.Http.RestMethods.GET ? '?' + (new URLSearchParams(payload).toString()) : ''
@@ -70,7 +83,16 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
 
     Logger.info(`Forwarding authorization request to endpoint: ${fullUrl}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, payloadLocal, Enum.Http.ResponseTypes.JSON, childSpan)
+    const response = await requests.sendRequest(
+      fullUrl,
+      headers,
+      fspiopSource,
+      fspiopDest,
+      method,
+      payloadLocal,
+      Enum.Http.ResponseTypes.JSON,
+      childSpan
+    )
 
     Logger.info(`Forwarding authorization ${messageType} for transactionRequestId ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${response.status} ${response.statusText}`)
 
@@ -88,11 +110,20 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
       'fspiop-destination': fspiopSource
     }
     fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
-    await forwardAuthorizationError(errorHeaders, transactionRequestId, fspiopError.toApiErrorObject(Config.ERROR_HANDLING), childSpan)
+    await forwardAuthorizationError(
+      errorHeaders,
+      transactionRequestId,
+      fspiopError.toApiErrorObject(Config.ERROR_HANDLING),
+      childSpan
+    )
     throw fspiopError
   } finally {
     if (childSpan && !childSpan.isFinished && fspiopError) {
-      const state = new EventSdk.EventStateMetadata(EventSdk.EventStatusType.failed, fspiopError.apiErrorCode.code, fspiopError.apiErrorCode.message)
+      const state = new EventSdk.EventStateMetadata(
+        EventSdk.EventStatusType.failed,
+        fspiopError.apiErrorCode.code,
+        fspiopError.apiErrorCode.message
+      )
       await childSpan.error(fspiopError, state)
       await childSpan.finish(fspiopError.message, state)
     }
@@ -100,31 +131,51 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
 }
 
 /**
- * Forwards PUT authorization errors to destination FSP
+ * Forwards PUT/POST authorization errors to destination FSP
  * @param {object} headers Headers object of the request
  * @param {string} transactionRequestId Transaction request id that the authorization is for
  * @param {object} payload Body of the request
  * @throws {FSPIOPError} Will throw an error if no endpoint to forward the authorization error to is found, if there are network errors or if there is a bad response.
  * @returns {Promise<true>}
  */
-const forwardAuthorizationError = async (headers, transactionRequestId, payload, span = null) => {
+async function forwardAuthorizationError (headers, transactionRequestId, payload, span = null) {
   const childSpan = span ? span.getChild('forwardAuthorizationError') : undefined
-  let endpoint
   const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
   const fspiopDestination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
+  let endpoint
 
   try {
-    endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, fspiopDestination, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS)
-    Logger.info(`Resolved party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint for authorization error for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
+    endpoint = await Endpoint.getEndpoint(
+      Config.SWITCH_ENDPOINT,
+      fspiopDestination,
+      fspiopCallbackUrlAuthorizations
+    )
+
+    Logger.info(`Resolved party ${fspiopCallbackUrlAuthorizations} endpoint for authorization error for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
 
     if (!endpoint) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint found to send authorization error for transaction request ${transactionRequestId} for FSP ${fspiopDestination}`, payload, fspiopSource)
+      throw ErrorHandler.Factory.createFSPIOPError(
+        fspiopDestitationFSPError,
+        `No ${fspiopCallbackUrlAuthorizations} endpoint found to send authorization error for transaction request ${transactionRequestId} for FSP ${fspiopDestination}`,
+        payload,
+        fspiopSource
+      )
     }
+
     const fullUrl = `${endpoint}/authorizations/${transactionRequestId}/error`
 
     Logger.info(`Forwarding authorization error to endpoint: ${fullUrl}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, Enum.Http.RestMethods.PUT, payload || undefined, Enum.Http.ResponseTypes.JSON, childSpan)
+    const response = await requests.sendRequest(
+      fullUrl,
+      headers,
+      fspiopSource,
+      fspiopDestination,
+      Enum.Http.RestMethods.PUT,
+      payload || undefined,
+      Enum.Http.ResponseTypes.JSON,
+      childSpan
+    )
 
     Logger.info(`Forwarding authorization error response for transactionRequest ${transactionRequestId} from ${fspiopSource} to ${fspiopDestination} got response ${response.status} ${response.statusText}`)
 
@@ -137,7 +188,11 @@ const forwardAuthorizationError = async (headers, transactionRequestId, payload,
     Logger.info(`Error forwarding authorization error response to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
     const fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
     if (childSpan && !childSpan.isFinished) {
-      const state = new EventSdk.EventStateMetadata(EventSdk.EventStatusType.failed, fspiopError.apiErrorCode.code, fspiopError.apiErrorCode.message)
+      const state = new EventSdk.EventStateMetadata(
+        EventSdk.EventStatusType.failed,
+        fspiopError.apiErrorCode.code,
+        fspiopError.apiErrorCode.message
+      )
       await childSpan.error(fspiopError, state)
       await childSpan.finish(fspiopError.message, state)
     }
