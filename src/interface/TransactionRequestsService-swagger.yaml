@@ -1335,7 +1335,7 @@ components:
         support must be specifically enabled. For example, if Java is used the
         flag UNICODE_CHARACTER_CLASS must be enabled to allow Unicode
         characters.
-      pattern: '^(?!\s*$)[\w .,''-]{1,128}$'
+      pattern: '^(?!\s*$)[\p{L}\p{Nd} .,''-]{1,128}$'
       type: string
     Note:
       title: Note
