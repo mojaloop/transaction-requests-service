@@ -540,7 +540,8 @@
                 "description": "The HTTP request `POST /authorizations` is used to request the Payer to enter the applicable credentials in the PISP system.",
                 "summary": "Perform PISP authorization",
                 "tags": [
-                    "authorizations"
+                    "authorizations",
+                    "sampled"
                 ],
                 "parameters": [
                     {
