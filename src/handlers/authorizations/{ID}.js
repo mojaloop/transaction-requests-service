@@ -97,7 +97,6 @@ module.exports = {
       'Put authorization by Id',
       ['success']
     ).startTimer()
-    console.error('request', request)
     const span = request.span
     try {
       const tags = LibUtil.getSpanTags(

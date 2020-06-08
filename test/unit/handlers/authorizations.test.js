@@ -57,7 +57,6 @@ describe('/authorizations', () => {
 
       // Act
       const response = await server.inject(options)
-      console.error(response.rawPayload.toString())
       // Assert
       expect(response.statusCode).toBe(200)
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
