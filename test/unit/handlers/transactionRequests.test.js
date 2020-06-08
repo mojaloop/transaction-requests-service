@@ -73,7 +73,7 @@ describe('/transactionRequests', () => {
         headers: Helper.defaultHeaders(),
         payload: mock.request.body || mock.request.formData
       }
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardTransactionRequest = sandbox.stub().throws(err)
 
       // Act

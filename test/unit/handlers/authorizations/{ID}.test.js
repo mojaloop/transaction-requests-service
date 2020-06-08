@@ -77,7 +77,7 @@ describe('/authorizations/{ID}', () => {
         url: '' + mock.request.path,
         headers
       }
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
 
       // Act
@@ -121,7 +121,7 @@ describe('/authorizations/{ID}', () => {
         headers: Helper.defaultHeaders(),
         payload: mock.request.body
       }
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
 
       // Act
