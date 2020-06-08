@@ -19,21 +19,21 @@ module.exports = {
    * produces: application/json
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  get: async (c, req, h) => {
+  get: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'transaction_requests_get',
       'Get transaction request by Id',
       ['success']
     ).startTimer()
-    const span = req.span
+    const span = request.span
     try {
-      const tags = LibUtil.getSpanTags(req, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.LOOKUP)
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.LOOKUP)
       span.setTags(tags)
       await span.audit({
-        headers: req.headers,
-        payload: req.payload
+        headers: request.headers,
+        payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET, req.headers, Enum.Http.RestMethods.GET, req.params, req.payload, span)
+      transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET, request.headers, Enum.Http.RestMethods.GET, request.params, request.payload, span)
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
     } catch (err) {
@@ -50,21 +50,21 @@ module.exports = {
    * produces: application/json
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  put: async (c, req, h) => {
+  put: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'transaction_requests_put',
       'Put transaction request by Id',
       ['success']
     ).startTimer()
-    const span = req.span
+    const span = request.span
     try {
-      const tags = LibUtil.getSpanTags(req, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.PUT)
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.PUT)
       span.setTags(tags)
       await span.audit({
-        headers: req.headers,
-        payload: req.payload
+        headers: request.headers,
+        payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT, req.headers, Enum.Http.RestMethods.PUT, req.params, req.payload, span)
+      transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT, request.headers, Enum.Http.RestMethods.PUT, request.params, request.payload, span)
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
     } catch (err) {

@@ -1,7 +1,7 @@
 {
   "name": "transaction-requests-service",
   "description": "An asynchronous pass through transaction request API for merchant payment initiated requests.",
-  "version": "10.2.1-snapshot",
+  "version": "10.4.0",
   "license": "Apache-2.0",
   "author": "ModusBox",
   "contributors": [
@@ -67,19 +67,20 @@
     "commander": "5.1.0",
     "docdash": "1.2.0",
     "hapi-openapi": "2.0.2",
-    "hapi-swagger": "13.0.1",
+    "hapi-swagger": "13.0.2",
     "jsdoc": "3.6.4",
     "mustache": "4.0.1",
     "parse-strings-in-object": "2.0.0",
     "rc": "1.2.8"
   },
   "devDependencies": {
-    "eslint": "7.1.0",
+    "eslint": "7.2.0",
     "eslint-config-standard": "14.1.1",
-    "eslint-plugin-import": "2.20.2",
+    "eslint-plugin-import": "2.21.1",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
+    "get-port": "5.1.1",
     "jest": "26.0.1",
     "jest-junit": "10.0.0",
     "license-checker": "25.0.1",

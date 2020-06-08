@@ -46,21 +46,21 @@ module.exports = {
    * produces: application/json
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  get: async (c, req, h) => {
+  get: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'authorization_get',
       'Get authorization by Id',
       ['success']
     ).startTimer()
-    const span = req.span
+    const span = request.span
     try {
-      const tags = LibUtil.getSpanTags(req, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.LOOKUP)
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.LOOKUP)
       span.setTags(tags)
       await span.audit({
-        headers: req.headers,
-        payload: req.payload
+        headers: request.headers,
+        payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      authorizations.forwardAuthorizationMessage(req.headers, req.params.ID, req.query, Enum.Http.RestMethods.GET, span)
+      authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET, span)
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
     } catch (err) {
@@ -77,21 +77,21 @@ module.exports = {
    * produces: application/json
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  put: async (c, req, h) => {
+  put: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'authorization_put',
       'Put authorization by Id',
       ['success']
     ).startTimer()
-    const span = req.span
+    const span = request.span
     try {
-      const tags = LibUtil.getSpanTags(req, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
       span.setTags(tags)
       await span.audit({
-        headers: req.headers,
-        payload: req.payload
+        headers: request.headers,
+        payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      authorizations.forwardAuthorizationMessage(req.headers, req.params.ID, req.payload, Enum.Http.RestMethods.PUT, span)
+      authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT, span)
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
     } catch (err) {

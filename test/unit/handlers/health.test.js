@@ -1,6 +1,7 @@
 'use strict'
 
 const Sinon = require('sinon')
+const getPort = require('get-port')
 
 const Mockgen = require('../../util/mockgen.js').mockRequest
 const { initialize } = require('../../../src/server')
@@ -16,7 +17,7 @@ jest.mock('@mojaloop/central-services-metrics', () => ({
  */
 describe('/health', () => {
   beforeAll(async () => {
-    server = await initialize(3001)
+    server = await initialize(await getPort())
     sandbox = Sinon.createSandbox()
   })
 

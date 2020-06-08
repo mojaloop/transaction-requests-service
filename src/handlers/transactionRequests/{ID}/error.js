@@ -19,21 +19,21 @@ module.exports = {
      * produces: application/json
      * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
      */
-  put: async (c, req, h) => {
+  put: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'transaction_requests_error_put',
       'Put Transaction Request error by Id',
       ['success']
     ).startTimer()
-    const span = req.span
+    const span = request.span
     try {
-      const tags = LibUtil.getSpanTags(req, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.PUT)
+      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.TRANSACTION_REQUEST, Enum.Events.Event.Action.PUT)
       span.setTags(tags)
       await span.audit({
-        headers: req.headers,
-        payload: req.payload
+        headers: request.headers,
+        payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      transactionRequest.forwardTransactionRequestError(req.headers, req.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, req.params.ID, req.payload, span)
+      transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, request.params.ID, request.payload, span)
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
     } catch (err) {
