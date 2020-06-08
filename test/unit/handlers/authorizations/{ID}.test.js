@@ -19,7 +19,7 @@ const queryString = require('querystring')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-const Mockgen = require('../../../util/mockgen.js').mockRequest
+const Mockgen = require('../../../util/mockgen').mockRequest
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/authorizations/authorizations')
 const Plugins = require('../../../../src/plugins')
