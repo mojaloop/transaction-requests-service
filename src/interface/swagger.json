@@ -544,6 +544,9 @@
                 ],
                 "parameters": [
                     {
+                        "$ref": "#/parameters/Accept"
+                    },
+                    {
                         "$ref": "#/parameters/Content-Length"
                     },
                     {
@@ -584,7 +587,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "$ref": "#/responses/Response202"
+                        "$ref": "#/responses/Response200"
                     },
                     "400": {
                         "$ref": "#/responses/ErrorResponse400"
@@ -611,7 +614,7 @@
                         "$ref": "#/responses/ErrorResponse503"
                     }
                 },
-                "operationId": "AuthorizationsPost"
+                "operationId": "AuthorizationsPostResponse"
 
             }
       
@@ -955,26 +958,32 @@
             "description": "POST /authorizations Request object",
             "properties": {
                 "authenticationType": {
+                    "type": "object",
                     "$ref": "#/definitions/AuthenticationType",
                     "description": "This value is a valid authentication type from the enumeration AuthenticationType(OTP or QR Code or U2F)."
                 },
                 "retriesLeft": {
+                    "type": "string",
                     "$ref": "#/definitions/RetriesLeft",
                     "description": "RetriesLeft is the number of retries left before the financial transaction is rejected. It must be expressed in the form of the data type Integer. retriesLeft=1 means that this is the last retry before the financial transaction is rejected."
                 },
                 "amount": {
+                    "type": "object",
                     "$ref": "#/definitions/Money",
                     "description": "This is the transaction amount that will be withdrawn from the Payer’s account."
                 },
                 "transactionId": {
+                    "type": "string",
                     "$ref": "#/definitions/CorrelationId",
                     "description": "Common ID (decided by the Payer FSP) between the FSPs for the future transaction object. The actual transaction will be created as part of a successful transfer process."
                 },
                 "transactionRequestId": {
+                    "type": "string",
                     "$ref": "#/definitions/CorrelationId",
                     "description": "The transactionRequestID, received from the POST /transactionRequests service earlier in the process."
                 },
                 "quote": {
+                    "type": "object",
                     "$ref": "#/definitions/QuotesIDPutResponse",
                     "description": "Quotes object"
                 }
@@ -2275,6 +2284,7 @@
                     "example": "2016-05-24T08:38:08.699-04:00"
                 },
                 "geoCode": {
+                    "type": "object",
                     "$ref": "#/definitions/GeoCode",
                     "description": "Longitude and Latitude of the Payee. Can be used to detect fraud."
                 },
