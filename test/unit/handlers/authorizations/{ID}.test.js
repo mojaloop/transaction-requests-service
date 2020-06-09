@@ -19,7 +19,7 @@ const queryString = require('querystring')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-const Mockgen = require('../../../util/mockgen.js').mockRequest
+const Mockgen = require('../../../util/mockgen').mockRequest
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/authorizations/authorizations')
 const Plugins = require('../../../../src/plugins')
@@ -77,7 +77,7 @@ describe('/authorizations/{ID}', () => {
         url: '' + mock.request.path,
         headers
       }
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
 
       // Act
@@ -121,7 +121,7 @@ describe('/authorizations/{ID}', () => {
         headers: Helper.defaultHeaders(),
         payload: mock.request.body
       }
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
 
       // Act

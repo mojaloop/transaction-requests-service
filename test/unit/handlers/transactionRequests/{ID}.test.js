@@ -70,7 +70,7 @@ describe('/transactionRequests/{ID}', () => {
         url: '' + mock.request.path,
         headers: Helper.defaultHeaders()
       }
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardTransactionRequest = sandbox.stub().throws(err)
 
       // Act
@@ -118,7 +118,7 @@ describe('/transactionRequests/{ID}', () => {
         }
       }
 
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardTransactionRequest = sandbox.stub().throws(err)
 
       // Act

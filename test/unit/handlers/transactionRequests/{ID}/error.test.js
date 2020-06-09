@@ -70,7 +70,7 @@ describe('/transactionRequests/{ID}/error', () => {
         }
       }
 
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardTransactionRequestError = sandbox.stub().throws(err)
 
       // Act
