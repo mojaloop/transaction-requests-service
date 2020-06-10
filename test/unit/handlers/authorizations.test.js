@@ -21,7 +21,6 @@ const Logger = require('@mojaloop/central-services-logger')
 const Mockgen = require('../../util/mockgen').mockRequest
 const Helper = require('../../util/helper')
 const Handler = require('../../../src/domain/authorizations/authorizations')
-const Plugins = require('../../../src/plugins')
 
 const server = new Hapi.Server()
 
@@ -30,8 +29,7 @@ const server = new Hapi.Server()
  */
 describe('/authorizations', () => {
   beforeAll(async () => {
-    await Plugins.registerPlugins(server)
-    await server.register(Helper.defaultServerOptions)
+    await Helper.serverSetup(server)
   })
 
   afterAll(() => {
@@ -41,6 +39,22 @@ describe('/authorizations', () => {
   beforeEach(() => {
     Handler.forwardAuthorizationMessage = jest.fn().mockResolvedValue()
   })
+
+  const body = {
+    authenticationType: 'OTP',
+    retriesLeft: '1',
+    amount: { currency: 'USD', amount: '100' },
+    transactionId: 'e3a3d727-f5a7-41ec-981d-787ab05591cd',
+    transactionRequestId: '15e26118-4bd7-51b2-9ce7-5b5d6733c90e',
+    quote: {
+      transferAmount: { currency: 'USD', amount: '100' },
+      payeeReceiveAmount: { currency: 'USD', amount: '100' },
+      expiration: '',
+      geoCode: { latitude: '123', longitude: '123' },
+      ilpPacket: 'mTdIgmCcEg',
+      condition: 'hbLN'
+    }
+  }
 
   describe('POST', () => {
     const requests = Mockgen().requestsAsync('/authorizations', 'post')
@@ -52,7 +66,7 @@ describe('/authorizations', () => {
         method: 'post',
         url: '' + mock.request.path,
         headers: Helper.defaultHeaders(),
-        payload: mock.request.body
+        payload: body
       }
 
       // Act
@@ -60,7 +74,7 @@ describe('/authorizations', () => {
       // Assert
       expect(response.statusCode).toBe(200)
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
-      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(mock.request.body)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(body)
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('POST')
     })
 
@@ -72,7 +86,7 @@ describe('/authorizations', () => {
         method: 'post',
         url: '' + mock.request.path,
         headers,
-        payload: mock.request.body
+        payload: body
       }
       const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })

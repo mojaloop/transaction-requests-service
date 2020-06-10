@@ -17,58 +17,35 @@
  optionally within square brackets <email>.
  * Gates Foundation
 
+ * ModusBox
  - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
 
  --------------
  ******/
+
 'use strict'
 
-const Package = require('../package')
-const Inert = require('@hapi/inert')
-const Vision = require('@hapi/vision')
-const Blipp = require('blipp')
-const ErrorHandling = require('@mojaloop/central-services-error-handling')
-const EventPlugin = require('@mojaloop/central-services-shared').Util.Hapi.HapiEventPlugin
-const OpenapiBackendValidator = require('@mojaloop/central-services-shared').Util.Hapi.OpenapiBackendValidator
-const registerPlugins = async (server, openAPIBackend) => {
-  await server.register(OpenapiBackendValidator)
-
-  await server.register({
-    plugin: require('hapi-swagger'),
-    options: {
-      info: {
-        title: 'Event Sidecar Swagger Documentation',
-        version: Package.version
-      }
-    }
-  })
-
-  await server.register({
-    plugin: require('@hapi/good'),
-    options: {
-      ops: {
-        interval: 10000
-      }
-    }
-  })
-
-  await server.register({
-    plugin: {
-      name: 'openapi',
-      version: '1.0.0',
-      multiple: true,
-      register: function (server, options) {
-        server.expose('openapi', options.openapi)
-      }
-    },
-    options: {
-      openapi: openAPIBackend
-    }
-  })
-
-  await server.register([Inert, Vision, Blipp, ErrorHandling, EventPlugin])
-}
-
+const OpenapiBackend = require('@mojaloop/central-services-shared').Util.OpenapiBackend
+const transactionRequests = require('./transactionRequests')
+const transactionRequestsId = require('./transactionRequests/{ID}')
+const transactionRequestsErrorByID = require('./transactionRequests/{ID}/error')
+const health = require('./health')
+const metrics = require('./metrics')
+const authorizationsId = require('./authorizations/{ID}')
+const authorizationsIdError = require('./authorizations/{ID}/error')
+const authorizations = require('./authorizations')
 module.exports = {
-  registerPlugins
+  HealthGet: health.get,
+  MetricsGet: metrics.get,
+  TransactionRequestsErrorByID: transactionRequestsErrorByID.put,
+  TransactionRequestsByID: transactionRequestsId.get,
+  TransactionRequestsByIDPut: transactionRequestsId.put,
+  TransactionRequests: transactionRequests.post,
+  AuthorizationsIDResponse: authorizationsId.get,
+  AuthorizationsIDPutResponse: authorizationsId.put,
+  AuthorizationsErrorByID: authorizationsIdError.put,
+  AuthorizationsPost: authorizations.post,
+  validationFail: OpenapiBackend.validationFail,
+  notFound: OpenapiBackend.notFound,
+  methodNotAllowed: OpenapiBackend.methodNotAllowed
 }

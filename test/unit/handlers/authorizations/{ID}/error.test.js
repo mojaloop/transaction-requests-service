@@ -21,8 +21,6 @@ const Logger = require('@mojaloop/central-services-logger')
 const Mockgen = require('../../../../util/mockgen.js').mockRequest
 const Helper = require('../../../../util/helper')
 const Handler = require('../../../../../src/domain/authorizations/authorizations')
-const Plugins = require('../../../../../src/plugins')
-
 const server = new Hapi.Server()
 
 /**
@@ -30,8 +28,7 @@ const server = new Hapi.Server()
  */
 describe('/authorizations/{ID}', () => {
   beforeAll(async () => {
-    await Plugins.registerPlugins(server)
-    await server.register(Helper.defaultServerOptions)
+    await Helper.serverSetup(server)
   })
 
   afterAll(() => {
