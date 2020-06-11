@@ -37,7 +37,7 @@ module.exports = {
    * produces: application/json
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  get: (_, h) => {
+  get: (context, request, h) => {
     return h.response(Metrics.getMetricsForPrometheus()).code(200)
   }
 }

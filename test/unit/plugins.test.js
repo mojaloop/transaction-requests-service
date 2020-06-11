@@ -49,7 +49,7 @@ describe('plugins', () => {
       await registerPlugins(serverStub)
 
       // Assert
-      expect(serverStub.register.callCount).toBe(3)
+      expect(serverStub.register.callCount).toBe(5)
     })
   })
 })

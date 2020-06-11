@@ -16,7 +16,7 @@ const server = new Hapi.Server()
 describe('/metrics', () => {
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
-    await server.register(Helper.defaultServerOptions)
+    await Helper.serverSetup(server)
     sandbox.stub(Metrics, 'getMetricsForPrometheus').returns({})
   })
 
