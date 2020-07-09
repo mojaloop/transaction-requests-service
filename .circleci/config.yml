@@ -140,7 +140,7 @@ jobs:
             else
                 echo "Not a release (env CIRCLE_BRANCH != 'master'), skipping sending lcov.info to SonarQube."
             fi
-  
+
   vulnerability-check:
     executor: default-docker
     steps:
@@ -155,11 +155,11 @@ jobs:
           command: mkdir -p ./audit/results
       - run:
           name: Check for new npm vulnerabilities
-          command: npm run audit:check --silent -- --json > ./audit/results/auditResults.json 
+          command: npm run audit:check --silent -- --json > ./audit/results/auditResults.json
       - store_artifacts:
           path: ./audit/results
           prefix: audit
-          
+
   audit-licenses:
     executor: default-docker
     steps:
@@ -217,6 +217,20 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
+      - run:
+          name: Install docker dependencies for anchore
+          command: |
+            apk add --update python3 py3-pip docker python3-dev libffi-dev openssl-dev gcc libc-dev make jq npm
+      - run:
+          name: Install general dependencies
+          command: |
+            apk --no-cache add git
+            apk --no-cache add ca-certificates
+            apk --no-cache add curl
+            apk --no-cache add openssh-client
+            apk add --no-cache -t build-dependencies make gcc g++ python3 libtool autoconf automake
+            npm config set unsafe-perm true
+            npm install -g node-gyp
       - run:
           name: Install AWS CLI dependencies
           command: *defaults_awsCliDependencies
@@ -301,7 +315,7 @@ jobs:
       - deploy-kube/setup_and_run:
           helm_set_values: |
             --set transaction-requests-service.image.repository=$DOCKER_ORG/$CIRCLE_PROJECT_REPONAME \
-            --set transaction-requests-service.image.tag=$CIRCLE_TAG 
+            --set transaction-requests-service.image.tag=$CIRCLE_TAG
 
 ##
 # Workflows
