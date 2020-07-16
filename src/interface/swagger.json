@@ -954,11 +954,10 @@
             "type": "object",
             "properties": {
                 "counter": {
-                    "type": "string"
+                    "$ref": "#/definitions/Counter"
                 },
                 "pinValue": {
-                    "type": "string",
-                    "pattern": "^\\d{3,10}$|^\\S{1,64}$"
+                    "$ref": "#/definitions/PinValue"
                 }
             }
         },
@@ -2605,6 +2604,17 @@
                     "description": "Optional extension, specific to deployment."
                 }
             }
+        },
+        "PinValue": {
+            "title": "PinValue",
+            "type": "string",
+            "pattern": "^\\d{3,10}$|^\\S{1,64}$",
+            "description": "Contains the authentication value. The format depends on the authentication type used in the AuthenticationInfo complex type."
+        },
+        "Counter": {
+            "title": "Counter",
+            "$ref": "#/definitions/Integer",
+            "description": "Sequential counter used for cloning detection. Present only for U2F authentication."
         }
     },
     "parameters": {

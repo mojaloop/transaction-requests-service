@@ -72,7 +72,8 @@
     "jsdoc": "3.6.4",
     "mustache": "4.0.1",
     "parse-strings-in-object": "2.0.0",
-    "rc": "1.2.8"
+    "rc": "1.2.8",
+    "uuid4": "2.0.2"
   },
   "devDependencies": {
     "eslint": "7.4.0",

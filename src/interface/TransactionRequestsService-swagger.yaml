@@ -477,7 +477,7 @@ paths:
         - sampled
       parameters:
         - name: authenticationType
-          description: 'a valid enumeration for the authentication type: OTP, QRCODE'
+          description: 'a valid enumeration for the authentication type: OTP, QRCODE, U2F'
           in: query
           required: true
           schema:
@@ -992,10 +992,9 @@ components:
       type: object
       properties:
         counter:
-          type: string
+          $ref: '#/components/schemas/Counter'
         pinValue:
-          pattern: '^\d{3,10}$|^\S{1,64}$'
-          type: string
+          $ref: '#/components/schemas/PinValue'
 
     AuthorizationResponse:
       title: AuthorizationResponse
@@ -2513,3 +2512,12 @@ components:
           type: string
         extensionList:
           $ref: '#/components/schemas/ExtensionList'
+    PinValue:
+      title: PinValue
+      #enum: [ $ref: '#/definitions/OtpValue', $ref: '#/definitions/QRCODE', $ref: '#/definitions/U2F']
+      #Pattern below just indicates that the value can be an OTP or QRCODE or U2F. Effectively it only evaluates to the second part value QRCODE. This can be replaced by 'oneOf' or 'anyOf' construct once OpenAPI version 3 is releasedffectively it only evaluates to the second part value QRCODE. This can be replaced by 'oneOf' or 'anyOf' construct once OpenAPI version 3 is released
+      type: string
+      pattern: ^\d{3,10}$|^\S{1,64}$
+      description: Contains the authentication value. The format depends on the authentication type used in the AuthenticationInfo complex type.
+    Counter:
+      $ref: '#/components/schemas/Integer'
