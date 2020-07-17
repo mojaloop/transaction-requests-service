@@ -79,13 +79,18 @@ async function forwardAuthorizationMessage (headers, transactionRequestId, paylo
     }
 
     let fullUrl
-    if (method === Enum.Http.RestMethods.GET) {
-      const query = `?${(new URLSearchParams(payload).toString())}`
-      fullUrl = `${endpoint}/authorizations/${transactionRequestId}${query}`
-    } else if (method === Enum.Http.RestMethods.POST) {
-      fullUrl = `${endpoint}/authorizations`
-    } else if (method === Enum.Http.RestMethods.PUT) {
-      fullUrl = `${endpoint}/authorizations/${transactionRequestId}`
+    switch (method) {
+      case Enum.Http.RestMethods.GET:
+        fullUrl = `${endpoint}/authorizations/${transactionRequestId}?${(new URLSearchParams(payload).toString())}`
+        break
+      case Enum.Http.RestMethods.POST:
+        fullUrl = `${endpoint}/authorizations`
+        break
+      case Enum.Http.RestMethods.PUT:
+        fullUrl = `${endpoint}/authorizations/${transactionRequestId}`
+        break
+      default:
+        throw ErrorHandler.Factory.reformatFSPIOPError(new Error(`invalid http method: ${method}`))
     }
 
     Logger.info(`Forwarding authorization request to endpoint: ${fullUrl}`)
