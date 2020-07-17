@@ -55,7 +55,7 @@ async function forwardAuthorizationMessage (headers, transactionRequestId, paylo
   const childSpan = span ? span.getChild('forwardAuthorizationMessage') : undefined
   const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
   const fspiopDest = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
-  const messageType = method === Enum.Http.RestMethods.GET ? 'request' : 'response'
+  const messageType = (method === Enum.Http.RestMethods.GET || method === Enum.Http.RestMethods.POST) ? 'request' : 'response'
   const payloadLocal = method === Enum.Http.RestMethods.GET ? undefined : payload
   let fspiopError
   let endpoint
@@ -78,8 +78,20 @@ async function forwardAuthorizationMessage (headers, transactionRequestId, paylo
       )
     }
 
-    const query = method === Enum.Http.RestMethods.GET ? '?' + (new URLSearchParams(payload).toString()) : ''
-    const fullUrl = `${endpoint}/authorizations/${transactionRequestId}${query}`
+    let fullUrl
+    switch (method) {
+      case Enum.Http.RestMethods.GET:
+        fullUrl = `${endpoint}/authorizations/${transactionRequestId}?${(new URLSearchParams(payload).toString())}`
+        break
+      case Enum.Http.RestMethods.POST:
+        fullUrl = `${endpoint}/authorizations`
+        break
+      case Enum.Http.RestMethods.PUT:
+        fullUrl = `${endpoint}/authorizations/${transactionRequestId}`
+        break
+      default:
+        throw ErrorHandler.Factory.reformatFSPIOPError(new Error(`invalid http method: ${method}`))
+    }
 
     Logger.info(`Forwarding authorization request to endpoint: ${fullUrl}`)
 

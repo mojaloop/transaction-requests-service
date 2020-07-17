@@ -110,6 +110,35 @@ describe('/authorizations/{ID}', () => {
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
     })
 
+    it('properly handles U2F payload', async () => {
+      // Arrange
+      const mock = await requests
+      const options = {
+        method: 'put',
+        url: '' + mock.request.path,
+        headers: Helper.defaultHeaders(),
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'U2F',
+            authenticationValue: {
+              pinValue: 'abcd',
+              counter: '1'
+            }
+          }
+        }
+      }
+
+      // Act
+      const response = await server.inject(options)
+
+      // Assert
+      expect(response.statusCode).toBe(200)
+      expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(options.payload)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
+    })
+
     it('handles when an error is thrown', async () => {
       // Arrange
       const mock = await requests

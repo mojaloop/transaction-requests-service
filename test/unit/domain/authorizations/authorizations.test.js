@@ -88,7 +88,7 @@ describe('Authorizations', () => {
       )
     })
 
-    it('forwards a PUT request', async () => {
+    it('forwards a PUT request - OTP', async () => {
       // Arrange
       Endpoint.getEndpoint = jest.fn().mockResolvedValue('http://dfsp2')
       Request.sendRequest = jest.fn().mockResolvedValue({
@@ -102,6 +102,44 @@ describe('Authorizations', () => {
         authenticationInfo: {
           authenticationType: 'OTP',
           authenticationValue: '1234'
+        },
+        responseType: 'ENTERED'
+      }
+
+      // Act
+      const response = await Authorizations.forwardAuthorizationMessage(headers, transactionRequestId, payload, Enum.Http.RestMethods.PUT, SpanMock)
+
+      // Assert
+      expect(response).toBe(true)
+      expect(Request.sendRequest).toHaveBeenCalledWith(
+        'http://dfsp2/authorizations/aef-123',
+        headers,
+        headers[Enum.Http.Headers.FSPIOP.SOURCE],
+        headers[Enum.Http.Headers.FSPIOP.DESTINATION],
+        Enum.Http.RestMethods.PUT,
+        payload,
+        'json',
+        SpanMock
+      )
+    })
+
+    it('forwards a PUT request - U2F', async () => {
+      // Arrange
+      Endpoint.getEndpoint = jest.fn().mockResolvedValue('http://dfsp2')
+      Request.sendRequest = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 202,
+        statusText: 'Accepted'
+      })
+      const headers = TestHelper.defaultHeaders()
+      const transactionRequestId = 'aef-123'
+      const payload = {
+        authenticationInfo: {
+          authenticationType: 'U2F',
+          authenticationValue: {
+            pinValue: 'abcd',
+            counter: '1'
+          }
         },
         responseType: 'ENTERED'
       }
