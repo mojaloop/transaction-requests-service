@@ -66,7 +66,7 @@ describe('/authorizations/{ID}', () => {
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('GET')
     })
 
-    it('handles when an error is thrown', async () => {
+    it('GET handles when an error is thrown', async () => {
       // Arrange
       const mock = await requests
       const headers = Helper.defaultHeaders()
@@ -97,7 +97,13 @@ describe('/authorizations/{ID}', () => {
         method: 'put',
         url: '' + mock.request.path,
         headers: Helper.defaultHeaders(),
-        payload: mock.request.body
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'OTP',
+            authenticationValue: '123456'
+          }
+        }
       }
 
       // Act
@@ -106,7 +112,7 @@ describe('/authorizations/{ID}', () => {
       // Assert
       expect(response.statusCode).toBe(200)
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
-      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(mock.request.body)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(options.payload)
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
     })
 
@@ -139,14 +145,20 @@ describe('/authorizations/{ID}', () => {
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
     })
 
-    it('handles when an error is thrown', async () => {
+    it('PUT handles when an error is thrown', async () => {
       // Arrange
       const mock = await requests
       const options = {
         method: 'put',
         url: '' + mock.request.path,
         headers: Helper.defaultHeaders(),
-        payload: mock.request.body
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'OTP',
+            authenticationValue: '123456'
+          }
+        }
       }
       const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
@@ -157,6 +169,30 @@ describe('/authorizations/{ID}', () => {
       // Assert
       expect(response.statusCode).toBe(500)
       expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
+    })
+
+    it('should validate properly authenticationValue depending on authentication field', async () => {
+      // Arrange
+      const mock = await requests
+      const options = {
+        method: 'put',
+        url: '' + mock.request.path,
+        headers: Helper.defaultHeaders(),
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'U2F',
+            authenticationValue: '123456' // for U2F an object should be used here, not a string
+          }
+        }
+      }
+
+      expect(typeof options.payload.authenticationInfo.authenticationValue).toEqual('string')
+      // Act
+      const response = await server.inject(options)
+
+      // Assert
+      expect(response.statusCode).toBe(400)
     })
   })
 })

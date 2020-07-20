@@ -112,6 +112,18 @@ module.exports = {
         },
         EventSdk.AuditEventAction.start
       )
+
+      // additional request validation not handled by swagger/open-api plugins
+      // authenticationValue's type can vary from `object` to `string` depending on the `authorization` value
+      const authenticationInfo = request.payload.authenticationInfo
+      if (authenticationInfo &&
+        authenticationInfo.authentication === 'U2F' &&
+        typeof authenticationInfo.authenticationValue !== 'object'
+      ) {
+        histTimerEnd({ success: false })
+        return h.response().code(Enum.Http.ReturnCodes.BADREQUEST.CODE)
+      }
+
       authorizations.forwardAuthorizationMessage(
         request.headers,
         request.params.ID,
