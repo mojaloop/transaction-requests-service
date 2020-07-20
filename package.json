@@ -55,7 +55,7 @@
   "dependencies": {
     "@hapi/boom": "9.1.0",
     "@hapi/good": "9.0.0",
-    "@hapi/hapi": "19.1.1",
+    "@hapi/hapi": "19.2.0",
     "@hapi/inert": "6.0.1",
     "@hapi/vision": "6.0.0",
     "@mojaloop/central-services-error-handling": "10.6.0",
@@ -65,7 +65,7 @@
     "@mojaloop/central-services-shared": "10.6.2",
     "@mojaloop/event-sdk": "10.6.0",
     "blipp": "4.0.1",
-    "commander": "5.1.0",
+    "commander": "6.0.0",
     "docdash": "1.2.0",
     "hapi-openapi": "2.0.2",
     "hapi-swagger": "13.0.2",
@@ -76,7 +76,7 @@
     "uuid4": "2.0.2"
   },
   "devDependencies": {
-    "eslint": "7.4.0",
+    "eslint": "7.5.0",
     "eslint-config-standard": "14.1.1",
     "eslint-plugin-import": "2.22.0",
     "eslint-plugin-node": "11.1.0",
