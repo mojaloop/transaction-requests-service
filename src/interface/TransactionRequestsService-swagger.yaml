@@ -322,14 +322,6 @@ paths:
         required: true
         schema:
           type: string
-      - name: accept
-        description: >-
-          The Accept header field indicates the version of the API the client
-          would like the server to use.
-        in: header
-        required: true
-        schema:
-          type: string
       - name: content-length
         description: >-
           The Content-Length header field indicates the anticipated size of the
@@ -429,6 +421,14 @@ paths:
         - authorizations
         - sampled
       parameters:
+        - name: accept
+          description: >-
+            The Accept header field indicates the version of the API the client
+            would like the server to use.
+          in: header
+          required: true
+          schema:
+            type: string
         - name: authenticationType
           description: 'a valid enumeration for the authentication type: OTP, QRCODE'
           in: query
@@ -488,7 +488,7 @@ paths:
         authorization for a specified transaction request. The <ID> in the URI
         should contain the transactionRequestId for which authorization is being
         requested.
-    put:
+    put:       
       tags:
         - authorizations
         - sampled
