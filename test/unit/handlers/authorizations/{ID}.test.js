@@ -90,7 +90,7 @@ describe('/authorizations/{ID}', () => {
   describe('PUT', () => {
     const requests = Mockgen().requestsAsync('/authorizations/{ID}', 'put')
 
-    it('returns a 202 response code', async () => {
+    it('properly handles OTP payload', async () => {
       // Arrange
       const mock = await requests
       const options = {
@@ -102,6 +102,32 @@ describe('/authorizations/{ID}', () => {
           authenticationInfo: {
             authentication: 'OTP',
             authenticationValue: '123456'
+          }
+        }
+      }
+
+      // Act
+      const response = await server.inject(options)
+
+      // Assert
+      expect(response.statusCode).toBe(200)
+      expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(options.payload)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
+    })
+
+    it('properly handles QRCODE payload', async () => {
+      // Arrange
+      const mock = await requests
+      const options = {
+        method: 'put',
+        url: '' + mock.request.path,
+        headers: Helper.defaultHeaders(),
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'QRCODE',
+            authenticationValue: 'abcdefghijklmnopqrstuvwxyz0987654321'
           }
         }
       }
