@@ -374,7 +374,7 @@ paths:
           The Accept header field indicates the version of the API the client
           would like the server to use.
         in: header
-        # TODO: fix mojaloop_simulator getSignedChallenge response first
+        # TODO: fix in master first, required only for GET!
         # required: true
         schema:
           type: string
@@ -986,9 +986,9 @@ components:
         - U2F challenge-response, where payer FSP verifies if the response provided by end-user device matches the previously registered key.
     AuthenticationValue:
       title: AuthenticationValue
-      oneOf:
-        - $ref: '#/components/schemas/OtpValue'
+      anyOf:
         - $ref: '#/components/schemas/QRCODE'
+        - $ref: '#/components/schemas/OtpValue'
         - $ref: '#/components/schemas/U2FPinValue'
       description: Contains the authentication value. The format depends on the authentication type used in the AuthenticationInfo complex type.
     U2FPinValue:
@@ -1411,14 +1411,7 @@ components:
       maxLength: 128
       minLength: 1
       type: string
-    OtpValue:
-      title: OtpValue
-      description: >-
-        The API data type OtpValue is a JSON String of 3 to 10 characters,
-        consisting of digits only. Negative numbers are not allowed. One or more
-        leading zeros are allowed.
-      pattern: '^\d{3,10}$'
-      type: string
+    
     PartyIdentifier:
       title: PartyIdentifier
       description: Identifier of the Party.
@@ -1524,6 +1517,15 @@ components:
       minLength: 1
       pattern: ^\S{1,64}$
       type: string
+    OtpValue:
+      title: OtpValue
+      description: >-
+        The API data type OtpValue is a JSON String of 3 to 10 characters,
+        consisting of digits only. Negative numbers are not allowed. One or more
+        leading zeros are allowed.
+      pattern: '^\d{3,10}$'
+      type: string
+
     RefundReason:
       title: RefundReason
       description: Reason for the refund.
