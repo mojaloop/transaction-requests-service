@@ -19,7 +19,7 @@ module.exports = {
      * produces: application/json
      * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
      */
-  put: async (request, h) => {
+  put: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'transaction_requests_error_put',
       'Put Transaction Request error by Id',

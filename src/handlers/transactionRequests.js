@@ -19,7 +19,7 @@ module.exports = {
    * produces: application/json
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  post: async (request, h) => {
+  post: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'transaction_requests_get',
       'Post transaction request',

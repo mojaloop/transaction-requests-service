@@ -22,6 +22,7 @@
 
  * ModusBox
  - Steven Oderayi <steven.oderayi@modusbox.com>
+ - Paweł Marzec <pawel.marzec@modusbox.com>
 
  --------------
  ******/
@@ -46,7 +47,7 @@ module.exports = {
    * produces: application/json
    * responses: 202, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  get: async (request, h) => {
+  get: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'authorization_get',
       'Get authorization by Id',
@@ -54,13 +55,26 @@ module.exports = {
     ).startTimer()
     const span = request.span
     try {
-      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.LOOKUP)
+      const tags = LibUtil.getSpanTags(
+        request,
+        Enum.Events.Event.Type.AUTHORIZATION,
+        Enum.Events.Event.Action.LOOKUP
+      )
       span.setTags(tags)
-      await span.audit({
-        headers: request.headers,
-        payload: request.payload
-      }, EventSdk.AuditEventAction.start)
-      authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET, span)
+      await span.audit(
+        {
+          headers: request.headers,
+          payload: request.payload
+        },
+        EventSdk.AuditEventAction.start
+      )
+      authorizations.forwardAuthorizationMessage(
+        request.headers,
+        request.params.ID,
+        request.query,
+        Enum.Http.RestMethods.GET,
+        span
+      )
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
     } catch (err) {
@@ -77,7 +91,7 @@ module.exports = {
    * produces: application/json
    * responses: 200, 400, 401, 403, 404, 405, 406, 501, 503
    */
-  put: async (request, h) => {
+  put: async (context, request, h) => {
     const histTimerEnd = Metrics.getHistogram(
       'authorization_put',
       'Put authorization by Id',
@@ -85,13 +99,38 @@ module.exports = {
     ).startTimer()
     const span = request.span
     try {
-      const tags = LibUtil.getSpanTags(request, Enum.Events.Event.Type.AUTHORIZATION, Enum.Events.Event.Action.PUT)
+      const tags = LibUtil.getSpanTags(
+        request,
+        Enum.Events.Event.Type.AUTHORIZATION,
+        Enum.Events.Event.Action.PUT
+      )
       span.setTags(tags)
-      await span.audit({
-        headers: request.headers,
-        payload: request.payload
-      }, EventSdk.AuditEventAction.start)
-      authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT, span)
+      await span.audit(
+        {
+          headers: request.headers,
+          payload: request.payload
+        },
+        EventSdk.AuditEventAction.start
+      )
+
+      // additional request validation not handled by swagger/open-api plugins
+      // authenticationValue's type can vary from `object` to `string` depending on the `authorization` value
+      const authenticationInfo = request.payload.authenticationInfo
+      if (authenticationInfo &&
+        authenticationInfo.authentication === 'U2F' &&
+        typeof authenticationInfo.authenticationValue !== 'object'
+      ) {
+        histTimerEnd({ success: false })
+        return h.response().code(Enum.Http.ReturnCodes.BADREQUEST.CODE)
+      }
+
+      authorizations.forwardAuthorizationMessage(
+        request.headers,
+        request.params.ID,
+        request.payload,
+        Enum.Http.RestMethods.PUT,
+        span
+      )
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
     } catch (err) {

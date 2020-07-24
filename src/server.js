@@ -25,22 +25,18 @@
 'use strict'
 
 const { Server } = require('@hapi/hapi')
-const HapiOpenAPI = require('hapi-openapi')
-const Path = require('path')
-const Config = require('./lib/config.js')
 const Logger = require('@mojaloop/central-services-logger')
 const Metrics = require('@mojaloop/central-services-metrics')
-const Plugins = require('./plugins')
-const ServerHandler = require('./handlers/server')
 const Endpoints = require('@mojaloop/central-services-shared').Util.Endpoints
 const HeaderValidation = require('@mojaloop/central-services-shared').Util.Hapi.FSPIOPHeaderValidation
+const OpenapiBackend = require('@mojaloop/central-services-shared').Util.OpenapiBackend
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
+const Path = require('path')
 
-const openAPIOptions = {
-  api: Path.resolve(__dirname, './interface/swagger.json'),
-  handlers: Path.resolve(__dirname, './handlers')
-}
-
+const Handlers = require('./handlers')
+const Plugins = require('./plugins')
+const ServerHandler = require('./handlers/server')
+const Config = require('./lib/config.js')
 /**
  * @function createServer
  *
@@ -59,13 +55,9 @@ const createServer = async (port) => {
       }
     }
   })
-
-  await Plugins.registerPlugins(server)
+  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, './interface/TransactionRequestsService-swagger.yaml'), Handlers)
+  await Plugins.registerPlugins(server, api)
   await server.register([
-    {
-      plugin: HapiOpenAPI,
-      options: openAPIOptions
-    },
     {
       plugin: HeaderValidation
     }
@@ -76,6 +68,26 @@ const createServer = async (port) => {
       method: ServerHandler.onPreHandler
     }
   ])
+
+  // use as a catch-all handler
+  server.route({
+    method: ['GET', 'POST', 'PUT', 'DELETE'],
+    path: '/{path*}',
+    handler: (req, h) => {
+      return api.handleRequest(
+        {
+          method: req.method,
+          path: req.path,
+          body: req.payload,
+          query: req.query,
+          headers: req.headers
+        },
+        req,
+        h
+      )
+      // TODO: follow instructions https://github.com/anttiviljami/openapi-backend/blob/master/DOCS.md#postresponsehandler-handler
+    }
+  })
   await server.start()
   return server
 }
@@ -88,7 +100,6 @@ const initializeInstrumentation = () => {
 
 const initialize = async (port = Config.PORT) => {
   const server = await createServer(port)
-  server.plugins.openapi.setHost(server.info.host + ':' + server.info.port)
   Logger.info(`Server running on ${server.info.host}:${server.info.port}`)
   await Endpoints.initializeCache(Config.ENDPOINT_CACHE_CONFIG)
   initializeInstrumentation()

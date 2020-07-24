@@ -19,10 +19,9 @@ const queryString = require('querystring')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-const Mockgen = require('../../../util/mockgen.js').mockRequest
+const Mockgen = require('../../../util/mockgen').mockRequest
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/authorizations/authorizations')
-const Plugins = require('../../../../src/plugins')
 
 const server = new Hapi.Server()
 
@@ -31,8 +30,7 @@ const server = new Hapi.Server()
  */
 describe('/authorizations/{ID}', () => {
   beforeAll(async () => {
-    await Plugins.registerPlugins(server)
-    await server.register(Helper.defaultServerOptions)
+    await Helper.serverSetup(server)
   })
 
   afterAll(() => {
@@ -68,7 +66,7 @@ describe('/authorizations/{ID}', () => {
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('GET')
     })
 
-    it('handles when an error is thrown', async () => {
+    it('GET handles when an error is thrown', async () => {
       // Arrange
       const mock = await requests
       const headers = Helper.defaultHeaders()
@@ -77,7 +75,7 @@ describe('/authorizations/{ID}', () => {
         url: '' + mock.request.path,
         headers
       }
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
 
       // Act
@@ -92,14 +90,20 @@ describe('/authorizations/{ID}', () => {
   describe('PUT', () => {
     const requests = Mockgen().requestsAsync('/authorizations/{ID}', 'put')
 
-    it('returns a 202 response code', async () => {
+    it('properly handles OTP payload', async () => {
       // Arrange
       const mock = await requests
       const options = {
         method: 'put',
         url: '' + mock.request.path,
         headers: Helper.defaultHeaders(),
-        payload: mock.request.body
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'OTP',
+            authenticationValue: '123456'
+          }
+        }
       }
 
       // Act
@@ -108,20 +112,81 @@ describe('/authorizations/{ID}', () => {
       // Assert
       expect(response.statusCode).toBe(200)
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
-      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(mock.request.body)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(options.payload)
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
     })
 
-    it('handles when an error is thrown', async () => {
+    it('properly handles QRCODE payload', async () => {
       // Arrange
       const mock = await requests
       const options = {
         method: 'put',
         url: '' + mock.request.path,
         headers: Helper.defaultHeaders(),
-        payload: mock.request.body
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'QRCODE',
+            authenticationValue: 'abcdefghijklmnopqrstuvwxyz0987654321'
+          }
+        }
       }
-      const err = new Error('Error occured')
+
+      // Act
+      const response = await server.inject(options)
+
+      // Assert
+      expect(response.statusCode).toBe(200)
+      expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(options.payload)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
+    })
+
+    it('properly handles U2F payload', async () => {
+      // Arrange
+      const mock = await requests
+      const options = {
+        method: 'put',
+        url: '' + mock.request.path,
+        headers: Helper.defaultHeaders(),
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'U2F',
+            authenticationValue: {
+              pinValue: 'abcd',
+              counter: '1'
+            }
+          }
+        }
+      }
+
+      // Act
+      const response = await server.inject(options)
+
+      // Assert
+      expect(response.statusCode).toBe(200)
+      expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(options.payload)
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('PUT')
+    })
+
+    it('PUT handles when an error is thrown', async () => {
+      // Arrange
+      const mock = await requests
+      const options = {
+        method: 'put',
+        url: '' + mock.request.path,
+        headers: Helper.defaultHeaders(),
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'OTP',
+            authenticationValue: '123456'
+          }
+        }
+      }
+      const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
 
       // Act
@@ -130,6 +195,30 @@ describe('/authorizations/{ID}', () => {
       // Assert
       expect(response.statusCode).toBe(500)
       expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
+    })
+
+    it('should validate properly authenticationValue depending on authentication field', async () => {
+      // Arrange
+      const mock = await requests
+      const options = {
+        method: 'put',
+        url: '' + mock.request.path,
+        headers: Helper.defaultHeaders(),
+        payload: {
+          responseType: 'ENTERED',
+          authenticationInfo: {
+            authentication: 'U2F',
+            authenticationValue: '123456' // for U2F an object should be used here, not a string
+          }
+        }
+      }
+
+      expect(typeof options.payload.authenticationInfo.authenticationValue).toEqual('string')
+      // Act
+      const response = await server.inject(options)
+
+      // Assert
+      expect(response.statusCode).toBe(400)
     })
   })
 })

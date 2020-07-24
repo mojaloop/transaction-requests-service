@@ -43,6 +43,7 @@ jest.mock('@hapi/hapi', () => ({
   Server: jest.fn().mockImplementation(() => ({
     register: jest.fn(),
     ext: jest.fn(),
+    route: jest.fn(),
     start: mockStart,
     plugins: {
       openapi: {

@@ -1,21 +1,24 @@
 'use strict'
 
 const Sinon = require('sinon')
-const Hapi = require('@hapi/hapi')
+const getPort = require('get-port')
 
 const Mockgen = require('../../util/mockgen.js').mockRequest
-const Helper = require('../../util/helper')
-
+const { initialize } = require('../../../src/server')
 let sandbox
-const server = new Hapi.Server()
+
+let server
+jest.mock('@mojaloop/central-services-metrics', () => ({
+  setup: jest.fn()
+}))
 
 /**
  * Tests for /health
  */
 describe('/health', () => {
   beforeAll(async () => {
+    server = await initialize(await getPort())
     sandbox = Sinon.createSandbox()
-    await server.register(Helper.defaultServerOptions)
   })
 
   afterAll(() => {
