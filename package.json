@@ -1,7 +1,7 @@
 {
   "name": "transaction-requests-service",
   "description": "An asynchronous pass through transaction request API for merchant payment initiated requests.",
-  "version": "10.6.2",
+  "version": "10.6.3",
   "license": "Apache-2.0",
   "author": "ModusBox",
   "contributors": [
@@ -69,7 +69,7 @@
     "docdash": "1.2.0",
     "hapi-openapi": "2.0.2",
     "hapi-swagger": "13.0.2",
-    "jsdoc": "3.6.4",
+    "jsdoc": "3.6.5",
     "mustache": "4.0.1",
     "parse-strings-in-object": "2.0.0",
     "rc": "1.2.8",
