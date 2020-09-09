@@ -68,7 +68,7 @@
     "docdash": "1.2.0",
     "hapi-openapi": "2.0.2",
     "hapi-swagger": "14.0.0",
-    "joi": "^17.2.1",
+    "joi": "17.2.1",
     "jsdoc": "3.6.5",
     "mustache": "4.0.1",
     "parse-strings-in-object": "2.0.0",
