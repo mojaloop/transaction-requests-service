@@ -25,6 +25,7 @@
   "pre-commit": [
     "dep:check",
     "standard",
+    "regenerate:spec:swagger2:precommit",
     "test:coverage-check"
   ],
   "main": "./server",

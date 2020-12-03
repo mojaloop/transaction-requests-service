@@ -15,7 +15,6 @@ info:
 paths:
   /health:
     get:
-      operationId: getHealth
       tags:
         - health
       responses:
@@ -44,7 +43,6 @@ paths:
         API.
   /metrics:
     get:
-      operationId: getMetrics
       tags:
         - metrics
       responses:
@@ -73,7 +71,6 @@ paths:
         API.
   '/transactionRequests/{ID}/error':
     put:
-      operationId: getTransactionRequestsByIdError
       tags:
         - transactionRequests
         - sampled
@@ -143,7 +140,6 @@ paths:
       - $ref: '#/components/parameters/FSPIOP-URI'
       - $ref: '#/components/parameters/FSPIOP-HTTP-Method'
     get:
-      operationId: getTransactionRequestsById
       tags:
         - transactionRequests
         - sampled
@@ -226,7 +222,6 @@ paths:
         required: true
   /transactionRequests:
     post:
-      operationId: postTransactionRequests
       tags:
         - 'transactionRequests'
         - 'sampled'
@@ -321,7 +316,6 @@ paths:
         required: true
   '/authorizations/{ID}':
     get:
-      operationId: getAuthorizationsById
       tags:
         - authorizations
         - sampled
@@ -405,7 +399,6 @@ paths:
         should contain the transactionRequestId for which authorization is being
         requested.
     put:
-      operationId: putAuthorizationsById
       tags:
         - authorizations
         - sampled
@@ -456,7 +449,6 @@ paths:
         required: true
   '/authorizations/{ID}/error':
     put:
-      operationId: getAuthorizationsByIdError
       tags:
         - authorizations
         - sampled
