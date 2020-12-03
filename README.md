@@ -5,4 +5,9 @@
 [![CircleCI](https://circleci.com/gh/mojaloop/transaction-requests-service.svg?style=svg)](https://circleci.com/gh/mojaloop/transaction-requests-service)
 
 
-Swagger api [location](src/interface/swagger.json)
+## Interface Specifications
+- OpenAPI v3 Interface Specification: [src/interface/openapi.yaml](src/interface/openapi.yaml)
+- Swagger v2 Interface Specification: [src/interface/swagger.json](src/interface/swagger.json) (_Note: This file is generated from the [OpenAPI v3 interface specification](src/interface/openapi.yaml)_)
+
+## Notes:
+- If changes are made to [src/interface/openapi.yaml](src/interface/openapi.yaml) ensure you execute `npm run regenerate:spec:swagger2` script and commit the changes to the Swagger v2 document [src/interface/swagger.json](src/interface/swagger.json).
