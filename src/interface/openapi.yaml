@@ -116,15 +116,15 @@ paths:
         /transactionRequests/<ID>.
       x-examples:
         application/json:
-          “errorInformation”:
-            “errorCode”: “5100”
-            “errorDescription”: “This is an error description”
+          "errorInformation":
+            "errorCode": "5100"
+            "errorDescription": "This is an error description"
             extensionList:
               extension:
-                - “key”: “errorDescription”
-                  “value”: “This is a more detailed error description”
-                - “key”: “errorDescription”
-                  “value”: “This is a more detailed error description”
+                - "key": "errorDescription"
+                  "value": "This is a more detailed error description"
+                - "key": "errorDescription"
+                  "value": "This is a more detailed error description"
       requestBody:
         $ref: '#/components/requestBodies/ErrorInformationObject'
   '/transactionRequests/{ID}':
@@ -206,14 +206,14 @@ paths:
         /transactionRequests/<ID>.
       x-examples:
         application/json:
-          “transactionId”: “b51ec534-ee48-4575-b6a9-ead2955b8069”
-          “transactionRequestState”: “RECEIVED”
+          "transactionId": "b51ec534-ee48-4575-b6a9-ead2955b8069"
+          "transactionRequestState": "RECEIVED"
           extensionList:
             extension:
-              - “key”: “errorDescription”
-                “value”: “This is a more detailed error description”
-              - “key”: “errorDescription”
-                “value”: “This is a more detailed error description”
+              - "key": "errorDescription"
+                "value": "This is a more detailed error description"
+              - "key": "errorDescription"
+                "value": "This is a more detailed error description"
       requestBody:
         content:
           application/json:
@@ -264,50 +264,50 @@ paths:
         in the server.
       x-examples:
         application/json:
-          “transactionRequestId”: “b51ec534-ee48-4575-b6a9-ead2955b8069”
-          “payee”:
+          "transactionRequestId": "b51ec534-ee48-4575-b6a9-ead2955b8069"
+          "payee":
             partyIdInfo:
-              “partyIdType”: “PERSONAL_ID”
-              “partyIdentifier”: “16135551212”
-              “partySubIdOrType”: “DRIVING_LICENSE”
-              “fspId”: “1234”
+              "partyIdType": "PERSONAL_ID"
+              "partyIdentifier": "16135551212"
+              "partySubIdOrType": "DRIVING_LICENSE"
+              "fspId": "1234"
             merchantClassificationCode: '4321'
-            “name”: “Justin Trudeau”
-            “personalInfo”:
-              “complexName”:
-                “firstName”: “Justin”
-                “middleName”: “Pierre”
-                “lastName”: “Trudeau”
-              “dateOfBirth”: “1971-12-25”
-          “payer”:
-            “partyIdType”: “PERSONAL_ID”
-            “partyIdentifier”: “16135551212”
-            “partySubIdOrType”: “DRIVING_LICENSE”
-            “fspId”: “1234”
-          “amount”:
-            “currency”: “USD”
-            “amount”: “123.45”
-          “transactionType”:
-            “scenario”: “DEPOSIT”
-            “subScenario”: “locally defined sub-scenario”
-            “initiator”: “PAYEE”
-            “initiatorType”: “CONSUMER”
-            “refundInfo”:
-              “originalTransactionId”: “b51ec534-ee48-4575-b6a9-ead2955b8069”
-              “refundReason”: “free text indicating reason for the refund”
-            “balanceOfPayments”: “123”
-          “note”: “Free-text memo”
-          “geoCode”:
-            “latitude”: “+45.4215”
-            “longitude”: “+75.6972”
-          “authenticationType”: “OTP”
-          “expiration”: '“2016-05-24T08:38:08.699-04:00”'
+            "name": "Justin Trudeau"
+            "personalInfo":
+              "complexName":
+                "firstName": "Justin"
+                "middleName": "Pierre"
+                "lastName": "Trudeau"
+              "dateOfBirth": "1971-12-25"
+          "payer":
+            "partyIdType": "PERSONAL_ID"
+            "partyIdentifier": "16135551212"
+            "partySubIdOrType": "DRIVING_LICENSE"
+            "fspId": "1234"
+          "amount":
+            "currency": "USD"
+            "amount": "123.45"
+          "transactionType":
+            "scenario": "DEPOSIT"
+            "subScenario": "locally defined sub-scenario"
+            "initiator": "PAYEE"
+            "initiatorType": "CONSUMER"
+            "refundInfo":
+              "originalTransactionId": "b51ec534-ee48-4575-b6a9-ead2955b8069"
+              "refundReason": "free text indicating reason for the refund"
+            "balanceOfPayments": "123"
+          "note": "Free-text memo"
+          "geoCode":
+            "latitude": "+45.4215"
+            "longitude": "+75.6972"
+          "authenticationType": "OTP"
+          "expiration": '"2016-05-24T08:38:08.699-04:00"'
           extensionList:
             extension:
-              - “key”: “errorDescription”
-                “value”: “This is a more detailed error description”
-              - “key”: “errorDescription”
-                “value”: “This is a more detailed error description”
+              - "key": "errorDescription"
+                "value": "This is a more detailed error description"
+              - "key": "errorDescription"
+                "value": "This is a more detailed error description"
       requestBody:
         content:
           application/json:
@@ -331,23 +331,13 @@ paths:
         - $ref: '#/components/parameters/FSPIOP-Signature'
         - $ref: '#/components/parameters/FSPIOP-URI'
         - $ref: '#/components/parameters/FSPIOP-HTTP-Method'
-        - name: accept
-          description: >-
-            The Accept header field indicates the version of the API the client
-            would like the server to use.
-          in: header
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Accept'
         - name: authenticationType
           description: 'a valid enumeration for the authentication type: OTP, QRCODE'
           in: query
           required: true
-          schema:
-            type: string
-            enum:
-              - OTP
-              - QRCODE
+          schema: 
+            $ref: '#/components/schemas/AuthenticationType'
         - name: retriesLeft
           description: >-
             The number of retries left before the financial transaction is
@@ -362,16 +352,16 @@ paths:
             account
           in: query
           required: true
-          schema:
-            type: string
+          schema: 
+            $ref: '#/components/schemas/Amount'
         - name: currency
           description: >-
             The transaction currency for the amount that will be withdrawn from
             the Payer’s account
           in: query
           required: true
-          schema:
-            type: string
+          schema: 
+            $ref: '#/components/schemas/Currency'
       responses:
         '200':
           $ref: '#/components/responses/Response200'
@@ -493,15 +483,15 @@ paths:
         /transactionRequests/<ID>.
       x-examples:
         application/json:
-          “errorInformation”:
-            “errorCode”: “5100”
-            “errorDescription”: “This is an error description”
+          "errorInformation":
+            "errorCode": "5100"
+            "errorDescription": "This is an error description"
             extensionList:
               extension:
-                - “key”: “errorDescription”
-                  “value”: “This is a more detailed error description”
-                - “key”: “errorDescription”
-                  “value”: “This is a more detailed error description”
+                - "key": "errorDescription"
+                  "value": "This is a more detailed error description"
+                - "key": "errorDescription"
+                  "value": "This is a more detailed error description"
       requestBody:
         $ref: '#/components/requestBodies/ErrorInformationObject'
 servers:
@@ -1113,7 +1103,7 @@ components:
         restricted by a regular expression for interoperability reasons. This
         format, as specified in ISO 8601, contains a date only. A more readable
         version of the format is yyyy-MM-dd. Examples - "1982-05-23",
-        "1987-08-05”
+        "1987-08-05"
       pattern: >-
         ^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)$
       type: string
@@ -1173,6 +1163,13 @@ components:
       minLength: 1
       pattern: '^(?!\s*$)[\p{L}\p{Nd} .,''-]{1,128}$'
       type: string
+    # FirstName:
+    #   title: FirstName
+    #   type: string
+    #   minLength: 1
+    #   maxLength: 128
+    #   pattern: ^(?!\s*$)[\w .,'-]{1,128}$
+    #   description: First name of the Party (Name Type).
     FspId:
       title: FspId
       description: FSP identifier.

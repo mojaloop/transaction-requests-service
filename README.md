@@ -7,8 +7,3 @@
 
 ## Interface Specifications
 - OpenAPI v3 Interface Specification: [src/interface/openapi.yaml](src/interface/openapi.yaml)
-- Swagger v2 Interface Specification: [src/interface/swagger.json](src/interface/swagger.json) (_Note: DO NOT MODIFY! This file is generated from the [OpenAPI v3 interface specification](src/interface/openapi.yaml)._)
-
-## Notes:
-- If changes are made to [src/interface/openapi.yaml](src/interface/openapi.yaml) ensure the pre-commit hook re-generates [src/interface/swagger.json](src/interface/swagger.json) and adds it as part of the commit.
-- If this fails, one can manually do this by running the `npm run regenerate:spec:swagger2` script and commit the changes if applicable to [src/interface/swagger.json](src/interface/swagger.json).
