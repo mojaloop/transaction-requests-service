@@ -28,7 +28,7 @@
  ******/
 
 'use strict'
-const OpenApiRequestGenerator = require('./openApiRequestGenerator')
+const { OpenApiMockGenerator } = require('ml-testing-toolkit-shared-lib')
 
 /**
  * Mock Span
@@ -67,15 +67,15 @@ const mockSpan = () => {
   return new Span()
 }
 
-let openApiRequestGenerator
+let openApiMockGenerator
 
 // Factory generator for OpenApiRequestGenerator singleton
 const init = async () => {
-  if (!openApiRequestGenerator) {
-    openApiRequestGenerator = new OpenApiRequestGenerator()
-    await openApiRequestGenerator.load('./src/interface/openapi.yaml')
+  if (!openApiMockGenerator) {
+    openApiMockGenerator = new OpenApiMockGenerator()
+    await openApiMockGenerator.load('./src/interface/openapi.yaml')
   }
-  return openApiRequestGenerator
+  return openApiMockGenerator
 }
 
 const generateRequestHeaders = async (path, httpMethod, overrideRefs = null) => {
