@@ -35,10 +35,10 @@
     "test:junit": "jest --reporters=default --reporters=jest-junit --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage": "jest --coverage --coverageThreshold='{}' --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage-check": "jest --coverage --testMatch '**/test/unit/**/*.test.js'",
-    "lint": "eslint .",
-    "regenerate": "yo swaggerize:test --framework hapi --apiPath './config/swagger.json'",
-    "generate-docs": "jsdoc -c jsdoc.json",
-    "standard": "standard",
+    "lint": "npx eslint .",
+    "generate-docs": "npx jsdoc -c jsdoc.json",
+    "standard": "npx standard",
+    "standard:fix": "npx standard --fix",
     "build": "docker build -t transaction-requests-service:local -f ./Dockerfile ../",
     "run": "docker run -p 3003:3003 --rm --link db:mysql transaction-requests-service:local",
     "package-lock": "docker run --rm -it transaction-requests-service:local cat package-lock.json > package-lock.json",
@@ -68,13 +68,12 @@
     "docdash": "1.2.0",
     "hapi-swagger": "14.0.0",
     "joi": "17.3.0",
-    "jsdoc": "3.6.6",
-    "mustache": "4.0.1",
+    "mustache": "4.1.0",
     "parse-strings-in-object": "2.0.0",
     "rc": "1.2.8"
   },
   "devDependencies": {
-    "eslint": "7.14.0",
+    "eslint": "7.15.0",
     "eslint-config-standard": "16.0.2",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-node": "11.1.0",
@@ -83,16 +82,14 @@
     "get-port": "5.1.1",
     "jest": "26.6.3",
     "jest-junit": "12.0.0",
+    "jsdoc": "3.6.6",
     "license-checker": "25.0.1",
+    "ml-testing-toolkit-shared-lib": "11.2.0",
     "npm-audit-resolver": "2.2.1",
-    "npm-check-updates": "10.2.2",
+    "npm-check-updates": "10.2.3",
     "pre-commit": "1.2.2",
     "sinon": "9.2.1",
-    "standard": "16.0.3",
-    "swagmock": "1.0.0"
-  },
-  "generator-swaggerize": {
-    "version": "4.1.0"
+    "standard": "16.0.3"
   },
   "nyc": {
     "temp-directory": "./.nyc_output",

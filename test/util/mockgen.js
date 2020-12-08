@@ -28,10 +28,7 @@
  ******/
 
 'use strict'
-const SwagMock = require('swagmock')
-const Path = require('path')
-const apiPath = Path.resolve(__dirname, '../../src/interface/swagger.json')
-let mockGen
+const { OpenApiMockGenerator } = require('ml-testing-toolkit-shared-lib')
 
 /**
  * Mock Span
@@ -66,36 +63,131 @@ class Span {
   }
 }
 
-/**
- * Global MockGenerator Singleron
- */
-const mockRequest = () => {
-  if (mockGen) {
-    return mockGen
-  }
-
-  mockGen = SwagMock(apiPath)
-
-  /**
-   * Add an async version of requests
-   */
-  mockGen.requestsAsync = async (path, operation) => {
-    return new Promise((resolve, reject) => {
-      mockGen.requests(
-        { path, operation },
-        (error, mock) => error ? reject(error) : resolve(mock)
-      )
-    })
-  }
-
-  return mockGen
-}
-
 const mockSpan = () => {
   return new Span()
 }
 
+let openApiMockGenerator
+
+// Factory generator for OpenApiRequestGenerator singleton
+const init = async () => {
+  if (!openApiMockGenerator) {
+    openApiMockGenerator = new OpenApiMockGenerator()
+    await openApiMockGenerator.load('./src/interface/openapi.yaml')
+  }
+  return openApiMockGenerator
+}
+
+const generateRequestHeaders = async (path, httpMethod, overrideRefs = null) => {
+  const generator = await init()
+  // Default header override refs
+  const defaultHeaderRefs = [
+    {
+      id: 'content-type',
+      pattern: 'application/vnd\\.interoperability\\.authorizations\\+json;version=1\\.0'
+    },
+    {
+      id: 'accept',
+      pattern: 'application/vnd\\.interoperability\\.authorizations\\+json;version=1\\.0'
+    },
+    {
+      id: 'date',
+      pattern: `${new Date().toUTCString()}`
+    }
+  ]
+
+  let localOverrideRefs
+  if (overrideRefs == null) {
+    localOverrideRefs = [...defaultHeaderRefs]
+  } else {
+    localOverrideRefs = [...overrideRefs]
+  }
+
+  const headers = await generator.generateRequestHeaders(path, httpMethod, localOverrideRefs)
+  delete headers['content-length']
+  return headers
+}
+
+const generateRequestBody = async (path, httpMethod, overrideRefs = null) => {
+  const generator = await init()
+
+  let localOverrideRefs
+  if (overrideRefs == null) {
+    localOverrideRefs = []
+  } else {
+    localOverrideRefs = [...overrideRefs]
+  }
+  const body = await generator.generateRequestBody(path, httpMethod, localOverrideRefs)
+  return body
+}
+
+const generateRequestQueryParams = async (path, httpMethod, overrideRefs = null) => {
+  const generator = await init()
+
+  let localOverrideRefs
+  if (overrideRefs == null) {
+    localOverrideRefs = []
+  } else {
+    localOverrideRefs = [...overrideRefs]
+  }
+
+  const params = await generator.generateRequestQueryParams(path, httpMethod, localOverrideRefs)
+
+  const result = {
+    params,
+    toString: () => {
+      return Object.entries(result.params).reduce((acc, [k, v]) => {
+        if (acc === '?') {
+          return `${acc}${k}=${v}`
+        } else {
+          return `${acc}&${k}=${v}`
+        }
+      }, '?')
+    },
+    toURLEncodedString: () => {
+      return encodeURI(result.toString())
+    }
+  }
+  return result
+}
+
+const generateRequest = async (path, httpMethod, override = null) => {
+  const localOverride = {
+    headers: null,
+    request: null
+  }
+  if (override != null) {
+    if (override.headers != null) {
+      localOverride.headers = [...override.headers]
+    }
+
+    if (override.request != null) {
+      localOverride.request = [...override.request]
+    }
+  }
+
+  const headers = await generateRequestHeaders(path, httpMethod, localOverride.headers)
+
+  let body
+  if (httpMethod.toLowerCase() !== 'get') {
+    body = await generateRequestBody(path, httpMethod, localOverride.request)
+  }
+
+  const query = await generateRequestQueryParams(path, httpMethod, localOverride.request)
+
+  const request = {
+    headers,
+    body,
+    query
+  }
+  return request
+}
+
 module.exports = {
-  mockRequest,
-  mockSpan
+  mockSpan,
+  generateRequest,
+  generateRequestBody,
+  generateRequestHeaders,
+  generateRequestQueryParams,
+  init
 }

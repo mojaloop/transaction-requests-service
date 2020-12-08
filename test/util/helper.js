@@ -59,7 +59,7 @@ function defaultHeaders (version = '1.0') {
 }
 
 const serverSetup = async (server) => {
-  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, '../../src/interface/TransactionRequestsService-swagger.yaml'), Handlers)
+  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, '../../src/interface/openapi.yaml'), Handlers)
   await Plugins.registerPlugins(server, api)
   // use as a catch-all handler
   server.route({

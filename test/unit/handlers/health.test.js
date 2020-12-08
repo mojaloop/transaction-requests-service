@@ -2,8 +2,6 @@
 
 const Sinon = require('sinon')
 const getPort = require('get-port')
-
-const Mockgen = require('../../util/mockgen.js').mockRequest
 const { initialize } = require('../../../src/server')
 let sandbox
 
@@ -16,6 +14,9 @@ jest.mock('@mojaloop/central-services-metrics', () => ({
  * Tests for /health
  */
 describe('/health', () => {
+  // URI
+  const path = '/health'
+
   beforeAll(async () => {
     server = await initialize(await getPort())
     sandbox = Sinon.createSandbox()
@@ -30,17 +31,14 @@ describe('/health', () => {
   })
 
   describe('GET', () => {
-    const requests = Mockgen().requestsAsync('/health', 'get')
+    // HTTP Method
+    const method = 'get'
 
     it('returns a 200 response code', async () => {
       // Arrange
-      const mock = await requests
       const options = {
-        method: 'get',
-        url: '' + mock.request.path,
-        headers: {
-          ...mock.request.headers
-        }
+        method,
+        url: path
       }
 
       // Act
