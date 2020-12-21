@@ -35,8 +35,6 @@ describe('/authorizations/{ID}', () => {
 
   beforeAll(async () => {
     await Helper.serverSetup(server)
-    await Plugins.registerPlugins(server)
-    await server.register(Helper.defaultServerOptions)
   })
 
   afterAll(() => {
@@ -50,7 +48,6 @@ describe('/authorizations/{ID}', () => {
   describe('GET', () => {
     // HTTP Method
     const method = 'get'
-    const requests = MockgenRequest().requestsAsync('/authorizations/{ID}', 'get')
 
     it('returns a 202 response code', async () => {
       const request = await Mockgen.generateRequest(path, method)
@@ -97,7 +94,6 @@ describe('/authorizations/{ID}', () => {
   describe('PUT', () => {
     // HTTP Method
     const method = 'put'
-    const requests = MockgenRequest().requestsAsync('/authorizations/{ID}', 'put')
 
     it('returns a 202 response code', async () => {
       const request = await Mockgen.generateRequest(path, method)
@@ -112,7 +108,7 @@ describe('/authorizations/{ID}', () => {
 
       // Act
       const response = await server.inject(options)
-
+      console.log(response)
       // Assert
       expect(response.statusCode).toBe(200)
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
@@ -131,7 +127,7 @@ describe('/authorizations/{ID}', () => {
         payload: request.body
       }
 
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
 
       // Act
@@ -144,11 +140,11 @@ describe('/authorizations/{ID}', () => {
 
     it('should validate properly authenticationValue depending on authentication field', async () => {
       // Arrange
-      const mock = await requests
+      const request = await Mockgen.generateRequest(path, method)
       const options = {
-        method: 'put',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
+        method,
+        url: path,
+        headers: request.headers,
         payload: {
           responseType: 'ENTERED',
           authenticationInfo: {
@@ -168,11 +164,11 @@ describe('/authorizations/{ID}', () => {
 
     it('properly handles OTP payload', async () => {
       // Arrange
-      const mock = await requests
+      const request = await Mockgen.generateRequest(path, method)
       const options = {
-        method: 'put',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
+        method,
+        url: path,
+        headers: request.headers,
         payload: {
           responseType: 'ENTERED',
           authenticationInfo: {
@@ -194,11 +190,11 @@ describe('/authorizations/{ID}', () => {
 
     it('properly handles QRCODE payload', async () => {
       // Arrange
-      const mock = await requests
+      const request = await Mockgen.generateRequest(path, method)
       const options = {
-        method: 'put',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
+        method,
+        url: path,
+        headers: request.headers,
         payload: {
           responseType: 'ENTERED',
           authenticationInfo: {

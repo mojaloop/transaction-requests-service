@@ -4,8 +4,6 @@ const Sinon = require('sinon')
 const getPort = require('get-port')
 const { initialize } = require('../../../src/server')
 
-const Mockgen = require('../../util/mockgen.js').mockRequest
-const { initialize } = require('../../../src/server')
 let sandbox
 
 let server
@@ -36,17 +34,12 @@ describe('/health', () => {
   describe('GET', () => {
     // HTTP Method
     const method = 'get'
-    const requests = Mockgen().requestsAsync('/health', 'get')
 
     it('returns a 200 response code', async () => {
       // Arrange
-      const mock = await requests
       const options = {
-        method: 'get',
-        url: '' + mock.request.path,
-        headers: {
-          ...mock.request.headers
-        }
+        method,
+        url: path
       }
 
       // Act

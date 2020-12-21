@@ -102,6 +102,15 @@ const APIRoutes = (api) => [
     }
   },
   {
+    method: 'POST',
+    path: '/authorizations',
+    handler: (req, h) => handleRequest(api, req, h),
+    config: {
+      tags: ['api', 'authorizations', 'sampled'],
+      description: 'POST Authorization'
+    }
+  },
+  {
     method: 'GET',
     path: '/authorizations/{ID}',
     handler: (req, h) => handleRequest(api, req, h),

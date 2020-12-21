@@ -33,6 +33,7 @@ const health = require('./health')
 const metrics = require('./metrics')
 const authorizationsId = require('./authorizations/{ID}')
 const authorizationsIdError = require('./authorizations/{ID}/error')
+const authorizations = require('./authorizations')
 
 module.exports = {
   HealthGet: health.get,
@@ -44,6 +45,7 @@ module.exports = {
   AuthorizationsIDResponse: authorizationsId.get,
   AuthorizationsIDPutResponse: authorizationsId.put,
   AuthorizationsErrorByID: authorizationsIdError.put,
+  AuthorizationsPost: authorizations.post,
   validationFail: OpenapiBackend.validationFail,
   notFound: OpenapiBackend.notFound,
   methodNotAllowed: OpenapiBackend.methodNotAllowed

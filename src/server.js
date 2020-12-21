@@ -56,7 +56,7 @@ const createServer = async (port) => {
       }
     }
   })
-  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, './interface/TransactionRequestsService-swagger.yaml'), Handlers)
+  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, './interface/openapi.yaml'), Handlers)
   await Plugins.registerPlugins(server, api)
   await server.register([
     {

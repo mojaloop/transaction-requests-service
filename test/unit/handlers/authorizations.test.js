@@ -18,7 +18,8 @@ const Hapi = require('@hapi/hapi')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-const Mockgen = require('../../util/mockgen').mockRequest
+
+const Mockgen = require('../../util/mockgen.js')
 const Helper = require('../../util/helper')
 const Handler = require('../../../src/domain/authorizations/authorizations')
 
@@ -28,6 +29,9 @@ const server = new Hapi.Server()
  * Tests for /authorizations
  */
 describe('/authorizations', () => {
+  // URI
+  const path = '/authorizations'
+
   beforeAll(async () => {
     await Helper.serverSetup(server)
   })
@@ -57,20 +61,23 @@ describe('/authorizations', () => {
   }
 
   describe('POST', () => {
-    const requests = Mockgen().requestsAsync('/authorizations', 'post')
+    // HTTP Method
+    const method = 'post'
 
     it('returns a 200 response code', async () => {
+      const request = await Mockgen.generateRequest(path, method)
+
       // Arrange
-      const mock = await requests
       const options = {
-        method: 'post',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
+        method,
+        url: path,
+        headers: request.headers,
         payload: body
       }
 
       // Act
       const response = await server.inject(options)
+      console.log(response)
       // Assert
       expect(response.statusCode).toBe(200)
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
@@ -79,13 +86,13 @@ describe('/authorizations', () => {
     })
 
     it('handles when an error is thrown', async () => {
+      const request = await Mockgen.generateRequest(path, method)
+
       // Arrange
-      const mock = await requests
-      const headers = Helper.defaultHeaders()
       const options = {
-        method: 'post',
-        url: '' + mock.request.path,
-        headers,
+        method,
+        url: path,
+        headers: request.headers,
         payload: body
       }
       const err = new Error('Error occurred')

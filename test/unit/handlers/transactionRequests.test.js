@@ -14,7 +14,6 @@ const Hapi = require('@hapi/hapi')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-// const Mockgen = require('../../util/mockgen.js').mockRequest
 const Mockgen = require('../../util/mockgen.js')
 const Helper = require('../../util/helper')
 const Handler = require('../../../src/domain/transactionRequests/transactionRequests')
@@ -67,23 +66,22 @@ describe('/transactionRequests', () => {
         }
       ]
     }
-    // const requests = Mockgen().requestsAsync('/transactionRequests', 'post')
 
     it('returns a 202 response code', async () => {
       // Generate request
       const request = await Mockgen.generateRequest(path, method, overrideReq)
 
-      // fix mocked amount
-      mock.request.body.amount = {
-        currency: 'USD', amount: '100'
-      }
-      
       // Setup request opts
       const options = {
         method,
         url: path,
         headers: request.headers,
         payload: request.body
+      }
+
+      // fix mocked amount
+     request.body.amount = {
+        currency: 'USD', amount: '100'
       }
 
       // Act
