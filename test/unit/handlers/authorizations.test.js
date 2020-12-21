@@ -18,7 +18,6 @@ const Hapi = require('@hapi/hapi')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-
 const Mockgen = require('../../util/mockgen.js')
 const Helper = require('../../util/helper')
 const Handler = require('../../../src/domain/authorizations/authorizations')
@@ -77,7 +76,7 @@ describe('/authorizations', () => {
 
       // Act
       const response = await server.inject(options)
-      console.log(response)
+
       // Assert
       expect(response.statusCode).toBe(200)
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)

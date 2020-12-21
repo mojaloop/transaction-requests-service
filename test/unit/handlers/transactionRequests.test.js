@@ -80,7 +80,7 @@ describe('/transactionRequests', () => {
       }
 
       // fix mocked amount
-     request.body.amount = {
+      request.body.amount = {
         currency: 'USD', amount: '100'
       }
 

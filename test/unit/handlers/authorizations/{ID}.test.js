@@ -15,12 +15,10 @@ jest.mock('../../../../src/domain/authorizations/authorizations', () => {
 })
 
 const Hapi = require('@hapi/hapi')
-const queryString = require('querystring')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
 const Mockgen = require('../../../util/mockgen.js')
-const MockgenRequest = require('../../../util/mockgen.js').mockRequest
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/authorizations/authorizations')
 
