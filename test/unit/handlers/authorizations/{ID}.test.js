@@ -77,7 +77,7 @@ describe('/authorizations/{ID}', () => {
         headers: request.headers
       }
 
-      const err = new Error('Error occured')
+      const err = new Error('Error occurred')
       Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
 
       // Act
@@ -106,7 +106,7 @@ describe('/authorizations/{ID}', () => {
 
       // Act
       const response = await server.inject(options)
-      console.log(response)
+
       // Assert
       expect(response.statusCode).toBe(200)
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
