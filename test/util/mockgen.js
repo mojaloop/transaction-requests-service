@@ -171,6 +171,18 @@ const generateRequest = async (path, httpMethod, override = null) => {
   let body
   if (httpMethod.toLowerCase() !== 'get') {
     body = await generateRequestBody(path, httpMethod, localOverride.request)
+
+    // Ensure the Mock generator gives a proper authenticationValue when
+    // U2F is selected
+    if (body.authenticationInfo &&
+      body.authenticationInfo.authentication === 'U2F' &&
+      typeof body.authenticationInfo.authenticationValue !== 'object'
+    ) {
+      body.authenticationInfo.authenticationValue = {
+          pinValue: '123456',
+          counter: '1'
+      }
+    }
   }
 
   const query = await generateRequestQueryParams(path, httpMethod, localOverride.request)
