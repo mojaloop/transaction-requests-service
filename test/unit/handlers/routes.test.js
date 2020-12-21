@@ -17,34 +17,35 @@
  optionally within square brackets <email>.
  * Gates Foundation
 
- * ModusBox
- - Rajiv Mothilal <rajiv.mothilal@modusbox.com>
+ * Steven Oderayi <steven.oderayi@modusbox.com>
 
  --------------
  ******/
 
 'use strict'
 
-const OpenapiBackend = require('@mojaloop/central-services-shared').Util.OpenapiBackend
-const transactionRequests = require('./transactionRequests')
-const transactionRequestsId = require('./transactionRequests/{ID}')
-const transactionRequestsErrorByID = require('./transactionRequests/{ID}/error')
-const health = require('./health')
-const metrics = require('./metrics')
-const authorizationsId = require('./authorizations/{ID}')
-const authorizationsIdError = require('./authorizations/{ID}/error')
+const mockHandleRequest = jest.fn()
+const mockApi = { handleRequest: mockHandleRequest }
 
-module.exports = {
-  HealthGet: health.get,
-  MetricsGet: metrics.get,
-  TransactionRequestsErrorByID: transactionRequestsErrorByID.put,
-  TransactionRequestsByID: transactionRequestsId.get,
-  TransactionRequestsByIDPut: transactionRequestsId.put,
-  TransactionRequests: transactionRequests.post,
-  AuthorizationsIDResponse: authorizationsId.get,
-  AuthorizationsIDPutResponse: authorizationsId.put,
-  AuthorizationsErrorByID: authorizationsIdError.put,
-  validationFail: OpenapiBackend.validationFail,
-  notFound: OpenapiBackend.notFound,
-  methodNotAllowed: OpenapiBackend.methodNotAllowed
-}
+const { APIRoutes } = require('../../../src/handlers/routes')
+
+describe('Routes', () => {
+  describe('APIRoutes', () => {
+    it('returns all API routes', async () => {
+      // Arrange
+      const routes = APIRoutes(mockApi)
+
+      // Assert
+      await expect(routes.length > 0).toBe(true)
+
+      // Act/Assert
+      routes.forEach(route => {
+        mockHandleRequest.mockClear()
+        // Act
+        route.handler({}, {})
+        // Assert
+        expect(mockHandleRequest).toHaveBeenCalled()
+      })
+    })
+  })
+})

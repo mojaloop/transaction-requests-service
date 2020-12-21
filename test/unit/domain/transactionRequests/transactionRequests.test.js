@@ -104,7 +104,7 @@ describe('transactionRequests', () => {
       const action = async () => TransactionRequests.forwardTransactionRequest(...options)
 
       // Assert
-      await expect(action()).rejects.toThrowError(new RegExp('No FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE endpoint found for transactionRequest'))
+      await expect(action()).rejects.toThrowError(/No FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE endpoint found for transactionRequest/)
     })
 
     it('handles when the the request fails', async () => {
@@ -124,7 +124,7 @@ describe('transactionRequests', () => {
       const action = async () => TransactionRequests.forwardTransactionRequest(...options)
 
       // Assert
-      await expect(action()).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
+      await expect(action()).rejects.toThrowError(/Failed to send HTTP request to host/)
     })
 
     it('handles missing payload and params.ID', async () => {
@@ -191,7 +191,7 @@ describe('transactionRequests', () => {
       const action = async () => TransactionRequests.forwardTransactionRequest(...options)
 
       // Assert
-      await expect(action()).rejects.toThrowError(new RegExp('Failed to send HTTP request to host'))
+      await expect(action()).rejects.toThrowError(/Failed to send HTTP request to host/)
     })
   })
 

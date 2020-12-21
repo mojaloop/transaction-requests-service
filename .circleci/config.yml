@@ -25,14 +25,14 @@ defaults_Dependencies: &defaults_Dependencies |
     npm install -g node-gyp
 
 defaults_awsCliDependencies: &defaults_awsCliDependencies |
-    apk upgrade --no-cache
-    apk --no-cache add \
-            python3 \
-            py3-pip \
-            groff \
-            less \
-            mailcap
-    pip3 install --upgrade pip awscli==1.14.5 s3cmd==2.0.1 python-magic
+  apk upgrade --no-cache
+  apk --no-cache add \
+          python3 \
+          py3-pip \
+          groff \
+          less \
+          mailcap
+  pip3 install --upgrade pip awscli==1.14.5 s3cmd==2.0.1 python-magic
 
 defaults_license_scanner: &defaults_license_scanner
   name: Install and set up license-scanner
@@ -144,10 +144,10 @@ jobs:
   vulnerability-check:
     executor: default-docker
     steps:
+      - checkout
       - run:
           name: Install general dependencies
           command: *defaults_Dependencies
-      - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
@@ -163,10 +163,10 @@ jobs:
   audit-licenses:
     executor: default-docker
     steps:
+      - checkout
       - run:
           name: Install general dependencies
           command: *defaults_Dependencies
-      - checkout
       - run:
           <<: *defaults_license_scanner
       - restore_cache:

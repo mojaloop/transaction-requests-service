@@ -10,7 +10,7 @@ jest.mock('@mojaloop/central-services-logger', () => {
 
 jest.mock('../../../../../src/domain/authorizations/authorizations', () => {
   return {
-    forwardAuthorizationMessage: jest.fn()
+    forwardAuthorizationError: jest.fn()
   }
 })
 
@@ -18,7 +18,7 @@ const Hapi = require('@hapi/hapi')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-const Mockgen = require('../../../../util/mockgen.js').mockRequest
+const Mockgen = require('../../../../util/mockgen.js')
 const Helper = require('../../../../util/helper')
 const Handler = require('../../../../../src/domain/authorizations/authorizations')
 const server = new Hapi.Server()
@@ -26,7 +26,9 @@ const server = new Hapi.Server()
 /**
  * Tests for /authorizations/{ID}/error
  */
-describe('/authorizations/{ID}', () => {
+describe('/authorizations/{ID}/error', () => {
+  // URI
+  const path = '/authorizations/{ID}/error'
   beforeAll(async () => {
     await Helper.serverSetup(server)
   })
@@ -40,16 +42,18 @@ describe('/authorizations/{ID}', () => {
   })
 
   describe('PUT', () => {
-    const requests = Mockgen().requestsAsync('/authorizations/{ID}/error', 'put')
+    // HTTP Method
+    const method = 'put'
 
-    it('returns a 202 response code', async () => {
+    it('returns a 200 response code', async () => {
+      const request = await Mockgen.generateRequest(path, method)
+
       // Arrange
-      const mock = await requests
       const options = {
-        method: 'put',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
-        payload: mock.request.body
+        method,
+        url: path + request.query.toURLEncodedString(),
+        headers: request.headers,
+        payload: request.body
       }
 
       // Act
@@ -61,13 +65,14 @@ describe('/authorizations/{ID}', () => {
     })
 
     it('handles when error is thrown', async () => {
+      const request = await Mockgen.generateRequest(path, method)
+
       // Arrange
-      const mock = await requests
       const options = {
-        method: 'put',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
-        payload: mock.request.body
+        method,
+        url: path + request.query.toURLEncodedString(),
+        headers: request.headers,
+        payload: request.body
       }
 
       const err = new Error('Error occurred')
