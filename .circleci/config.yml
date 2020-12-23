@@ -144,10 +144,10 @@ jobs:
   vulnerability-check:
     executor: default-docker
     steps:
-      - checkout
       - run:
           name: Install general dependencies
           command: *defaults_Dependencies
+      - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
@@ -163,10 +163,10 @@ jobs:
   audit-licenses:
     executor: default-docker
     steps:
-      - checkout
       - run:
           name: Install general dependencies
           command: *defaults_Dependencies
+      - checkout
       - run:
           <<: *defaults_license_scanner
       - restore_cache:
@@ -216,7 +216,6 @@ jobs:
     executor: anchore/anchore_engine
     steps:
       - setup_remote_docker
-      - checkout
       - run:
           name: Install docker dependencies for anchore
           command: |
@@ -234,6 +233,7 @@ jobs:
       - run:
           name: Install AWS CLI dependencies
           command: *defaults_awsCliDependencies
+      - checkout
       - attach_workspace:
           at: /tmp
       - run:
