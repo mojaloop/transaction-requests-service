@@ -111,12 +111,8 @@ const generateRequestHeaders = async (path, httpMethod, overrideRefs = null) => 
 const generateRequestBody = async (path, httpMethod, overrideRefs = null) => {
   const generator = await init()
 
-  let localOverrideRefs
-  if (overrideRefs == null) {
-    localOverrideRefs = []
-  } else {
-    localOverrideRefs = [...overrideRefs]
-  }
+  const localOverrideRefs = [...(overrideRefs || [])]
+
   const body = await generator.generateRequestBody(path, httpMethod, localOverrideRefs)
   return body
 }
