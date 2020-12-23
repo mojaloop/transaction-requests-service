@@ -36,6 +36,7 @@ const Path = require('path')
 const Handlers = require('./handlers')
 const Plugins = require('./plugins')
 const ServerHandler = require('./handlers/server')
+const Routes = require('./handlers/routes')
 const Config = require('./lib/config.js')
 /**
  * @function createServer
@@ -55,7 +56,7 @@ const createServer = async (port) => {
       }
     }
   })
-  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, './interface/TransactionRequestsService-swagger.yaml'), Handlers)
+  const api = await OpenapiBackend.initialise(Path.resolve(__dirname, './interface/openapi.yaml'), Handlers)
   await Plugins.registerPlugins(server, api)
   await server.register([
     {
@@ -69,25 +70,9 @@ const createServer = async (port) => {
     }
   ])
 
-  // use as a catch-all handler
-  server.route({
-    method: ['GET', 'POST', 'PUT', 'DELETE'],
-    path: '/{path*}',
-    handler: (req, h) => {
-      return api.handleRequest(
-        {
-          method: req.method,
-          path: req.path,
-          body: req.payload,
-          query: req.query,
-          headers: req.headers
-        },
-        req,
-        h
-      )
-      // TODO: follow instructions https://github.com/anttiviljami/openapi-backend/blob/master/DOCS.md#postresponsehandler-handler
-    }
-  })
+  server.route(Routes.APIRoutes(api))
+  // TODO: follow instructions https://github.com/anttiviljami/openapi-backend/blob/master/DOCS.md#postresponsehandler-handler
+
   await server.start()
   return server
 }

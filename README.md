@@ -5,4 +5,5 @@
 [![CircleCI](https://circleci.com/gh/mojaloop/transaction-requests-service.svg?style=svg)](https://circleci.com/gh/mojaloop/transaction-requests-service)
 
 
-Swagger api [location](src/interface/swagger.json)
+## Interface Specifications
+- OpenAPI v3 Interface Specification: [src/interface/openapi.yaml](src/interface/openapi.yaml)

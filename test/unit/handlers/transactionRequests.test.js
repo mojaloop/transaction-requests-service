@@ -14,9 +14,10 @@ const Hapi = require('@hapi/hapi')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-const Mockgen = require('../../util/mockgen.js').mockRequest
+const Mockgen = require('../../util/mockgen')
 const Helper = require('../../util/helper')
 const Handler = require('../../../src/domain/transactionRequests/transactionRequests')
+// const OpenApiRequestGenerator = require('../../util/openApiRequestGenerator')
 
 let sandbox
 const server = new Hapi.Server()
@@ -25,6 +26,9 @@ const server = new Hapi.Server()
  * Tests for /transactionRequests
  */
 describe('/transactionRequests', () => {
+  // URI
+  const path = '/transactionRequests'
+
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
     await Helper.serverSetup(server)
@@ -43,21 +47,41 @@ describe('/transactionRequests', () => {
   })
 
   describe('POST', () => {
-    const requests = Mockgen().requestsAsync('/transactionRequests', 'post')
+    // HTTP Method
+    const method = 'post'
+    // Override request refs because OpenApiRequestGenerator is unable to generate unicode test data
+    const overrideReq = {
+      request: [
+        {
+          id: 'payee.personalInfo.complexName.firstName',
+          pattern: 'Česko| Dvořák'
+        },
+        {
+          id: 'payee.personalInfo.complexName.middleName',
+          pattern: 'John|David|Michael|Chris|Mike|Mark|Paul|Daniel|James|Maria'
+        },
+        {
+          id: 'payee.personalInfo.complexName.lastName',
+          pattern: 'John|David|Michael|Chris|Mike|Mark|Paul|Daniel|James|Maria'
+        }
+      ]
+    }
 
     it('returns a 202 response code', async () => {
-      // Arrange
-      const mock = await requests
+      // Generate request
+      const request = await Mockgen.generateRequest(path, method, overrideReq)
+
+      // Setup request opts
+      const options = {
+        method,
+        url: path,
+        headers: request.headers,
+        payload: request.body
+      }
 
       // fix mocked amount
-      mock.request.body.amount = {
+      request.body.amount = {
         currency: 'USD', amount: '100'
-      }
-      const options = {
-        method: 'post',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
-        payload: mock.request.body || mock.request.formData
       }
 
       // Act
@@ -68,13 +92,15 @@ describe('/transactionRequests', () => {
     })
 
     it('handles when forwardTransactionRequest throws error', async () => {
-      // Arrange
-      const mock = await requests
+      // Generate request
+      const request = await Mockgen.generateRequest(path, method, overrideReq)
+
+      // Setup request opts
       const options = {
-        method: 'post',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
-        payload: mock.request.body || mock.request.formData
+        method,
+        url: path,
+        headers: request.headers,
+        payload: request.body
       }
       const err = new Error('Error occurred')
       Handler.forwardTransactionRequest = sandbox.stub().throws(err)

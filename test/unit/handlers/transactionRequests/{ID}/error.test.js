@@ -13,7 +13,7 @@ const Hapi = require('@hapi/hapi')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Logger = require('@mojaloop/central-services-logger')
 
-const Mockgen = require('../../../../util/mockgen.js').mockRequest
+const Mockgen = require('../../../../util/mockgen')
 const Helper = require('../../../../util/helper')
 const Handler = require('../../../../../src/domain/transactionRequests/transactionRequests')
 
@@ -21,6 +21,9 @@ let sandbox
 const server = new Hapi.Server()
 
 describe('/transactionRequests/{ID}/error', () => {
+  // URI
+  const path = '/transactionRequests/{ID}/error'
+
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
     sandbox.stub(Handler, 'forwardTransactionRequestError').returns(Promise.resolve())
@@ -36,16 +39,18 @@ describe('/transactionRequests/{ID}/error', () => {
   })
 
   describe('PUT', () => {
-    const requests = Mockgen().requestsAsync('/transactionRequests/{ID}/error', 'put')
+    // HTTP Method
+    const method = 'put'
 
     it('handles a PUT', async () => {
+      const request = await Mockgen.generateRequest(path, method)
+
       // Arrange
-      const mock = await requests
       const options = {
-        method: 'put',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
-        payload: mock.request.body || mock.request.formData
+        method,
+        url: path,
+        headers: request.headers,
+        payload: request.body
       }
 
       // Act
@@ -56,16 +61,14 @@ describe('/transactionRequests/{ID}/error', () => {
     })
 
     it('handles when error is thrown', async () => {
+      const request = await Mockgen.generateRequest(path, method)
+
       // Arrange
-      const mock = await requests
       const options = {
-        method: 'put',
-        url: '' + mock.request.path,
-        headers: Helper.defaultHeaders(),
-        payload: {
-          ...mock.request.body,
-          ...mock.request.formData
-        }
+        method,
+        url: path,
+        headers: request.headers,
+        payload: request.body
       }
 
       const err = new Error('Error occurred')
