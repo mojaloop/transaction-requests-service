@@ -26,13 +26,12 @@
 'use strict'
 
 /**
- * Request handler
+ * Prepare the request handler for the `api`
  *
  * @param {object} api OpenAPIBackend instance
- * @param {object} req Request
- * @param {object} h   Response handle
+ * @returns {function} the response handler function
  */
-const handleRequest = (api, req, h) => api.handleRequest(
+const prepHandler = (api) => (req, h) => api.handleRequest(
   {
     method: req.method,
     path: req.path,
@@ -46,97 +45,100 @@ const handleRequest = (api, req, h) => api.handleRequest(
  *
  * @param {object} api OpenAPIBackend instance
  */
-const APIRoutes = (api) => [
-  {
-    method: 'GET',
-    path: '/health',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'health'],
-      description: 'GET health'
+const APIRoutes = (api) => {
+  // we want only one instance of handler function wrapper
+  const handler = prepHandler(api)
+  return [
+    {
+      method: 'GET',
+      path: '/health',
+      handler,
+      config: {
+        tags: ['api', 'health'],
+        description: 'GET health'
+      }
+    },
+    {
+      method: 'GET',
+      path: '/metrics',
+      handler,
+      config: {
+        tags: ['api', 'metrics'],
+        description: 'GET service metrics'
+      }
+    },
+    {
+      method: 'PUT',
+      path: '/transactionRequests/{ID}/error',
+      handler,
+      config: {
+        tags: ['api', 'transactioRequests', 'sampled'],
+        description: 'PUT Transaction Request error by ID'
+      }
+    },
+    {
+      method: 'GET',
+      path: '/transactionRequests/{ID}',
+      handler,
+      config: {
+        tags: ['api', 'transactionRequests', 'sampled'],
+        description: 'GET Transaction Requests by ID'
+      }
+    },
+    {
+      method: 'PUT',
+      path: '/transactionRequests/{ID}',
+      handler,
+      config: {
+        tags: ['api', 'transactionRequests', 'sampled'],
+        description: 'PUT Transaction Request by ID'
+      }
+    },
+    {
+      method: 'POST',
+      path: '/transactionRequests',
+      handler,
+      config: {
+        tags: ['api', 'transactionRequests', 'sampled'],
+        description: 'POST Transaction Request'
+      }
+    },
+    {
+      method: 'POST',
+      path: '/authorizations',
+      handler,
+      config: {
+        tags: ['api', 'authorizations', 'sampled'],
+        description: 'POST Authorization'
+      }
+    },
+    {
+      method: 'GET',
+      path: '/authorizations/{ID}',
+      handler,
+      config: {
+        tags: ['api', 'authorizations', 'sampled'],
+        description: 'GET Authorization by ID'
+      }
+    },
+    {
+      method: 'PUT',
+      path: '/authorizations/{ID}',
+      handler,
+      config: {
+        tags: ['api', 'authorizations', 'sampled'],
+        description: 'PUT Authorization by ID'
+      }
+    },
+    {
+      method: 'PUT',
+      path: '/authorizations/{ID}/error',
+      handler,
+      config: {
+        tags: ['api', 'authorizations', 'sampled'],
+        description: 'PUT Authorization error by ID'
+      }
     }
-  },
-  {
-    method: 'GET',
-    path: '/metrics',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'metrics'],
-      description: 'GET service metrics'
-    }
-  },
-  {
-    method: 'PUT',
-    path: '/transactionRequests/{ID}/error',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'transactioRequests', 'sampled'],
-      description: 'PUT Transaction Request error by ID'
-    }
-  },
-  {
-    method: 'GET',
-    path: '/transactionRequests/{ID}',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'transactionRequests', 'sampled'],
-      description: 'GET Transaction Requests by ID'
-    }
-  },
-  {
-    method: 'PUT',
-    path: '/transactionRequests/{ID}',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'transactionRequests', 'sampled'],
-      description: 'PUT Transaction Request by ID'
-    }
-  },
-  {
-    method: 'POST',
-    path: '/transactionRequests',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'transactionRequests', 'sampled'],
-      description: 'POST Transaction Request'
-    }
-  },
-  {
-    method: 'POST',
-    path: '/authorizations',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'authorizations', 'sampled'],
-      description: 'POST Authorization'
-    }
-  },
-  {
-    method: 'GET',
-    path: '/authorizations/{ID}',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'authorizations', 'sampled'],
-      description: 'GET Authorization by ID'
-    }
-  },
-  {
-    method: 'PUT',
-    path: '/authorizations/{ID}',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'authorizations', 'sampled'],
-      description: 'PUT Authorization by ID'
-    }
-  },
-  {
-    method: 'PUT',
-    path: '/authorizations/{ID}/error',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'authorizations', 'sampled'],
-      description: 'PUT Authorization error by ID'
-    }
-  }
-]
-
+  ]
+}
 module.exports = { APIRoutes }
