@@ -67,7 +67,7 @@
     "commander": "7.0.0",
     "docdash": "1.2.0",
     "hapi-swagger": "14.1.0",
-    "joi": "17.3.0",
+    "joi": "17.4.0",
     "mustache": "4.1.0",
     "parse-strings-in-object": "2.0.0",
     "rc": "1.2.8"
