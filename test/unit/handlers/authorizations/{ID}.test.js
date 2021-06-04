@@ -62,8 +62,17 @@ describe('/authorizations/{ID}', () => {
 
       // Assert
       expect(response.statusCode).toBe(202)
+      
       expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
-      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(request.query.params)
+
+      //// This is due to a known issue in openapi-backend (which may be intended) -> https://github.com/anttiviljami/openapi-backend/issues/144. Parsed values are no longer coerced with the current version.
+      // convert each query Param into strings
+      const queryMap = Object.fromEntries(Object.entries(request.query.params).map( ([key, value], i) => {
+        return [ key, value.toString() ]
+      }))
+      expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(queryMap)
+      // expect(Handler.forwardAuthorizationMessage.mock.calls[0][2]).toEqual(request.query.params) // This is the original assertion
+
       expect(Handler.forwardAuthorizationMessage.mock.calls[0][3]).toEqual('GET')
     })
 
