@@ -28,7 +28,7 @@
  ******/
 
 'use strict'
-const { OpenApiMockGenerator } = require('ml-testing-toolkit-shared-lib')
+const { OpenApiMockGenerator } = require('@mojaloop/ml-testing-toolkit-shared-lib')
 
 /**
  * Mock Span
@@ -151,6 +151,36 @@ const generateRequestQueryParams = async (path, httpMethod, overrideRefs = null)
   return result
 }
 
+const generateRequestPathParams = async (path, httpMethod, overrideRefs = null) => {
+  const generator = await init()
+
+  let localOverrideRefs
+  if (overrideRefs == null) {
+    localOverrideRefs = []
+  } else {
+    localOverrideRefs = [...overrideRefs]
+  }
+
+  const params = await generator.generateRequestPathParams(path, httpMethod, localOverrideRefs)
+
+  const result = {
+    params,
+    toString: () => {
+      return Object.entries(result.params).reduce((acc, [k, v]) => {
+        if (acc === '?') {
+          return `${acc}${k}=${v}`
+        } else {
+          return `${acc}&${k}=${v}`
+        }
+      }, '?')
+    },
+    toURLEncodedString: () => {
+      return encodeURI(result.toString())
+    }
+  }
+  return result
+}
+
 const generateRequest = async (path, httpMethod, override = null) => {
   const localOverride = {
     headers: null,
@@ -175,9 +205,12 @@ const generateRequest = async (path, httpMethod, override = null) => {
 
   const query = await generateRequestQueryParams(path, httpMethod, localOverride.request)
 
+  const pathParams = await generateRequestPathParams(path, httpMethod, localOverride.request)
+
   const request = {
     headers,
     body,
+    pathParams,
     query
   }
   return request
