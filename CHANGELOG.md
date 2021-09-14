@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.1.7](https://github.com/mojaloop/transaction-requests-service/compare/v11.1.6...v11.1.7) (2021-09-14)
+
 ### [11.1.6](https://github.com/mojaloop/transaction-requests-service/compare/v11.1.5...v11.1.6) (2021-09-14)
 
 
