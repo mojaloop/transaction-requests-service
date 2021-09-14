@@ -1161,7 +1161,7 @@ components:
       description: First name of the Party (Name Type).
       maxLength: 128
       minLength: 1
-      pattern: '^(?!\s*$)[\p{L}\p{Nd} .,''-]{1,128}$'
+      pattern: '^(?!\s*$)[\p{L}\p{gc=Mark}\p{digit}\p{gc=Connector_Punctuation}\p{Join_Control} .,''-]{1,128}$'
       type: string
     FspId:
       title: FspId
@@ -1201,7 +1201,7 @@ components:
       description: Last name of the Party (Name Type).
       maxLength: 128
       minLength: 1
-      pattern: '^(?!\s*$)[\p{L}\p{Nd} .,''-]{1,128}$'
+      pattern: '^(?!\s*$)[\p{L}\p{gc=Mark}\p{digit}\p{gc=Connector_Punctuation}\p{Join_Control} .,''-]{1,128}$'
       type: string
     Latitude:
       title: Latitude
@@ -1232,7 +1232,7 @@ components:
       description: Middle name of the Party (Name Type).
       maxLength: 128
       minLength: 1
-      pattern: '^(?!\s*$)[\p{L}\p{Nd} .,''-]{1,128}$'
+      pattern: '^(?!\s*$)[\p{L}\p{gc=Mark}\p{digit}\p{gc=Connector_Punctuation}\p{Join_Control} .,''-]{1,128}$'
       type: string
     Name:
       title: Name
@@ -1247,7 +1247,7 @@ components:
         support must be specifically enabled. For example, if Java is used the
         flag UNICODE_CHARACTER_CLASS must be enabled to allow Unicode
         characters.
-      pattern: '^(?!\s*$)[\p{L}\p{Nd} .,''-]{1,128}$'
+      pattern: '^(?!\s*$)[\p{L}\p{gc=Mark}\p{digit}\p{gc=Connector_Punctuation}\p{Join_Control} .,''-]{1,128}$'
       type: string
     Note:
       title: Note
