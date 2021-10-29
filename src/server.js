@@ -28,7 +28,6 @@ const { Server } = require('@hapi/hapi')
 const Logger = require('@mojaloop/central-services-logger')
 const Metrics = require('@mojaloop/central-services-metrics')
 const Endpoints = require('@mojaloop/central-services-shared').Util.Endpoints
-const HeaderValidation = require('@mojaloop/central-services-shared').Util.Hapi.FSPIOPHeaderValidation
 const OpenapiBackend = require('@mojaloop/central-services-shared').Util.OpenapiBackend
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Path = require('path')
@@ -58,11 +57,6 @@ const createServer = async (port) => {
   })
   const api = await OpenapiBackend.initialise(Path.resolve(__dirname, './interface/openapi.yaml'), Handlers)
   await Plugins.registerPlugins(server, api)
-  await server.register([
-    {
-      plugin: HeaderValidation
-    }
-  ])
   await server.ext([
     {
       type: 'onPreHandler',

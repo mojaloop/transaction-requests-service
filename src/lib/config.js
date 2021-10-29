@@ -31,6 +31,23 @@
 
 const RC = require('parse-strings-in-object')(require('rc')('ES', require('../../config/default.json')))
 
+const DEFAULT_PROTOCOL_VERSION = {
+  CONTENT: '1.1',
+  ACCEPT: {
+    DEFAULT: '1', // This is not currently used by the account-lookup-service, but it is here for consistency between services. In future if we need to default the ACCEPT protocol, then this should be used.
+    VALIDATELIST: [
+      '1',
+      '1.1'
+    ]
+  }
+}
+
+const T_PROTOCOL_VERSION = { ...DEFAULT_PROTOCOL_VERSION, ...RC.PROTOCOL_VERSIONS }
+
+if (T_PROTOCOL_VERSION.ACCEPT && T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST && (typeof T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST === 'string' || T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST instanceof String)) {
+  T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST = JSON.parse(T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST)
+}
+
 module.exports = {
   PORT: RC.PORT,
   ERROR_HANDLING: RC.ERROR_HANDLING,
@@ -38,5 +55,6 @@ module.exports = {
   ENDPOINT_CACHE_CONFIG: RC.ENDPOINT_CACHE_CONFIG,
   INSTRUMENTATION_METRICS_DISABLED: RC.INSTRUMENTATION.METRICS.DISABLED,
   INSTRUMENTATION_METRICS_LABELS: RC.INSTRUMENTATION.METRICS.labels,
-  INSTRUMENTATION_METRICS_CONFIG: RC.INSTRUMENTATION.METRICS.config
+  INSTRUMENTATION_METRICS_CONFIG: RC.INSTRUMENTATION.METRICS.config,
+  PROTOCOL_VERSIONS: T_PROTOCOL_VERSION
 }
