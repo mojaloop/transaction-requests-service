@@ -34,7 +34,7 @@ const RC = require('parse-strings-in-object')(require('rc')('ES', require('../..
 const DEFAULT_PROTOCOL_VERSION = {
   CONTENT: '1.1',
   ACCEPT: {
-    DEFAULT: '1', // This is not currently used by the account-lookup-service, but it is here for consistency between services. In future if we need to default the ACCEPT protocol, then this should be used.
+    DEFAULT: '1', // This is not currently used for unit test purposes, and it is here for consistency between services.
     VALIDATELIST: [
       '1',
       '1.1'
@@ -43,6 +43,7 @@ const DEFAULT_PROTOCOL_VERSION = {
 }
 
 const T_PROTOCOL_VERSION = { ...DEFAULT_PROTOCOL_VERSION, ...RC.PROTOCOL_VERSIONS }
+T_PROTOCOL_VERSION.ACCEPT = { ...DEFAULT_PROTOCOL_VERSION.ACCEPT, ...RC.PROTOCOL_VERSIONS.ACCEPT }
 
 if (T_PROTOCOL_VERSION.ACCEPT && T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST && (typeof T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST === 'string' || T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST instanceof String)) {
   T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST = JSON.parse(T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST)

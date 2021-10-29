@@ -43,11 +43,15 @@ const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const TransactionRequests = require('../../../../src/domain/transactionRequests/transactionRequests')
 const TestHelper = require('../../../util/helper')
 const MockSpan = require('../../../util/mockgen').mockSpan
+const Config = require('../../../../src/lib/config')
 
 let sandbox
 let SpanMock = MockSpan()
 
 describe('transactionRequests', () => {
+  // URI
+  const resource = 'transactionRequests'
+
   beforeAll(() => {
     sandbox = Sinon.createSandbox()
   })
@@ -68,7 +72,7 @@ describe('transactionRequests', () => {
       })
       const options = [
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST,
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         'post',
         { ID: '12345' },
         null,
@@ -93,7 +97,7 @@ describe('transactionRequests', () => {
       })
       const options = [
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST,
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         'post',
         { ID: '12345' },
         { transactionRequestId: '12345' },
@@ -113,7 +117,7 @@ describe('transactionRequests', () => {
       sandbox.stub(Request, 'sendRequest').throws(ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Failed to send HTTP request to host', new Error(), '', [{ key: 'cause', value: {} }]))
       const options = [
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST,
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         'post',
         { ID: '12345' },
         { transactionRequestId: '12345' },
@@ -137,7 +141,7 @@ describe('transactionRequests', () => {
       })
       const options = [
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET,
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         'get',
         { },
         null,
@@ -161,7 +165,7 @@ describe('transactionRequests', () => {
       })
       const options = [
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET,
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         'get',
         { ID: '1234' },
         { transactionRequestId: '12345' }
@@ -181,7 +185,7 @@ describe('transactionRequests', () => {
       sandbox.stub(TransactionRequests, 'forwardTransactionRequestError').resolves(true)
       const options = [
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_POST,
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         'post',
         { ID: '12345' },
         { transactionRequestId: '12345' }
@@ -205,7 +209,7 @@ describe('transactionRequests', () => {
         statusText: 'Accepted'
       })
       const options = [
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         Enum.Http.Headers.FSPIOP.SOURCE,
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR,
         Enum.Http.RestMethods.PUT,
@@ -230,7 +234,7 @@ describe('transactionRequests', () => {
         statusText: 'Accepted'
       })
       const options = [
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         Enum.Http.Headers.FSPIOP.SOURCE,
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR,
         Enum.Http.RestMethods.PUT,
@@ -255,7 +259,7 @@ describe('transactionRequests', () => {
         statusText: 'Accepted'
       })
       const options = [
-        TestHelper.defaultHeaders(),
+        TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS),
         Enum.Http.Headers.FSPIOP.SOURCE,
         Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR,
         Enum.Http.RestMethods.PUT,

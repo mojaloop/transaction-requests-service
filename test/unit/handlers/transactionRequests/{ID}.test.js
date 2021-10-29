@@ -114,7 +114,6 @@ describe('/transactionRequests/{ID}', () => {
       const options = {
         method,
         url: path,
-        // headers: Helper.defaultHeaders()
         headers
       }
       const err = new Error('Error occured')
