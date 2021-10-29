@@ -82,8 +82,8 @@ const registerPlugins = async (server, openAPIBackend) => {
 
     // configure FSPIOP resources
     const resources = [
-      'participants',
-      'parties'
+      'transactionRequests',
+      'authorizations'
     ]
 
     // return FSPIOPHeaderValidation plugin options

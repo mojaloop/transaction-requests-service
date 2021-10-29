@@ -16,6 +16,7 @@ const Logger = require('@mojaloop/central-services-logger')
 const Mockgen = require('../../../util/mockgen.js')
 const Helper = require('../../../util/helper')
 const Handler = require('../../../../src/domain/transactionRequests/transactionRequests')
+const Config = require('../../../../src/lib/config')
 
 let sandbox
 const server = new Hapi.Server()
@@ -25,7 +26,8 @@ const server = new Hapi.Server()
  */
 describe('/transactionRequests/{ID}', () => {
   // URI
-  const path = '/transactionRequests/{ID}'
+  const resource = 'transactionRequests'
+  const path = `/${resource}/{ID}`
 
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
@@ -49,7 +51,7 @@ describe('/transactionRequests/{ID}', () => {
     const method = 'get'
 
     it('returns a 202 response code', async () => {
-      const headers = await Mockgen.generateRequestHeaders(path, method)
+      const headers = await Mockgen.generateRequestHeaders(path, method, resource, Config.PROTOCOL_VERSIONS)
       // Arrange
       const options = {
         method,
@@ -65,7 +67,7 @@ describe('/transactionRequests/{ID}', () => {
     })
 
     it('handles when error is thrown', async () => {
-      const headers = await Mockgen.generateRequestHeaders(path, method)
+      const headers = await Mockgen.generateRequestHeaders(path, method, resource, Config.PROTOCOL_VERSIONS)
       // Arrange
       const options = {
         method,
@@ -90,7 +92,7 @@ describe('/transactionRequests/{ID}', () => {
     const method = 'put'
 
     it('returns a 200 response code', async () => {
-      const request = await Mockgen.generateRequest(path, method)
+      const request = await Mockgen.generateRequest(path, method, resource, Config.PROTOCOL_VERSIONS)
 
       // Arrange
       const options = {
@@ -108,7 +110,7 @@ describe('/transactionRequests/{ID}', () => {
     })
 
     it('handles when error is thrown', async () => {
-      const request = await Mockgen.generateRequest(path, method)
+      const request = await Mockgen.generateRequest(path, method, resource, Config.PROTOCOL_VERSIONS)
 
       // Arrange
       const options = {

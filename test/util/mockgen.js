@@ -78,17 +78,17 @@ const init = async () => {
   return openApiMockGenerator
 }
 
-const generateRequestHeaders = async (path, httpMethod, overrideRefs = null) => {
+const generateRequestHeaders = async (path, httpMethod, resource, protocolVersions, overrideRefs = null) => {
   const generator = await init()
   // Default header override refs
   const defaultHeaderRefs = [
     {
       id: 'content-type',
-      pattern: 'application/vnd\\.interoperability\\.authorizations\\+json;version=1\\.0'
+      pattern: `application/vnd\\.interoperability\\.${resource}\\+json;version=${protocolVersions.CONTENT.toString().replace('.', '\\.')}`
     },
     {
       id: 'accept',
-      pattern: 'application/vnd\\.interoperability\\.authorizations\\+json;version=1\\.0'
+      pattern: `application/vnd\\.interoperability\\.${resource}\\+json;version=${protocolVersions.ACCEPT.DEFAULT.toString().replace('.', '\\.')}`
     },
     {
       id: 'date',
@@ -181,7 +181,7 @@ const generateRequestPathParams = async (path, httpMethod, overrideRefs = null) 
   return result
 }
 
-const generateRequest = async (path, httpMethod, override = null) => {
+const generateRequest = async (path, httpMethod, resource, protocolVersions, override = null) => {
   const localOverride = {
     headers: null,
     request: null
@@ -196,7 +196,7 @@ const generateRequest = async (path, httpMethod, override = null) => {
     }
   }
 
-  const headers = await generateRequestHeaders(path, httpMethod, localOverride.headers)
+  const headers = await generateRequestHeaders(path, httpMethod, resource, protocolVersions, localOverride.headers)
 
   let body
   if (httpMethod.toLowerCase() !== 'get') {
