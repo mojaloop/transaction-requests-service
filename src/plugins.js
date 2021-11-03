@@ -23,13 +23,16 @@
  ******/
 'use strict'
 
+const Config = require('./lib/config')
 const Package = require('../package')
 const Inert = require('@hapi/inert')
 const Vision = require('@hapi/vision')
 const Blipp = require('blipp')
 const ErrorHandling = require('@mojaloop/central-services-error-handling')
+const FSPIOPHeaderValidationPlugin = require('@mojaloop/central-services-shared').Util.Hapi.FSPIOPHeaderValidation
 const EventPlugin = require('@mojaloop/central-services-shared').Util.Hapi.HapiEventPlugin
 const OpenapiBackendValidator = require('@mojaloop/central-services-shared').Util.Hapi.OpenapiBackendValidator
+
 const registerPlugins = async (server, openAPIBackend) => {
   await server.register(OpenapiBackendValidator)
 
@@ -64,6 +67,36 @@ const registerPlugins = async (server, openAPIBackend) => {
     options: {
       openapi: openAPIBackend
     }
+  })
+
+  // Helper to construct FSPIOPHeaderValidation option configuration
+  const getOptionsForFSPIOPHeaderValidation = () => {
+    // configure supported FSPIOP Content-Type versions
+    const supportedProtocolContentVersions = [Config.PROTOCOL_VERSIONS.CONTENT.toString()]
+
+    // configure supported FSPIOP Accept version
+    const supportedProtocolAcceptVersions = []
+    for (const version of Config.PROTOCOL_VERSIONS.ACCEPT.VALIDATELIST) {
+      supportedProtocolAcceptVersions.push(version.toString())
+    }
+
+    // configure FSPIOP resources
+    const resources = [
+      'transactionRequests',
+      'authorizations'
+    ]
+
+    // return FSPIOPHeaderValidation plugin options
+    return {
+      resources,
+      supportedProtocolContentVersions,
+      supportedProtocolAcceptVersions
+    }
+  }
+
+  await server.register({
+    plugin: FSPIOPHeaderValidationPlugin.plugin,
+    options: getOptionsForFSPIOPHeaderValidation()
   })
 
   await server.register([Inert, Vision, Blipp, ErrorHandling, EventPlugin])

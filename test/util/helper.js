@@ -36,23 +36,23 @@ const Handlers = require('../../src/handlers')
 
 const destinationFsp = 'dfsp2'
 const sourceFsp = 'dfsp1'
-const resource = 'transaction'
 
 /**
  * @function defaultHeaders
  * @description This returns a set of default headers used for requests
  *   see https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_message_headers
- * @param {string} version - the version for the accept and content-type headers
+ * @param {string} resource - the version for the accept and content-type headers
+ * @param {object} protocolVersions - object containing the protocol versions config (see default.json)
  * @returns {object} Returns the default headers
  */
 
-function defaultHeaders (version = '1.0') {
+function defaultHeaders (resource, protocolVersions) {
   // TODO: See API section 3.2.1; what should we do about X-Forwarded-For? Also, should we
   // add/append to this field in all 'queueResponse' calls?
   return {
-    accept: `application/vnd.interoperability.${resource}+json;version=${version}`,
+    accept: `application/vnd.interoperability.${resource}+json;version=${protocolVersions.ACCEPT.DEFAULT}`,
     'fspiop-destination': destinationFsp,
-    'content-type': `application/vnd.interoperability.${resource}+json;version=${version}`,
+    'content-type': `application/vnd.interoperability.${resource}+json;version=${protocolVersions.CONTENT}`,
     date: '2019-05-24 08:52:19',
     'fspiop-source': sourceFsp
   }

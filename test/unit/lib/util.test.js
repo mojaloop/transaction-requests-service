@@ -29,6 +29,7 @@
 
 const { getStackOrInspect, getSpanTags } = require('../../../src/lib/util')
 const Helper = require('../../util/helper')
+const Config = require('../../../src/lib/config')
 
 describe('util', () => {
   describe('getStackOrInspect', () => {
@@ -48,7 +49,7 @@ describe('util', () => {
   describe('getSpanTags', () => {
     it('create correct span tags', () => {
       // Arrange
-      const headers = Helper.defaultHeaders()
+      const headers = Helper.defaultHeaders('transactionRequests', Config.PROTOCOL_VERSIONS)
       const transactionType = 'transactionRequests'
       const transactionAction = 'POST'
       const transactionId = undefined

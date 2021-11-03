@@ -19,6 +19,7 @@ const Mockgen = require('../../util/mockgen.js')
 const Helper = require('../../util/helper')
 const Handler = require('../../../src/domain/transactionRequests/transactionRequests')
 // const OpenApiRequestGenerator = require('../../util/openApiRequestGenerator')
+const Config = require('../../../src/lib/config')
 
 let sandbox
 const server = new Hapi.Server()
@@ -28,7 +29,8 @@ const server = new Hapi.Server()
  */
 describe('/transactionRequests', () => {
   // URI
-  const path = '/transactionRequests'
+  const resource = 'transactionRequests'
+  const path = `/${resource}`
 
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
@@ -71,7 +73,7 @@ describe('/transactionRequests', () => {
 
     it('returns a 202 response code', async () => {
       // Generate request
-      const request = await Mockgen.generateRequest(path, method, overrideReq)
+      const request = await Mockgen.generateRequest(path, method, resource, Config.PROTOCOL_VERSIONS, overrideReq)
 
       // Setup request opts
       const options = {
@@ -90,7 +92,7 @@ describe('/transactionRequests', () => {
 
     it('handles when forwardTransactionRequest throws error', async () => {
       // Generate request
-      const request = await Mockgen.generateRequest(path, method, overrideReq)
+      const request = await Mockgen.generateRequest(path, method, resource, Config.PROTOCOL_VERSIONS, overrideReq)
 
       // Setup request opts
       const options = {

@@ -47,13 +47,18 @@ const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Authorizations = require('../../../../src/domain/authorizations/authorizations')
 const TestHelper = require('../../../util/helper')
 const MockSpan = require('../../../util/mockgen').mockSpan
+const Config = require('../../../../src/lib/config')
 
 let SpanMock = MockSpan()
 
 describe('Authorizations', () => {
+  // URI
+  const resource = 'authorizations'
+
   beforeEach(() => {
     SpanMock = MockSpan()
   })
+
   describe('forwardAuthorizationMessage', () => {
     it('forwards a GET request', async () => {
       Endpoint.getEndpoint = jest.fn().mockResolvedValue('http://dfsp2')
@@ -62,7 +67,7 @@ describe('Authorizations', () => {
         status: 202,
         statusText: 'Accepted'
       })
-      const headers = TestHelper.defaultHeaders()
+      const headers = TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS)
       const transactionRequestId = 'aef-123'
       const queryParams = {
         amount: '101.00',
@@ -96,7 +101,7 @@ describe('Authorizations', () => {
         status: 202,
         statusText: 'Accepted'
       })
-      const headers = TestHelper.defaultHeaders()
+      const headers = TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS)
       const transactionRequestId = 'aef-123'
       const payload = {
         authenticationInfo: {
@@ -125,7 +130,7 @@ describe('Authorizations', () => {
 
     it('sends authorization error response to the source if no destination endpoint is found', async () => {
       // Arrange
-      const headers = TestHelper.defaultHeaders()
+      const headers = TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS)
       const transactionRequestId = 'aef-123'
       const queryParams = {
         amount: '101.00',
@@ -154,7 +159,7 @@ describe('Authorizations', () => {
 
     it('sends authorization error response to the source if the request fails', async () => {
       // Arrange
-      const headers = TestHelper.defaultHeaders()
+      const headers = TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS)
       const transactionRequestId = 'aef-123'
       const queryParams = {
         amount: '101.00',
@@ -193,7 +198,7 @@ describe('Authorizations', () => {
         status: 202,
         statusText: 'Accepted'
       })
-      const headers = TestHelper.defaultHeaders()
+      const headers = TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS)
 
       // Act
       const result = await Authorizations.forwardAuthorizationError(headers, 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'), SpanMock)
@@ -209,7 +214,7 @@ describe('Authorizations', () => {
       Request.sendRequest = jest.fn()
 
       // Act
-      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'), SpanMock)).rejects.toThrowError(/No FSPIOP_CALLBACK_URL_AUTHORIZATIONS endpoint found to send authorization error for transaction request aef-123 for FSP dfsp2/)
+      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'), SpanMock)).rejects.toThrowError(/No FSPIOP_CALLBACK_URL_AUTHORIZATIONS endpoint found to send authorization error for transaction request aef-123 for FSP dfsp2/)
 
       // Assert
       expect(Request.sendRequest).not.toHaveBeenCalled()
@@ -223,7 +228,7 @@ describe('Authorizations', () => {
       })
 
       // Act, Assert
-      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'), SpanMock)).rejects.toThrowError(/Failed to send HTTP request to host/)
+      await expect(Authorizations.forwardAuthorizationError(TestHelper.defaultHeaders(resource, Config.PROTOCOL_VERSIONS), 'aef-123', ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_COMMUNICATION_ERROR, 'Error'), SpanMock)).rejects.toThrowError(/Failed to send HTTP request to host/)
     })
   })
 })

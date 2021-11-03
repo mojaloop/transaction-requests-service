@@ -16,13 +16,15 @@ const Logger = require('@mojaloop/central-services-logger')
 const Mockgen = require('../../../../util/mockgen.js')
 const Helper = require('../../../../util/helper')
 const Handler = require('../../../../../src/domain/transactionRequests/transactionRequests')
+const Config = require('../../../../../src/lib/config')
 
 let sandbox
 const server = new Hapi.Server()
 
 describe('/transactionRequests/{ID}/error', () => {
   // URI
-  const path = '/transactionRequests/{ID}/error'
+  const resource = 'transactionRequests'
+  const path = `/${resource}/{ID}/error`
 
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
@@ -43,7 +45,7 @@ describe('/transactionRequests/{ID}/error', () => {
     const method = 'put'
 
     it('handles a PUT', async () => {
-      const request = await Mockgen.generateRequest(path, method)
+      const request = await Mockgen.generateRequest(path, method, resource, Config.PROTOCOL_VERSIONS)
 
       // Arrange
       const options = {
@@ -61,7 +63,7 @@ describe('/transactionRequests/{ID}/error', () => {
     })
 
     it('handles when error is thrown', async () => {
-      const request = await Mockgen.generateRequest(path, method)
+      const request = await Mockgen.generateRequest(path, method, resource, Config.PROTOCOL_VERSIONS)
 
       // Arrange
       const options = {

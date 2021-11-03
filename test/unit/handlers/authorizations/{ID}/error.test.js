@@ -21,6 +21,8 @@ const Logger = require('@mojaloop/central-services-logger')
 const Mockgen = require('../../../../util/mockgen.js')
 const Helper = require('../../../../util/helper')
 const Handler = require('../../../../../src/domain/authorizations/authorizations')
+const Config = require('../../../../../src/lib/config')
+
 const server = new Hapi.Server()
 
 /**
@@ -28,7 +30,9 @@ const server = new Hapi.Server()
  */
 describe('/authorizations/{ID}/error', () => {
   // URI
-  const path = '/authorizations/{ID}/error'
+  const resource = 'authorizations'
+  const path = `/${resource}/{ID}/error`
+
   beforeAll(async () => {
     await Helper.serverSetup(server)
   })
@@ -46,7 +50,7 @@ describe('/authorizations/{ID}/error', () => {
     const method = 'put'
 
     it('returns a 200 response code', async () => {
-      const request = await Mockgen.generateRequest(path, method)
+      const request = await Mockgen.generateRequest(path, method, resource, Config.PROTOCOL_VERSIONS)
 
       // Arrange
       const options = {
@@ -65,7 +69,7 @@ describe('/authorizations/{ID}/error', () => {
     })
 
     it('handles when error is thrown', async () => {
-      const request = await Mockgen.generateRequest(path, method)
+      const request = await Mockgen.generateRequest(path, method, resource, Config.PROTOCOL_VERSIONS)
 
       // Arrange
       const options = {

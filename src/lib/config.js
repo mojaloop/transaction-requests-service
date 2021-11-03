@@ -31,6 +31,26 @@
 
 const RC = require('parse-strings-in-object')(require('rc')('ES', require('../../config/default.json')))
 
+const DEFAULT_PROTOCOL_VERSION = {
+  CONTENT: '1.1',
+  ACCEPT: {
+    DEFAULT: '1', // This is not currently used for unit test purposes, and it is here for consistency between services.
+    VALIDATELIST: [
+      '1',
+      '1.1'
+    ]
+  }
+}
+
+const getProtocolVersions = (defaultProtocolVersions, overrideProtocolVersions) => {
+  const T_PROTOCOL_VERSION = { ...defaultProtocolVersions, ...overrideProtocolVersions }
+  if (overrideProtocolVersions && overrideProtocolVersions.ACCEPT) T_PROTOCOL_VERSION.ACCEPT = { ...defaultProtocolVersions.ACCEPT, ...overrideProtocolVersions.ACCEPT }
+  if (T_PROTOCOL_VERSION.ACCEPT && T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST && (typeof T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST === 'string' || T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST instanceof String)) {
+    T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST = JSON.parse(T_PROTOCOL_VERSION.ACCEPT.VALIDATELIST)
+  }
+  return T_PROTOCOL_VERSION
+}
+
 module.exports = {
   PORT: RC.PORT,
   ERROR_HANDLING: RC.ERROR_HANDLING,
@@ -38,5 +58,6 @@ module.exports = {
   ENDPOINT_CACHE_CONFIG: RC.ENDPOINT_CACHE_CONFIG,
   INSTRUMENTATION_METRICS_DISABLED: RC.INSTRUMENTATION.METRICS.DISABLED,
   INSTRUMENTATION_METRICS_LABELS: RC.INSTRUMENTATION.METRICS.labels,
-  INSTRUMENTATION_METRICS_CONFIG: RC.INSTRUMENTATION.METRICS.config
+  INSTRUMENTATION_METRICS_CONFIG: RC.INSTRUMENTATION.METRICS.config,
+  PROTOCOL_VERSIONS: getProtocolVersions(DEFAULT_PROTOCOL_VERSION, RC.PROTOCOL_VERSIONS)
 }
