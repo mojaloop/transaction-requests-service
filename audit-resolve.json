@@ -29,6 +29,11 @@
       "decision": "ignore",
       "madeAt": 1635505274932,
       "expiresAt": 1638097266206
+    },
+    "1004784|hapi-swagger>swagger-parser>z-schema>validator": {
+      "decision": "ignore",
+      "madeAt": 1636105704685,
+      "expiresAt": 1638697697505
     }
   },
   "rules": {},
