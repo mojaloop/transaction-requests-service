@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [12.0.1](https://github.com/mojaloop/transaction-requests-service/compare/v12.0.0...v12.0.1) (2021-11-05)
+
+
+### Bug Fixes
+
+* **mojaloop/#2537:** fspiop api version negotiation not handled ([#81](https://github.com/mojaloop/transaction-requests-service/issues/81)) ([32b899e](https://github.com/mojaloop/transaction-requests-service/commit/32b899e3784d72b3aa452d09e9f2bfc044fe0aa8)), closes [mojaloop/#2537](https://github.com/mojaloop/transaction-requests-service/issues/2537) [mojaloop/#2537](https://github.com/mojaloop/transaction-requests-service/issues/2537)
+
 ## [12.0.0](https://github.com/mojaloop/transaction-requests-service/compare/v11.1.7...v12.0.0) (2021-11-03)
 
 
