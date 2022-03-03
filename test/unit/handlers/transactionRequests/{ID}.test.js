@@ -68,7 +68,7 @@ describe('/transactionRequests/{ID}', () => {
 
     it('returns a 406 with invalid protocol version for content-type', async () => {
       const tempProtocolVersion = JSON.parse(JSON.stringify(Config.PROTOCOL_VERSIONS)) // We want to make a deep clone of the config
-      tempProtocolVersion.CONTENT = '0.1' // This is an invalid FSPIOP protocol version
+      tempProtocolVersion.CONTENT.DEFAULT = '0.1' // This is an invalid FSPIOP protocol version
       const headers = await Mockgen.generateRequestHeaders(path, method, resource, tempProtocolVersion)
 
       // Arrange

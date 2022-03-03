@@ -34,6 +34,69 @@
       "decision": "ignore",
       "madeAt": 1636105704685,
       "expiresAt": 1638697697505
+    },
+    "1004946|@mojaloop/event-sdk>grpc>@mapbox/node-pre-gyp>npmlog>gauge>string-width>strip-ansi>ansi-regex": {
+      "decision": "ignore",
+      "madeAt": 1646314858704,
+      "expiresAt": 1648906832971
+    },
+    "1006899|@mojaloop/central-services-shared>widdershins>node-fetch": {
+      "decision": "fix",
+      "madeAt": 1646314909570
+    },
+    "1006899|@mojaloop/event-sdk>grpc>@mapbox/node-pre-gyp>node-fetch": {
+      "decision": "fix",
+      "madeAt": 1646314909570
+    },
+    "1004869|@mojaloop/central-services-shared>widdershins>swagger2openapi>better-ajv-errors>jsonpointer": {
+      "decision": "ignore",
+      "madeAt": 1646314912848,
+      "expiresAt": 1648906832971
+    },
+    "1004869|@mojaloop/central-services-shared>widdershins>swagger2openapi>oas-validator>better-ajv-errors>jsonpointer": {
+      "decision": "ignore",
+      "madeAt": 1646314912848,
+      "expiresAt": 1648906832971
+    },
+    "1004876|hapi-swagger>swagger-parser>z-schema>validator": {
+      "decision": "ignore",
+      "madeAt": 1646314914214,
+      "expiresAt": 1648906832971
+    },
+    "1004946|@mojaloop/central-services-shared>widdershins>yargs>string-width>strip-ansi>ansi-regex": {
+      "decision": "ignore",
+      "madeAt": 1646314915282,
+      "expiresAt": 1648906832971
+    },
+    "1004946|@mojaloop/central-services-shared>widdershins>yargs>cliui>string-width>strip-ansi>ansi-regex": {
+      "decision": "ignore",
+      "madeAt": 1646314915282,
+      "expiresAt": 1648906832971
+    },
+    "1005383|@mojaloop/central-services-shared>shins>sanitize-html": {
+      "decision": "ignore",
+      "madeAt": 1646314916416,
+      "expiresAt": 1648906832971
+    },
+    "1005384|@mojaloop/central-services-shared>shins>sanitize-html": {
+      "decision": "ignore",
+      "madeAt": 1646314916416,
+      "expiresAt": 1648906832971
+    },
+    "1005534|@mojaloop/central-services-shared>widdershins>yargs>yargs-parser": {
+      "decision": "ignore",
+      "madeAt": 1646314918481,
+      "expiresAt": 1648906832971
+    },
+    "1006886|@mojaloop/central-services-shared>shins>markdown-it": {
+      "decision": "ignore",
+      "madeAt": 1646314920247,
+      "expiresAt": 1648906832971
+    },
+    "1007017|@mojaloop/central-services-shared>widdershins>swagger2openapi>oas-validator>ajv": {
+      "decision": "ignore",
+      "madeAt": 1646314921354,
+      "expiresAt": 1648906832971
     }
   },
   "rules": {},
