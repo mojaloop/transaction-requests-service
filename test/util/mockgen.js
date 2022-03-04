@@ -84,7 +84,7 @@ const generateRequestHeaders = async (path, httpMethod, resource, protocolVersio
   const defaultHeaderRefs = [
     {
       id: 'content-type',
-      pattern: `application/vnd\\.interoperability\\.${resource}\\+json;version=${protocolVersions.CONTENT.toString().replace('.', '\\.')}`
+      pattern: `application/vnd\\.interoperability\\.${resource}\\+json;version=${protocolVersions.CONTENT.DEFAULT.toString().replace('.', '\\.')}`
     },
     {
       id: 'accept',

@@ -52,7 +52,7 @@ function defaultHeaders (resource, protocolVersions) {
   return {
     accept: `application/vnd.interoperability.${resource}+json;version=${protocolVersions.ACCEPT.DEFAULT}`,
     'fspiop-destination': destinationFsp,
-    'content-type': `application/vnd.interoperability.${resource}+json;version=${protocolVersions.CONTENT}`,
+    'content-type': `application/vnd.interoperability.${resource}+json;version=${protocolVersions.CONTENT.DEFAULT}`,
     date: '2019-05-24 08:52:19',
     'fspiop-source': sourceFsp
   }
