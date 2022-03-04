@@ -97,6 +97,61 @@
       "decision": "ignore",
       "madeAt": 1646314921354,
       "expiresAt": 1648906832971
+    },
+    "1007326|@mojaloop/event-sdk>grpc>@mapbox/node-pre-gyp>npmlog>gauge>string-width>strip-ansi>ansi-regex": {
+      "decision": "ignore",
+      "madeAt": 1646395106637,
+      "expiresAt": 1648987098674
+    },
+    "1007144|@mojaloop/central-services-shared>shins>markdown-it": {
+      "decision": "ignore",
+      "madeAt": 1646395107627,
+      "expiresAt": 1648987098674
+    },
+    "1007244|@mojaloop/central-services-shared>widdershins>swagger2openapi>better-ajv-errors>jsonpointer": {
+      "decision": "ignore",
+      "madeAt": 1646395108495,
+      "expiresAt": 1648987098674
+    },
+    "1007244|@mojaloop/central-services-shared>widdershins>swagger2openapi>oas-validator>better-ajv-errors>jsonpointer": {
+      "decision": "ignore",
+      "madeAt": 1646395108495,
+      "expiresAt": 1648987098674
+    },
+    "1007251|hapi-swagger>swagger-parser>z-schema>validator": {
+      "decision": "ignore",
+      "madeAt": 1646395109380,
+      "expiresAt": 1648987098674
+    },
+    "1007326|@mojaloop/central-services-shared>widdershins>yargs>string-width>strip-ansi>ansi-regex": {
+      "decision": "ignore",
+      "madeAt": 1646395110369,
+      "expiresAt": 1648987098674
+    },
+    "1007326|@mojaloop/central-services-shared>widdershins>yargs>cliui>string-width>strip-ansi>ansi-regex": {
+      "decision": "ignore",
+      "madeAt": 1646395110369,
+      "expiresAt": 1648987098674
+    },
+    "1007644|@mojaloop/central-services-shared>widdershins>swagger2openapi>oas-validator>ajv": {
+      "decision": "ignore",
+      "madeAt": 1646395111371,
+      "expiresAt": 1648987098674
+    },
+    "1007852|@mojaloop/central-services-shared>shins>sanitize-html": {
+      "decision": "ignore",
+      "madeAt": 1646395112389,
+      "expiresAt": 1648987098674
+    },
+    "1007853|@mojaloop/central-services-shared>shins>sanitize-html": {
+      "decision": "ignore",
+      "madeAt": 1646395112389,
+      "expiresAt": 1648987098674
+    },
+    "1008008|@mojaloop/central-services-shared>widdershins>yargs>yargs-parser": {
+      "decision": "ignore",
+      "madeAt": 1646395113780,
+      "expiresAt": 1648987098674
     }
   },
   "rules": {},
