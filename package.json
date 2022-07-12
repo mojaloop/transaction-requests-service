@@ -1,7 +1,7 @@
 {
   "name": "transaction-requests-service",
   "description": "An asynchronous pass through transaction request API for merchant payment initiated requests.",
-  "version": "14.0.0-snapshot.0",
+  "version": "14.0.0-snapshot.1",
   "license": "Apache-2.0",
   "author": "ModusBox",
   "contributors": [
