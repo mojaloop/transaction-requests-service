@@ -82,8 +82,8 @@
   },
   "devDependencies": {
     "@mojaloop/ml-testing-toolkit-shared-lib": "12.2.0",
-    "@types/jest": "28.1.4",
-    "eslint": "8.0.1",
+    "@types/jest": "28.1.5",
+    "eslint": "8.19.0",
     "eslint-config-standard": "17.0.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-node": "11.1.0",
@@ -97,6 +97,7 @@
     "npm-audit-resolver": "3.0.0-7",
     "npm-check-updates": "15.2.6",
     "pre-commit": "1.2.2",
+    "replace": "^1.2.1",
     "sinon": "14.0.0",
     "standard": "17.0.0",
     "standard-version": "9.5.0"
@@ -120,5 +121,10 @@
     "exclude": [
       "**/node_modules/**"
     ]
+  },
+  "standard-version": {
+    "scripts": {
+      "postchangelog": "replace '\\[mojaloop/#(\\d+)\\]\\(https://github.com/mojaloop/(.*)/issues/(\\d+)\\)' '[mojaloop/#$1](https://github.com/mojaloop/project/issues/$1)' CHANGELOG.md"
+    }
   }
 }
