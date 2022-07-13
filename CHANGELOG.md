@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [14.0.0](https://github.com/mojaloop/transaction-requests-service/compare/v13.0.0...v14.0.0) (2022-07-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade node to lts, ci, image, packages, audit (#90)
+
+### Features
+
+* upgrade node to lts, ci, image, packages, audit ([#90](https://github.com/mojaloop/transaction-requests-service/issues/90)) ([0b14d0a](https://github.com/mojaloop/transaction-requests-service/commit/0b14d0ad19d64924a4aba6892afd8e893579db33))
+
 ## [13.0.0](https://github.com/mojaloop/transaction-requests-service/compare/v12.0.1...v13.0.0) (2022-03-04)
 
 
@@ -47,14 +58,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* **mojaloop/#2704:** core-services support for non-breaking backward api compatibility ([#85](https://github.com/mojaloop/transaction-requests-service/issues/85)) ([974c66d](https://github.com/mojaloop/transaction-requests-service/commit/974c66d517bc0e6becb6fe3c340dfe0b5eca303e)), closes [mojaloop/#2704](https://github.com/mojaloop/transaction-requests-service/issues/2704) [mojaloop/#2704](https://github.com/mojaloop/transaction-requests-service/issues/2704)
+* **mojaloop/#2704:** core-services support for non-breaking backward api compatibility ([#85](https://github.com/mojaloop/transaction-requests-service/issues/85)) ([974c66d](https://github.com/mojaloop/transaction-requests-service/commit/974c66d517bc0e6becb6fe3c340dfe0b5eca303e)), closes [mojaloop/#2704](https://github.com/mojaloop/project/issues/2704)
 
 ### [12.0.1](https://github.com/mojaloop/transaction-requests-service/compare/v12.0.0...v12.0.1) (2021-11-05)
 
 
 ### Bug Fixes
 
-* **mojaloop/#2537:** fspiop api version negotiation not handled ([#81](https://github.com/mojaloop/transaction-requests-service/issues/81)) ([32b899e](https://github.com/mojaloop/transaction-requests-service/commit/32b899e3784d72b3aa452d09e9f2bfc044fe0aa8)), closes [mojaloop/#2537](https://github.com/mojaloop/transaction-requests-service/issues/2537) [mojaloop/#2537](https://github.com/mojaloop/transaction-requests-service/issues/2537)
+* **mojaloop/#2537:** fspiop api version negotiation not handled ([#81](https://github.com/mojaloop/transaction-requests-service/issues/81)) ([32b899e](https://github.com/mojaloop/transaction-requests-service/commit/32b899e3784d72b3aa452d09e9f2bfc044fe0aa8)), closes [mojaloop/#2537](https://github.com/mojaloop/project/issues/2537)
 
 ## [12.0.0](https://github.com/mojaloop/transaction-requests-service/compare/v11.1.7...v12.0.0) (2021-11-03)
 
@@ -65,7 +76,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* **mojaloop/#2537:** fspiop api version negotiation not handled ([#80](https://github.com/mojaloop/transaction-requests-service/issues/80)) ([7109cf9](https://github.com/mojaloop/transaction-requests-service/commit/7109cf9fe3fe773b048da0bf5772172ff9dd438c)), closes [mojaloop/#2537](https://github.com/mojaloop/transaction-requests-service/issues/2537) [mojaloop/#2537](https://github.com/mojaloop/transaction-requests-service/issues/2537)
+* **mojaloop/#2537:** fspiop api version negotiation not handled ([#80](https://github.com/mojaloop/transaction-requests-service/issues/80)) ([7109cf9](https://github.com/mojaloop/transaction-requests-service/commit/7109cf9fe3fe773b048da0bf5772172ff9dd438c)), closes [mojaloop/#2537](https://github.com/mojaloop/project/issues/2537)
 
 ### [11.1.7](https://github.com/mojaloop/transaction-requests-service/compare/v11.1.6...v11.1.7) (2021-09-14)
 
