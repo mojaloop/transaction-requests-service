@@ -10,8 +10,6 @@ jest.mock('@mojaloop/central-services-logger', () => {
 
 const Sinon = require('sinon')
 const Hapi = require('@hapi/hapi')
-const ErrorHandler = require('@mojaloop/central-services-error-handling')
-const Logger = require('@mojaloop/central-services-logger')
 
 const Mockgen = require('../../../../util/mockgen.js')
 const Helper = require('../../../../util/helper')
@@ -28,8 +26,12 @@ describe('/transactionRequests/{ID}/error', () => {
 
   beforeAll(async () => {
     sandbox = Sinon.createSandbox()
-    sandbox.stub(Handler, 'forwardTransactionRequestError').returns(Promise.resolve())
+    // sandbox.stub(Handler, 'forwardTransactionRequestError').returns(Promise.resolve())
     await Helper.serverSetup(server)
+  })
+
+  beforeEach(() => {
+    Handler.forwardTransactionRequestError = jest.fn().mockResolvedValue()
   })
 
   afterAll(() => {
@@ -73,15 +75,16 @@ describe('/transactionRequests/{ID}/error', () => {
         payload: request.body
       }
 
-      const err = new Error('Error occured')
-      Handler.forwardTransactionRequestError = sandbox.stub().throws(err)
+      const err = new Error('Error occurred')
+      Handler.forwardTransactionRequestError.mockImplementation(async () => { throw err })
 
       // Act
       const response = await server.inject(options)
 
       // Assert
-      expect(response.statusCode).toBe(500)
-      expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
+      expect(response.statusCode).toBe(200)
+      expect(Handler.forwardTransactionRequestError).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardTransactionRequestError.mock.results[0].value).rejects.toThrow(err)
     })
   })
 })

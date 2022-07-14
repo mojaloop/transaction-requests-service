@@ -95,7 +95,7 @@
     "jsdoc": "3.6.10",
     "license-checker": "25.0.1",
     "npm-audit-resolver": "3.0.0-7",
-    "npm-check-updates": "15.2.6",
+    "npm-check-updates": "15.3.0",
     "pre-commit": "1.2.2",
     "replace": "^1.2.1",
     "sinon": "14.0.0",
