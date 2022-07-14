@@ -34,6 +34,7 @@ module.exports = {
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
       transactionRequest.forwardTransactionRequestError(request.headers, request.headers['fspiop-destination'], Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, request.params.ID, request.payload, span).catch(err => {
+        // Do nothing with the error - forwardTransactionRequestError takes care of async errors
         request.server.log(['error'], `ERROR - forwardTransactionRequestError: ${LibUtil.getStackOrInspect(err)}`)
       })
       histTimerEnd({ success: true })

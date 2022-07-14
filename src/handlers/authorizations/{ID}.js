@@ -61,6 +61,7 @@ module.exports = {
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
       authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET, span).catch(err => {
+        // Do nothing with the error - forwardAuthorizationMessage takes care of async errors
         request.server.log(['error'], `ERROR - forwardAuthorizationMessage: ${LibUtil.getStackOrInspect(err)}`)
       })
       histTimerEnd({ success: true })
@@ -94,6 +95,7 @@ module.exports = {
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
       authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT, span).catch(err => {
+        // Do nothing with the error - forwardAuthorizationMessage takes care of async errors
         request.server.log(['error'], `ERROR - forwardAuthorizationMessage: ${LibUtil.getStackOrInspect(err)}`)
       })
       histTimerEnd({ success: true })

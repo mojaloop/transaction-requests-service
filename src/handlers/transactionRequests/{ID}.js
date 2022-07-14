@@ -34,6 +34,7 @@ module.exports = {
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
       transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_GET, request.headers, Enum.Http.RestMethods.GET, request.params, request.payload, span).catch(err => {
+        // Do nothing with the error - forwardTransactionRequest takes care of async errors
         request.server.log(['error'], `ERROR - forwardTransactionRequest: ${LibUtil.getStackOrInspect(err)}`)
       })
       histTimerEnd({ success: true })
@@ -67,6 +68,7 @@ module.exports = {
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
       transactionRequest.forwardTransactionRequest(Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT, request.headers, Enum.Http.RestMethods.PUT, request.params, request.payload, span).catch(err => {
+        // Do nothing with the error - forwardTransactionRequest takes care of async errors
         request.server.log(['error'], `ERROR - forwardTransactionRequest: ${LibUtil.getStackOrInspect(err)}`)
       })
       histTimerEnd({ success: true })

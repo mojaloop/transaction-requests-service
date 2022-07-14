@@ -61,6 +61,7 @@ module.exports = {
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
       authorizations.forwardAuthorizationError(request.headers, request.params.ID, request.payload, span).catch(err => {
+        // Do nothing with the error - forwardAuthorizationError takes care of async errors
         request.server.log(['error'], `ERROR - forwardAuthorizationError: ${LibUtil.getStackOrInspect(err)}`)
       })
       histTimerEnd({ success: true })
