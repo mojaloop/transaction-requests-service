@@ -10,8 +10,6 @@ jest.mock('@mojaloop/central-services-logger', () => {
 
 const Sinon = require('sinon')
 const Hapi = require('@hapi/hapi')
-const ErrorHandler = require('@mojaloop/central-services-error-handling')
-const Logger = require('@mojaloop/central-services-logger')
 
 const Mockgen = require('../../../util/mockgen.js')
 const Helper = require('../../../util/helper')
@@ -39,7 +37,7 @@ describe('/transactionRequests/{ID}', () => {
   })
 
   beforeEach(() => {
-    sandbox.stub(Handler, 'forwardTransactionRequest').returns(Promise.resolve())
+    Handler.forwardTransactionRequest = jest.fn().mockResolvedValue()
   })
 
   afterEach(() => {
@@ -116,15 +114,16 @@ describe('/transactionRequests/{ID}', () => {
         url: path,
         headers
       }
-      const err = new Error('Error occured')
-      Handler.forwardTransactionRequest = sandbox.stub().throws(err)
+      const err = new Error('Error occurred')
+      Handler.forwardTransactionRequest.mockImplementation(async () => { throw err })
 
       // Act
       const response = await server.inject(options)
 
       // Assert
-      expect(response.statusCode).toBe(500)
-      expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
+      expect(Handler.forwardTransactionRequest).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardTransactionRequest.mock.results[0].value).rejects.toThrow(err)
+      expect(response.statusCode).toBe(202)
     })
   })
 
@@ -161,15 +160,16 @@ describe('/transactionRequests/{ID}', () => {
         payload: request.body
       }
 
-      const err = new Error('Error occured')
-      Handler.forwardTransactionRequest = sandbox.stub().throws(err)
+      const err = new Error('Error occurred')
+      Handler.forwardTransactionRequest.mockImplementation(async () => { throw err })
 
       // Act
       const response = await server.inject(options)
 
       // Assert
-      expect(response.statusCode).toBe(500)
-      expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
+      expect(response.statusCode).toBe(200)
+      expect(Handler.forwardTransactionRequest).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardTransactionRequest.mock.results[0].value).rejects.toThrow(err)
     })
   })
 })

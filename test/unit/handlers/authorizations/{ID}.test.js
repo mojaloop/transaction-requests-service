@@ -15,8 +15,6 @@ jest.mock('../../../../src/domain/authorizations/authorizations', () => {
 })
 
 const Hapi = require('@hapi/hapi')
-const ErrorHandler = require('@mojaloop/central-services-error-handling')
-const Logger = require('@mojaloop/central-services-logger')
 
 const Mockgen = require('../../../util/mockgen.js')
 const Helper = require('../../../util/helper')
@@ -89,15 +87,16 @@ describe('/authorizations/{ID}', () => {
         headers: request.headers
       }
 
-      const err = new Error('Error occured')
-      Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
+      const err = new Error('Error occurred')
+      Handler.forwardAuthorizationMessage.mockImplementation(async () => { throw err })
 
       // Act
       const response = await server.inject(options)
 
       // Assert
-      expect(response.statusCode).toBe(500)
-      expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
+      expect(response.statusCode).toBe(202)
+      expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardAuthorizationMessage.mock.results[0].value).rejects.toThrow(err)
     })
   })
 
@@ -137,15 +136,16 @@ describe('/authorizations/{ID}', () => {
         payload: request.body
       }
 
-      const err = new Error('Error occured')
-      Handler.forwardAuthorizationMessage.mockImplementation(() => { throw err })
+      const err = new Error('Error occurred')
+      Handler.forwardAuthorizationMessage.mockImplementation(async () => { throw err })
 
       // Act
       const response = await server.inject(options)
 
       // Assert
-      expect(response.statusCode).toBe(500)
-      expect(Logger.error).toHaveBeenCalledWith(ErrorHandler.Factory.reformatFSPIOPError(err))
+      expect(response.statusCode).toBe(200)
+      expect(Handler.forwardAuthorizationMessage).toHaveBeenCalledTimes(1)
+      expect(Handler.forwardAuthorizationMessage.mock.results[0].value).rejects.toThrow(err)
     })
   })
 })

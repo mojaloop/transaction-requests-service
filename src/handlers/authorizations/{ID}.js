@@ -60,7 +60,10 @@ module.exports = {
         headers: request.headers,
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET, span)
+      authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.query, Enum.Http.RestMethods.GET, span).catch(err => {
+        // Do nothing with the error - forwardAuthorizationMessage takes care of async errors
+        request.server.log(['error'], `ERROR - forwardAuthorizationMessage: ${LibUtil.getStackOrInspect(err)}`)
+      })
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.ACCEPTED.CODE)
     } catch (err) {
@@ -91,7 +94,10 @@ module.exports = {
         headers: request.headers,
         payload: request.payload
       }, EventSdk.AuditEventAction.start)
-      authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT, span)
+      authorizations.forwardAuthorizationMessage(request.headers, request.params.ID, request.payload, Enum.Http.RestMethods.PUT, span).catch(err => {
+        // Do nothing with the error - forwardAuthorizationMessage takes care of async errors
+        request.server.log(['error'], `ERROR - forwardAuthorizationMessage: ${LibUtil.getStackOrInspect(err)}`)
+      })
       histTimerEnd({ success: true })
       return h.response().code(Enum.Http.ReturnCodes.OK.CODE)
     } catch (err) {

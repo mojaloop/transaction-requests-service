@@ -1,7 +1,7 @@
 {
   "name": "transaction-requests-service",
   "description": "An asynchronous pass through transaction request API for merchant payment initiated requests.",
-  "version": "14.0.0",
+  "version": "14.0.1-snapshot.0",
   "license": "Apache-2.0",
   "author": "ModusBox",
   "contributors": [
@@ -95,7 +95,7 @@
     "jsdoc": "3.6.10",
     "license-checker": "25.0.1",
     "npm-audit-resolver": "3.0.0-7",
-    "npm-check-updates": "15.2.6",
+    "npm-check-updates": "15.3.2",
     "pre-commit": "1.2.2",
     "replace": "^1.2.1",
     "sinon": "14.0.0",
