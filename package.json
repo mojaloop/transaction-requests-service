@@ -48,8 +48,8 @@
     "package-lock": "docker run --rm -it transaction-requests-service:local cat package-lock.json > package-lock.json",
     "docker:up": "docker-compose -f docker-compose.yml -f docker-compose.base.yml up",
     "docker:stop": "docker-compose -f docker-compose.yml -f docker-compose.base.yml stop",
-    "audit:resolve": "resolve-audit --production",
-    "audit:check": "check-audit --production",
+    "audit:fix": "npm audit fix",
+    "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
     "license:list": "license-checker . --excludePackages `cat .licenseignore | grep '^[^#;]' | awk 'BEGIN { ORS=\"\" } { print p$0\";\"; } END { print \n }'` --production --csv",
     "license:check": "npm run license:list -- --failOn `cat .licensebanned | grep '^[^#;]' | awk 'BEGIN { ORS=\"\" } { print p$0\";\"; } END { print \n }'`",
     "dep:check": "npx ncu -e 2",
@@ -83,6 +83,7 @@
   "devDependencies": {
     "@mojaloop/ml-testing-toolkit-shared-lib": "13.0.0",
     "@types/jest": "29.2.3",
+    "audit-ci": "^6.3.0",
     "eslint": "8.28.0",
     "eslint-config-standard": "17.0.0",
     "eslint-plugin-import": "2.26.0",
