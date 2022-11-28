@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [14.1.0](https://github.com/mojaloop/transaction-requests-service/compare/v14.0.1...v14.1.0) (2022-11-28)
+
+
+### Features
+
+* **mojaloop/#2740:** add test currencies to api ([#92](https://github.com/mojaloop/transaction-requests-service/issues/92)) ([1742336](https://github.com/mojaloop/transaction-requests-service/commit/1742336e059a0c401892470c8f91f5ddf5687bff)), closes [mojaloop/#2740](https://github.com/mojaloop/project/issues/2740)
+
 ### [14.0.1](https://github.com/mojaloop/transaction-requests-service/compare/v14.0.0...v14.0.1) (2022-07-14)
 
 
