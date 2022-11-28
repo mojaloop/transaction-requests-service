@@ -336,7 +336,7 @@ paths:
           description: 'a valid enumeration for the authentication type: OTP, QRCODE'
           in: query
           required: true
-          schema: 
+          schema:
             $ref: '#/components/schemas/AuthenticationType'
         - name: retriesLeft
           description: >-
@@ -352,7 +352,7 @@ paths:
             account
           in: query
           required: true
-          schema: 
+          schema:
             $ref: '#/components/schemas/Amount'
         - name: currency
           description: >-
@@ -360,7 +360,7 @@ paths:
             the Payer’s account
           in: query
           required: true
-          schema: 
+          schema:
             $ref: '#/components/schemas/Currency'
       responses:
         '200':
@@ -1091,6 +1091,8 @@ components:
         - XDR
         - XOF
         - XPF
+        - XTS
+        - XXX
         - YER
         - ZAR
         - ZMW
