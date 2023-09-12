@@ -265,7 +265,7 @@ jobs:
           command: mkdir -p ./test/results
       - run:
           name: Execute unit tests
-          command: npm run test:xunit
+          command: npm run test:unit
       - store_artifacts:
           path: ./test/results
           destination: test
@@ -323,100 +323,6 @@ jobs:
           root: /tmp
           paths:
             - ./docker-image.tar
-
-  # test-integration:
-  #   executor: default-machine
-  #   environment:
-  #     <<: *defaults_environment
-  #   steps:
-  #     - run:
-  #         name: Install general dependencies
-  #         command: *defaults_machine_Dependencies
-  #     - checkout
-  #     - run:
-  #         <<: *defaults_configure_nvm
-  #     - run:
-  #         <<: *defaults_display_versions
-  #     - restore_cache:
-  #         name: Restore npm Package Cache
-  #         key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
-  #     - run:
-  #         name: Update NPM install
-  #         command: |
-  #           # Set Node version to default (Note: this is needed on Ubuntu)
-  #           nvm use default
-
-  #           # Install dependencies
-  #           npm ci
-  #     - run:
-  #         name: Create dir for test results
-  #         command: mkdir -p ./test/results
-  #     - attach_workspace:
-  #         at: /tmp
-  #     - run:
-  #         name: Load the pre-built docker image from workspace
-  #         command: docker load -i /tmp/docker-image.tar
-  #     ## This shouldn't be needed as the docker image is pre-built by build-local job
-  #     # - run:
-  #     #     name: Build docker-compose
-  #     #     command: |
-  #     #       docker-compose build
-  #     # - run:
-  #     #     name: Pull docker containers
-  #     #     command: |
-  #     #       docker-compose pull
-  #     - run:
-  #         name: Start docker-compose
-  #         command: |
-  #           docker-compose up -d
-
-  #           # Check straight away to see if any containers have exited
-  #           docker-compose ps
-  #     - run:
-  #         name: Wait for Health Services
-  #         command: |
-  #           # Set Node version to default (Note: this is needed on Ubuntu)
-  #           nvm use default
-
-  #           # wait for services to be up and running
-  #           npm run wait-4-docker
-  #     - run:
-  #         name: Execute Integration Tests
-  #         command: |
-  #           # Set Node version to default (Note: this is needed on Ubuntu)
-  #           nvm use default
-
-  #           # check service health
-  #           curl localhost:4001/health && \
-
-  #           # run integration tests
-  #           npm run test:int | tee ./test/results/test-int.log
-  #         environment:
-  #           ENDPOINT_URL: http://localhost:4545/notification
-  #     - store_artifacts:
-  #         path: ./test/results
-  #         destination: test
-  #     - store_test_results:
-  #         path: ./test/results
-
-  # test-functional:
-  #   executor: default-machine
-  #   environment:
-  #     <<: *defaults_environment
-  #     ML_CORE_TEST_HARNESS_DIR: /tmp/ml-core-test-harness
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: /tmp
-  #     - run:
-  #         name: Load the pre-built docker image from workspace
-  #         command: docker load -i /tmp/docker-image.tar
-  #     - run:
-  #         name: Execute TTK functional tests
-  #         command: bash ./scripts/test-functional.sh
-  #     - store_artifacts:
-  #         path: /tmp/ml-core-test-harness/reports
-  #         destination: test
 
   vulnerability-check:
     executor: default-docker
@@ -837,30 +743,6 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-      # - test-integration:
-      #     context: org-global
-      #     requires:
-      #       - setup
-      #       - build-local
-      #     filters:
-      #       tags:
-      #         only: /.*/
-      #       branches:
-      #         ignore:
-      #           - /feature*/
-      #           - /bugfix*/
-      # - test-functional:
-      #     context: org-global
-      #     requires:
-      #       - setup
-      #       - build-local
-      #     filters:
-      #       tags:
-      #         only: /.*/
-      #       branches:
-      #         ignore:
-      #           - /feature*/
-      #           - /bugfix*/
       - vulnerability-check:
           context: org-global
           requires:
@@ -912,8 +794,6 @@ workflows:
             - test-lint
             - test-unit
             - test-coverage
-            # - test-integration
-            # - test-functional
             - vulnerability-check
             - audit-licenses
             - license-scan
@@ -940,8 +820,6 @@ workflows:
             - test-lint
             - test-unit
             - test-coverage
-            # - test-integration
-            # - test-functional
             - vulnerability-check
             - audit-licenses
             - license-scan
@@ -960,8 +838,6 @@ workflows:
             - test-lint
             - test-unit
             - test-coverage
-            # - test-integration
-            # - test-functional
             - vulnerability-check
             - audit-licenses
             - license-scan

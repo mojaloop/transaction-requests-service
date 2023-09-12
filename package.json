@@ -34,7 +34,7 @@
   "scripts": {
     "start": "node src/index.js api",
     "test": "npm run test:unit",
-    "test:xunit": "jest --testMatch '**/test/unit/**/*.test.js'",
+    "test:unit": "jest --testMatch '**/test/unit/**/*.test.js'",
     "test:junit": "jest --reporters=default --reporters=jest-junit --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage": "jest --coverage --coverageThreshold='{}' --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage-check": "jest --coverage --testMatch '**/test/unit/**/*.test.js'",
@@ -91,7 +91,7 @@
     "eslint-plugin-promise": "6.1.1",
     "eslint-plugin-standard": "5.0.0",
     "get-port": "5.1.1",
-    "jest": "29.6.4",
+    "jest": "29.7.0",
     "jest-junit": "16.0.0",
     "jsdoc": "4.0.2",
     "license-checker": "25.0.1",
