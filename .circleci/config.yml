@@ -265,7 +265,7 @@ jobs:
           command: mkdir -p ./test/results
       - run:
           name: Execute unit tests
-          command: npm run test:unit
+          command: npm run test:junit
       - store_artifacts:
           path: ./test/results
           destination: test
