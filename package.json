@@ -35,7 +35,7 @@
     "start": "node src/index.js api",
     "test": "npm run test:unit",
     "test:unit": "jest --testMatch '**/test/unit/**/*.test.js'",
-    "test:xunit": "npm run test:unit | tap-xunit > ./test/results/xunit.xml",
+    "test:junit": "JEST_JUNIT_OUTPUT_DIR='./test/results' JEST_JUNIT_OUTPUT_NAME='junit.xml' jest --reporters=default --reporters=jest-junit --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage": "jest --coverage --coverageThreshold='{}' --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage-check": "jest --coverage --testMatch '**/test/unit/**/*.test.js'",
     "lint": "npm run standard",
@@ -101,8 +101,7 @@
     "replace": "^1.2.2",
     "sinon": "16.0.0",
     "standard": "17.1.0",
-    "standard-version": "9.5.0",
-    "tap-xunit": "^2.4.1"
+    "standard-version": "9.5.0"
   },
   "nyc": {
     "temp-directory": "./.nyc_output",
