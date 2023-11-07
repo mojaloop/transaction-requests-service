@@ -9,9 +9,8 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.12.5 # Ref: https://github.com/mojaloop/ci-config/tree/master/slack-templates
   pr-tools: mojaloop/pr-tools@0.1.10 # Ref: https://github.com/mojaloop/ci-config/
-  gh: circleci/github-cli@2.1.0 # Ref: https://github.com/CircleCI-Public/github-cli-orb
+  gh: circleci/github-cli@2.2.0 # Ref: https://github.com/CircleCI-Public/github-cli-orb
   anchore: anchore/anchore-engine@1.9.0
-  deploy-kube: mojaloop/deployment@0.1.6
 
 ##
 # defaults
@@ -29,16 +28,6 @@ defaults_docker_Dependencies: &defaults_docker_Dependencies |
   apk --no-cache add -t build-dependencies make gcc g++ python3 libtool autoconf automake jq
   apk --no-cache add -t openssl ncurses coreutils libgcc linux-headers grep util-linux binutils findutils
   apk --no-cache add librdkafka-dev
-
-## Default 'default-machine' executor dependencies
-defaults_machine_Dependencies: &defaults_machine_Dependencies |
-  ## Add Package Repos
-  ## Ref: https://docs.confluent.io/platform/current/installation/installing_cp/deb-ubuntu.html#get-the-software
-  wget -qO - https://packages.confluent.io/deb/7.4/archive.key | sudo apt-key add -
-  sudo add-apt-repository -y "deb https://packages.confluent.io/clients/deb $(lsb_release -cs) main"
-
-  ## Install deps
-  sudo apt install -y librdkafka-dev curl bash
 
 defaults_awsCliDependencies: &defaults_awsCliDependencies |
     apk --no-cache add aws-cli
@@ -675,7 +664,6 @@ jobs:
 # CircleCI Workflow config
 ##
 workflows:
-  version: 2
   build_and_test:
     jobs:
       - pr-tools/pr-title-check:
