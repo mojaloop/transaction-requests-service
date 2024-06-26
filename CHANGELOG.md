@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [14.2.0](https://github.com/mojaloop/transaction-requests-service/compare/v14.1.3...v14.2.0) (2024-06-26)
+
+
+### Features
+
+* **csi-164:** parameterize switch id ([#103](https://github.com/mojaloop/transaction-requests-service/issues/103)) ([3910a66](https://github.com/mojaloop/transaction-requests-service/commit/3910a66c5512bba003140579d6a33a7d893d11d7))
+
 ### [14.1.3](https://github.com/mojaloop/transaction-requests-service/compare/v14.1.2...v14.1.3) (2024-06-12)
 
 
