@@ -185,7 +185,7 @@ describe('Authorizations', () => {
       // Assert
       const expectedErrorHeaders = Object.assign(headers, { 'fspiop-source': Config.HUB_NAME, 'fspiop-destination': headers['fspiop-source'] })
       expect(Request.sendRequest).toHaveBeenCalledTimes(2)
-      const args = Request.sendRequest.mock.calls[0][0]
+      const args = Request.sendRequest.mock.calls[1][0]
       expect(args.url).toEqual('http://dfsp1/authorizations/aef-123/error')
       expect(args.headers).toEqual(expectedErrorHeaders)
       expect(args.source).toEqual(Config.HUB_NAME)
