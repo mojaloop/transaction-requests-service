@@ -27,8 +27,7 @@
 const { Server } = require('@hapi/hapi')
 const Logger = require('@mojaloop/central-services-logger')
 const Metrics = require('@mojaloop/central-services-metrics')
-const Endpoints = require('@mojaloop/central-services-shared').Util.Endpoints
-const OpenapiBackend = require('@mojaloop/central-services-shared').Util.OpenapiBackend
+const { Endpoints, OpenapiBackend, HeaderValidation } = require('@mojaloop/central-services-shared').Util
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Path = require('path')
 
@@ -37,6 +36,9 @@ const Plugins = require('./plugins')
 const ServerHandler = require('./handlers/server')
 const Routes = require('./handlers/routes')
 const Config = require('./lib/config.js')
+
+const hubNameRegex = HeaderValidation.getHubNameRegex(Config.HUB_NAME)
+
 /**
  * @function createServer
  *
@@ -80,7 +82,7 @@ const initializeInstrumentation = () => {
 const initialize = async (port = Config.PORT) => {
   const server = await createServer(port)
   Logger.info(`Server running on ${server.info.host}:${server.info.port}`)
-  await Endpoints.initializeCache(Config.ENDPOINT_CACHE_CONFIG)
+  await Endpoints.initializeCache(Config.ENDPOINT_CACHE_CONFIG, { hubName: Config.HUB_NAME, hubNameRegex })
   initializeInstrumentation()
   return server
 }

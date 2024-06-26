@@ -30,13 +30,15 @@
 const Logger = require('@mojaloop/central-services-logger')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Enum = require('@mojaloop/central-services-shared').Enum
-const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
+const { Endpoints, HeaderValidation, Request: requests } = require('@mojaloop/central-services-shared').Util
 const EventSdk = require('@mojaloop/event-sdk')
-const requests = require('@mojaloop/central-services-shared').Util.Request
 const util = require('util')
 
 const Config = require('../../lib/config.js')
 const { getStackOrInspect } = require('../../lib/util')
+
+const hubNameRegex = HeaderValidation.getHubNameRegex(Config.HUB_NAME)
+const responseType = Enum.Http.ResponseTypes.JSON
 
 /**
  * Forwards GET authorizations endpoint requests to destination FSP for processing
@@ -50,29 +52,29 @@ const { getStackOrInspect } = require('../../lib/util')
 const forwardAuthorizationMessage = async (headers, transactionRequestId, payload, method, span = null) => {
   const childSpan = span ? span.getChild('forwardAuthorizationMessage') : undefined
   let endpoint
-  const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
-  const fspiopDest = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
+  const source = headers[Enum.Http.Headers.FSPIOP.SOURCE]
+  const destination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
   const messageType = method === Enum.Http.RestMethods.GET ? 'request' : 'response'
   const payloadLocal = method === Enum.Http.RestMethods.GET ? undefined : payload
   let fspiopError
 
   try {
-    endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, fspiopDest, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS)
+    endpoint = await Endpoints.getEndpoint(Config.SWITCH_ENDPOINT, destination, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS)
 
     Logger.info(`Resolved party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint for authorizations ${messageType} ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
 
     if (!endpoint) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint found for transactionRequest ${transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, undefined, fspiopSource)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint found for transactionRequest ${transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, undefined, source)
     }
 
     const query = method === Enum.Http.RestMethods.GET ? '?' + (new URLSearchParams(payload).toString()) : ''
-    const fullUrl = `${endpoint}/authorizations/${transactionRequestId}${query}`
+    const url = `${endpoint}/authorizations/${transactionRequestId}${query}`
 
-    Logger.info(`Forwarding authorization request to endpoint: ${fullUrl}`)
+    Logger.info(`Forwarding authorization request to endpoint: ${url}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, payloadLocal, Enum.Http.ResponseTypes.JSON, childSpan)
+    const response = await requests.sendRequest({ url, headers, source, destination, method, payload: payloadLocal, responseType, span: childSpan, hubNameRegex })
 
-    Logger.info(`Forwarding authorization ${messageType} for transactionRequestId ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${response.status} ${response.statusText}`)
+    Logger.info(`Forwarding authorization ${messageType} for transactionRequestId ${transactionRequestId} from ${source} to ${destination} got response ${response.status} ${response.statusText}`)
 
     if (childSpan && !childSpan.isFinished) {
       childSpan.finish()
@@ -84,8 +86,8 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
 
     const errorHeaders = {
       ...headers,
-      'fspiop-source': Enum.Http.Headers.FSPIOP.SWITCH.value,
-      'fspiop-destination': fspiopSource
+      'fspiop-source': Config.HUB_NAME,
+      'fspiop-destination': source
     }
     fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
     await forwardAuthorizationError(errorHeaders, transactionRequestId, fspiopError.toApiErrorObject(Config.ERROR_HANDLING), childSpan)
@@ -110,23 +112,23 @@ const forwardAuthorizationMessage = async (headers, transactionRequestId, payloa
 const forwardAuthorizationError = async (headers, transactionRequestId, payload, span = null) => {
   const childSpan = span ? span.getChild('forwardAuthorizationError') : undefined
   let endpoint
-  const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
-  const fspiopDestination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
+  const source = headers[Enum.Http.Headers.FSPIOP.SOURCE]
+  const destination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
 
   try {
-    endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, fspiopDestination, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS)
+    endpoint = await Endpoints.getEndpoint(Config.SWITCH_ENDPOINT, destination, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS)
     Logger.info(`Resolved party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint for authorization error for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
 
     if (!endpoint) {
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint found to send authorization error for transaction request ${transactionRequestId} for FSP ${fspiopDestination}`, payload, fspiopSource)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_AUTHORIZATIONS} endpoint found to send authorization error for transaction request ${transactionRequestId} for FSP ${destination}`, payload, source)
     }
-    const fullUrl = `${endpoint}/authorizations/${transactionRequestId}/error`
+    const url = `${endpoint}/authorizations/${transactionRequestId}/error`
 
-    Logger.info(`Forwarding authorization error to endpoint: ${fullUrl}`)
+    Logger.info(`Forwarding authorization error to endpoint: ${url}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, Enum.Http.RestMethods.PUT, payload || undefined, Enum.Http.ResponseTypes.JSON, childSpan)
+    const response = await requests.sendRequest({ url, headers, source, destination, method: Enum.Http.RestMethods.PUT, payload, responseType, span: childSpan, hubNameRegex })
 
-    Logger.info(`Forwarding authorization error response for transactionRequest ${transactionRequestId} from ${fspiopSource} to ${fspiopDestination} got response ${response.status} ${response.statusText}`)
+    Logger.info(`Forwarding authorization error response for transactionRequest ${transactionRequestId} from ${source} to ${destination} got response ${response.status} ${response.statusText}`)
 
     if (childSpan && !childSpan.isFinished) {
       childSpan.finish()

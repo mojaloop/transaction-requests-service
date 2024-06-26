@@ -1,4 +1,8 @@
 {
+  "HUB_PARTICIPANT": {
+    "ID": 1,
+    "NAME": "Hub"
+  },
   "PORT": 4003,
   "ENDPOINT_CACHE_CONFIG": {
     "expiresIn": 180000,
