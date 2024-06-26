@@ -213,9 +213,9 @@ describe('Authorizations', () => {
         url: 'http://dfsp2/authorizations/aef-123/error',
         headers,
         source: headers['fspiop-source'],
-        destination: headers['fspiop-destination'], 
-        method: Enum.Http.RestMethods.PUT, 
-        payload: new Error('Error'), 
+        destination: headers['fspiop-destination'],
+        method: Enum.Http.RestMethods.PUT,
+        payload: new Error('Error'),
         responseType: 'json',
         span: SpanMock,
         hubNameRegex
