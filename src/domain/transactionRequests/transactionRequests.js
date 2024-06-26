@@ -28,14 +28,16 @@
 const Logger = require('@mojaloop/central-services-logger')
 const ErrorHandler = require('@mojaloop/central-services-error-handling')
 const Enum = require('@mojaloop/central-services-shared').Enum
-const Endpoint = require('@mojaloop/central-services-shared').Util.Endpoints
+const { Endpoints, Request, HeaderValidation } = require('@mojaloop/central-services-shared').Util
 const EventSdk = require('@mojaloop/event-sdk')
-const requests = require('@mojaloop/central-services-shared').Util.Request
 const Mustache = require('mustache')
 const util = require('util')
 
 const Config = require('../../lib/config.js')
 const { getStackOrInspect } = require('../../lib/util')
+
+const hubNameRegex = HeaderValidation.getHubNameRegex(Config.HUB_NAME)
+const responseType = Enum.Http.ResponseTypes.JSON
 
 /**
  * Forwards transactionRequests endpoint requests to destination FSP for processing
@@ -45,28 +47,28 @@ const { getStackOrInspect } = require('../../lib/util')
 const forwardTransactionRequest = async (path, headers, method, params, payload, span = null) => {
   const childSpan = span ? span.getChild('forwardTransactionRequest') : undefined
   let endpoint
-  const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
-  const fspiopDest = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
+  const source = headers[Enum.Http.Headers.FSPIOP.SOURCE]
+  const destination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
   const payloadLocal = payload || { transactionRequestId: params.ID }
   const transactionRequestId = (payload && payload.transactionRequestId) || params.ID
   let fspiopError
 
   try {
-    endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, fspiopDest, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE)
+    endpoint = await Endpoints.getEndpoint(Config.SWITCH_ENDPOINT, destination, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE)
     Logger.info(`Resolved PAYER party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE} endpoint for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
     if (!endpoint) {
       // we didnt get an endpoint for the payee dfsp!
       // make an error callback to the initiator
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE} endpoint found for transactionRequest ${transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payload : undefined, fspiopSource)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE} endpoint found for transactionRequest ${transactionRequestId} for ${Enum.Http.Headers.FSPIOP.DESTINATION}`, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payload : undefined, source)
     }
-    const fullUrl = Mustache.render(endpoint + path, {
+    const url = Mustache.render(endpoint + path, {
       ID: transactionRequestId
     })
-    Logger.info(`Forwarding transaction request to endpoint: ${fullUrl}`)
+    Logger.info(`Forwarding transaction request to endpoint: ${url}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDest, method, method.toUpperCase() !== Enum.Http.RestMethods.GET ? payloadLocal : undefined, Enum.Http.ResponseTypes.JSON, childSpan)
+    const response = await Request.sendRequest({ url, headers, source, destination, method, payload: method.toUpperCase() !== Enum.Http.RestMethods.GET ? payloadLocal : undefined, responseType, span: childSpan, hubNameRegex })
 
-    Logger.info(`Forwarded transaction request ${transactionRequestId} from ${fspiopSource} to ${fspiopDest} got response ${response.status} ${response.statusText}`)
+    Logger.info(`Forwarded transaction request ${transactionRequestId} from ${source} to ${destination} got response ${response.status} ${response.statusText}`)
 
     if (childSpan && !childSpan.isFinished) {
       childSpan.finish()
@@ -76,7 +78,7 @@ const forwardTransactionRequest = async (path, headers, method, params, payload,
   } catch (err) {
     Logger.info(`Error forwarding transaction request to endpoint ${endpoint}: ${getStackOrInspect(err)}`)
     fspiopError = ErrorHandler.Factory.reformatFSPIOPError(err)
-    await forwardTransactionRequestError(headers, fspiopSource, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, transactionRequestId, fspiopError.toApiErrorObject(Config.ERROR_HANDLING), childSpan)
+    await forwardTransactionRequestError(headers, source, Enum.EndPoints.FspEndpointTemplates.TRANSACTION_REQUEST_PUT_ERROR, Enum.Http.RestMethods.PUT, transactionRequestId, fspiopError.toApiErrorObject(Config.ERROR_HANDLING), childSpan)
     throw fspiopError
   } finally {
     if (childSpan && !childSpan.isFinished && fspiopError) {
@@ -95,26 +97,26 @@ const forwardTransactionRequest = async (path, headers, method, params, payload,
 const forwardTransactionRequestError = async (headers, to, path, method, transactionRequestId, payload, span = null) => {
   const childSpan = span ? span.getChild('forwardTransactionRequestError') : undefined
   let endpoint
-  const fspiopSource = headers[Enum.Http.Headers.FSPIOP.SOURCE]
-  const fspiopDestination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
+  const source = headers[Enum.Http.Headers.FSPIOP.SOURCE]
+  const destination = headers[Enum.Http.Headers.FSPIOP.DESTINATION]
   try {
-    endpoint = await Endpoint.getEndpoint(Config.SWITCH_ENDPOINT, to, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE)
+    endpoint = await Endpoints.getEndpoint(Config.SWITCH_ENDPOINT, to, Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE)
     Logger.info(`Resolved PAYER party ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE} endpoint for transactionRequest ${transactionRequestId || 'error.test.js'} to: ${util.inspect(endpoint)}`)
 
     if (!endpoint) {
       // we didnt get an endpoint for the payee dfsp!
       // make an error callback to the initiator
-      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE} endpoint found for transactionRequest ${transactionRequestId} for ${to}`, payload, fspiopSource)
+      throw ErrorHandler.Factory.createFSPIOPError(ErrorHandler.Enums.FSPIOPErrorCodes.DESTINATION_FSP_ERROR, `No ${Enum.EndPoints.FspEndpointTypes.FSPIOP_CALLBACK_URL_TRX_REQ_SERVICE} endpoint found for transactionRequest ${transactionRequestId} for ${to}`, payload, source)
     }
-    const fullUrl = Mustache.render(endpoint + path, {
+    const url = Mustache.render(endpoint + path, {
       ID: transactionRequestId
     })
 
-    Logger.info(`Forwarding transaction request error to endpoint: ${fullUrl}`)
+    Logger.info(`Forwarding transaction request error to endpoint: ${url}`)
 
-    const response = await requests.sendRequest(fullUrl, headers, fspiopSource, fspiopDestination, method, payload || undefined, Enum.Http.ResponseTypes.JSON, childSpan)
+    const response = await Request.sendRequest({ url, headers, source, destination, method, payload, responseType, childSpan, hubNameRegex })
 
-    Logger.info(`Forwarding transaction request error for ${transactionRequestId} from ${fspiopSource} to ${to} got response ${response.status} ${response.statusText}`)
+    Logger.info(`Forwarding transaction request error for ${transactionRequestId} from ${source} to ${to} got response ${response.status} ${response.statusText}`)
 
     if (childSpan && !childSpan.isFinished) {
       childSpan.finish()

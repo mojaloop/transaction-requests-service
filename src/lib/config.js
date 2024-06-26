@@ -84,6 +84,8 @@ const getProtocolVersions = (defaultProtocolVersions, overrideProtocolVersions) 
 }
 
 module.exports = {
+  HUB_ID: RC.HUB_PARTICIPANT.ID,
+  HUB_NAME: RC.HUB_PARTICIPANT.NAME,
   PORT: RC.PORT,
   ERROR_HANDLING: RC.ERROR_HANDLING,
   SWITCH_ENDPOINT: RC.SWITCH_ENDPOINT,
