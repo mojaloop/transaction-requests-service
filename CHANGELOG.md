@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [14.3.1](https://github.com/mojaloop/transaction-requests-service/compare/v14.3.0...v14.3.1) (2024-10-01)
+
+
+### Bug Fixes
+
+* uuid/ulid regex ([#108](https://github.com/mojaloop/transaction-requests-service/issues/108)) ([b0578c6](https://github.com/mojaloop/transaction-requests-service/commit/b0578c64fcda3f187df0ede5a0c8c2b17def1f4b))
+
 ## [14.3.0](https://github.com/mojaloop/transaction-requests-service/compare/v14.2.0...v14.3.0) (2024-09-25)
 
 
