@@ -32,6 +32,7 @@ const ErrorHandling = require('@mojaloop/central-services-error-handling')
 const FSPIOPHeaderValidationPlugin = require('@mojaloop/central-services-shared').Util.Hapi.FSPIOPHeaderValidation
 const EventPlugin = require('@mojaloop/central-services-shared').Util.Hapi.HapiEventPlugin
 const OpenapiBackendValidator = require('@mojaloop/central-services-shared').Util.Hapi.OpenapiBackendValidator
+const MetricsPlugin = require('@mojaloop/central-services-metrics').plugin
 
 const registerPlugins = async (server, openAPIBackend) => {
   await server.register(OpenapiBackendValidator)
@@ -102,7 +103,7 @@ const registerPlugins = async (server, openAPIBackend) => {
     options: getOptionsForFSPIOPHeaderValidation()
   })
 
-  await server.register([Inert, Vision, Blipp, ErrorHandling, EventPlugin])
+  await server.register([Inert, Vision, Blipp, ErrorHandling, EventPlugin, MetricsPlugin])
 }
 
 module.exports = {

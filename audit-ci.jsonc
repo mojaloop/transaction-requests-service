@@ -16,6 +16,7 @@
     "GHSA-p9pc-299p-vxgp",
     "GHSA-h755-8qp9-cq85",
     "GHSA-f9xv-q969-pqx4",
-    "GHSA-7fh5-64p2-3v2j"
+    "GHSA-7fh5-64p2-3v2j",
+    "GHSA-3xgq-45jj-v275"  // https://github.com/advisories/GHSA-3xgq-45jj-v275
   ]
 }
