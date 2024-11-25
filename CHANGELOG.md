@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [14.3.2](https://github.com/mojaloop/transaction-requests-service/compare/v14.3.1...v14.3.2) (2024-11-25)
+
+
+### Chore
+
+* use the central-services-metrics plugin ([#110](https://github.com/mojaloop/transaction-requests-service/issues/110)) ([8d75eb3](https://github.com/mojaloop/transaction-requests-service/commit/8d75eb312b50e8d798fe7f23794ae8f7bb6f892d))
+
 ### [14.3.1](https://github.com/mojaloop/transaction-requests-service/compare/v14.3.0...v14.3.1) (2024-10-01)
 
 
