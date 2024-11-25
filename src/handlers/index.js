@@ -30,13 +30,11 @@ const transactionRequests = require('./transactionRequests')
 const transactionRequestsId = require('./transactionRequests/{ID}')
 const transactionRequestsErrorByID = require('./transactionRequests/{ID}/error')
 const health = require('./health')
-const metrics = require('./metrics')
 const authorizationsId = require('./authorizations/{ID}')
 const authorizationsIdError = require('./authorizations/{ID}/error')
 
 module.exports = {
   HealthGet: health.get,
-  MetricsGet: metrics.get,
   TransactionRequestsErrorByID: transactionRequestsErrorByID.put,
   TransactionRequestsByID: transactionRequestsId.get,
   TransactionRequestsByIDPut: transactionRequestsId.put,

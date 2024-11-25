@@ -57,15 +57,6 @@ const APIRoutes = (api) => [
     }
   },
   {
-    method: 'GET',
-    path: '/metrics',
-    handler: (req, h) => handleRequest(api, req, h),
-    config: {
-      tags: ['api', 'metrics'],
-      description: 'GET service metrics'
-    }
-  },
-  {
     method: 'PUT',
     path: '/transactionRequests/{ID}/error',
     handler: (req, h) => handleRequest(api, req, h),

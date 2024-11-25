@@ -7,7 +7,12 @@ let sandbox
 
 let server
 jest.mock('@mojaloop/central-services-metrics', () => ({
-  setup: jest.fn()
+  setup: jest.fn(),
+  plugin: {
+    name: 'metrics',
+    version: '1.0.0',
+    register: jest.fn()
+  }
 }))
 
 /**
