@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="52" failures="0" errors="0" time="22.283">
+  <testsuite name="Authorizations" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:08:50" time="3.737" tests="7">
+    <testcase classname="Authorizations forwardAuthorizationMessage forwards a GET request" name="Authorizations forwardAuthorizationMessage forwards a GET request" time="0.004">
+    </testcase>
+    <testcase classname="Authorizations forwardAuthorizationMessage forwards a PUT request" name="Authorizations forwardAuthorizationMessage forwards a PUT request" time="0.001">
+    </testcase>
+    <testcase classname="Authorizations forwardAuthorizationMessage sends authorization error response to the source if no destination endpoint is found" name="Authorizations forwardAuthorizationMessage sends authorization error response to the source if no destination endpoint is found" time="0.028">
+    </testcase>
+    <testcase classname="Authorizations forwardAuthorizationMessage sends authorization error response to the source if the request fails" name="Authorizations forwardAuthorizationMessage sends authorization error response to the source if the request fails" time="0.003">
+    </testcase>
+    <testcase classname="Authorizations forwardAuthorizationError sends the error request " name="Authorizations forwardAuthorizationError sends the error request " time="0.001">
+    </testcase>
+    <testcase classname="Authorizations forwardAuthorizationError throws error if no destination endpoint is found" name="Authorizations forwardAuthorizationError throws error if no destination endpoint is found" time="0.002">
+    </testcase>
+    <testcase classname="Authorizations forwardAuthorizationError throws error if if the request fails" name="Authorizations forwardAuthorizationError throws error if if the request fails" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="transactionRequests" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:08:54" time="0.767" tests="9">
+    <testcase classname="transactionRequests forwardTransactionRequest forwards a POST request when the payload is undefined" name="transactionRequests forwardTransactionRequest forwards a POST request when the payload is undefined" time="0.004">
+    </testcase>
+    <testcase classname="transactionRequests forwardTransactionRequest handles when the endpoint could not be found" name="transactionRequests forwardTransactionRequest handles when the endpoint could not be found" time="0.027">
+    </testcase>
+    <testcase classname="transactionRequests forwardTransactionRequest handles when the the request fails" name="transactionRequests forwardTransactionRequest handles when the the request fails" time="0.002">
+    </testcase>
+    <testcase classname="transactionRequests forwardTransactionRequest handles missing payload and params.ID" name="transactionRequests forwardTransactionRequest handles missing payload and params.ID" time="0.001">
+    </testcase>
+    <testcase classname="transactionRequests forwardTransactionRequest handles when span is undefined" name="transactionRequests forwardTransactionRequest handles when span is undefined" time="0.001">
+    </testcase>
+    <testcase classname="transactionRequests forwardTransactionRequest handles when the the request fails and span is undefined" name="transactionRequests forwardTransactionRequest handles when the the request fails and span is undefined" time="0.002">
+    </testcase>
+    <testcase classname="transactionRequests forwardTransactionRequestError sends the error request " name="transactionRequests forwardTransactionRequestError sends the error request " time="0.002">
+    </testcase>
+    <testcase classname="transactionRequests forwardTransactionRequestError handles an undefined payload" name="transactionRequests forwardTransactionRequestError handles an undefined payload" time="0.002">
+    </testcase>
+    <testcase classname="transactionRequests forwardTransactionRequestError handles a missing transactionRequestId" name="transactionRequests forwardTransactionRequestError handles a missing transactionRequestId" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="/transactionRequests/{ID}" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:08:55" time="2.82" tests="6">
+    <testcase classname="/transactionRequests/{ID} GET returns a 202 response code" name="/transactionRequests/{ID} GET returns a 202 response code" time="0.116">
+    </testcase>
+    <testcase classname="/transactionRequests/{ID} GET returns a 406 with invalid protocol version for content-type" name="/transactionRequests/{ID} GET returns a 406 with invalid protocol version for content-type" time="0.015">
+    </testcase>
+    <testcase classname="/transactionRequests/{ID} GET returns a 406 with invalid protocol version for accept-type" name="/transactionRequests/{ID} GET returns a 406 with invalid protocol version for accept-type" time="0.03">
+    </testcase>
+    <testcase classname="/transactionRequests/{ID} GET handles when error is thrown" name="/transactionRequests/{ID} GET handles when error is thrown" time="0.009">
+    </testcase>
+    <testcase classname="/transactionRequests/{ID} PUT returns a 200 response code" name="/transactionRequests/{ID} PUT returns a 200 response code" time="0.022">
+    </testcase>
+    <testcase classname="/transactionRequests/{ID} PUT handles when error is thrown" name="/transactionRequests/{ID} PUT handles when error is thrown" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="/authorizations/{ID}" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:08:58" time="2.422" tests="4">
+    <testcase classname="/authorizations/{ID} GET returns a 202 response code" name="/authorizations/{ID} GET returns a 202 response code" time="0.076">
+    </testcase>
+    <testcase classname="/authorizations/{ID} GET handles when an error is thrown" name="/authorizations/{ID} GET handles when an error is thrown" time="0.007">
+    </testcase>
+    <testcase classname="/authorizations/{ID} PUT returns a 202 response code" name="/authorizations/{ID} PUT returns a 202 response code" time="0.008">
+    </testcase>
+    <testcase classname="/authorizations/{ID} PUT handles when an error is thrown" name="/authorizations/{ID} PUT handles when an error is thrown" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="requestLogger" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:00" time="0.101" tests="5">
+    <testcase classname="requestLogger logResponse does nothing if there is no request.response" name="requestLogger logResponse does nothing if there is no request.response" time="0.001">
+    </testcase>
+    <testcase classname="requestLogger logResponse logs a valid json response" name="requestLogger logResponse logs a valid json response" time="0.001">
+    </testcase>
+    <testcase classname="requestLogger logResponse logs a response that fails to serialize from json" name="requestLogger logResponse logs a response that fails to serialize from json" time="0.009">
+    </testcase>
+    <testcase classname="requestLogger logResponse handles an undefined response" name="requestLogger logResponse handles an undefined response" time="0">
+    </testcase>
+    <testcase classname="requestLogger logResponse handles an undefined request" name="requestLogger logResponse handles an undefined request" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="util" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:00" time="0.459" tests="3">
+    <testcase classname="util getStackOrInspect handles an error without a stack" name="util getStackOrInspect handles an error without a stack" time="0.001">
+    </testcase>
+    <testcase classname="util getSpanTags create correct span tags" name="util getSpanTags create correct span tags" time="0">
+    </testcase>
+    <testcase classname="util getSpanTags create correct span tags when headers are not set" name="util getSpanTags create correct span tags when headers are not set" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="/transactionRequests" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:01" time="2.26" tests="2">
+    <testcase classname="/transactionRequests POST returns a 202 response code" name="/transactionRequests POST returns a 202 response code" time="0.077">
+    </testcase>
+    <testcase classname="/transactionRequests POST handles when forwardTransactionRequest throws error" name="/transactionRequests POST handles when forwardTransactionRequest throws error" time="0.014">
+    </testcase>
+  </testsuite>
+  <testsuite name="Base Tests" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:03" time="0.087" tests="2">
+    <testcase classname="Base Tests should display help if called with no args" name="Base Tests should display help if called with no args" time="0.031">
+    </testcase>
+    <testcase classname="Base Tests should start the server with the default config" name="Base Tests should start the server with the default config" time="0.018">
+    </testcase>
+  </testsuite>
+  <testsuite name="Config tests" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:03" time="0.033" tests="2">
+    <testcase classname="Config tests should load successfully" name="Config tests should load successfully" time="0.002">
+    </testcase>
+    <testcase classname="Config tests should parse ENV var ALS_PROTOCOL_VERSIONS__ACCEPT__VALIDATELIST as a string" name="Config tests should parse ENV var ALS_PROTOCOL_VERSIONS__ACCEPT__VALIDATELIST as a string" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="server" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:03" time="2.351" tests="2">
+    <testcase classname="server initialize initializes the server" name="server initialize initializes the server" time="1.208">
+    </testcase>
+    <testcase classname="server initialize initializes the server when no port is set" name="server initialize initializes the server when no port is set" time="0.643">
+    </testcase>
+  </testsuite>
+  <testsuite name="/authorizations/{ID}/error" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:05" time="2.218" tests="2">
+    <testcase classname="/authorizations/{ID}/error PUT returns a 200 response code" name="/authorizations/{ID}/error PUT returns a 200 response code" time="0.067">
+    </testcase>
+    <testcase classname="/authorizations/{ID}/error PUT handles when error is thrown" name="/authorizations/{ID}/error PUT handles when error is thrown" time="0.007">
+    </testcase>
+  </testsuite>
+  <testsuite name="Server Handlers" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:08" time="0.038" tests="2">
+    <testcase classname="Server Handlers failActionHandler throws the reformatted error" name="Server Handlers failActionHandler throws the reformatted error" time="0.004">
+    </testcase>
+    <testcase classname="Server Handlers onPreHandler logs the response" name="Server Handlers onPreHandler logs the response" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="/transactionRequests/{ID}/error" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:08" time="2.072" tests="2">
+    <testcase classname="/transactionRequests/{ID}/error PUT handles a PUT" name="/transactionRequests/{ID}/error PUT handles a PUT" time="0.066">
+    </testcase>
+    <testcase classname="/transactionRequests/{ID}/error PUT handles when error is thrown" name="/transactionRequests/{ID}/error PUT handles when error is thrown" time="0.011">
+    </testcase>
+  </testsuite>
+  <testsuite name="Routes" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:10" time="0.033" tests="1">
+    <testcase classname="Routes APIRoutes returns all API routes" name="Routes APIRoutes returns all API routes" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="plugins" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:10" time="0.505" tests="1">
+    <testcase classname="plugins registerPlugins registers the plugins" name="plugins registerPlugins registers the plugins" time="0.097">
+    </testcase>
+  </testsuite>
+  <testsuite name="Argv" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:10" time="0.034" tests="1">
+    <testcase classname="Argv getArgs returns the args" name="Argv getArgs returns the args" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="/health" errors="0" failures="0" skipped="0" timestamp="2025-01-09T17:09:10" time="2.137" tests="1">
+    <testcase classname="/health GET returns a 200 response code" name="/health GET returns a 200 response code" time="0.004">
+    </testcase>
+  </testsuite>
+</testsuites>
