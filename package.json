@@ -64,27 +64,34 @@
     "@hapi/hapi": "21.3.12",
     "@hapi/inert": "7.1.0",
     "@hapi/vision": "7.0.3",
-    "@mojaloop/central-services-error-handling": "13.0.2",
+    "@mojaloop/central-services-error-handling": "13.0.3",
     "@mojaloop/central-services-health": "15.0.0",
-    "@mojaloop/central-services-logger": "11.5.1",
-    "@mojaloop/central-services-metrics": "12.2.1",
-    "@mojaloop/central-services-shared": "18.11.2",
-    "@mojaloop/event-sdk": "14.1.1",
+    "@mojaloop/central-services-logger": "11.5.2",
+    "@mojaloop/central-services-metrics": "12.4.3",
+    "@mojaloop/central-services-shared": "18.15.1",
+    "@mojaloop/event-sdk": "14.1.2",
     "ajv": "8.17.1",
     "ajv-keywords": "5.1.0",
     "blipp": "4.0.2",
-    "commander": "12.1.0",
+    "commander": "13.0.0",
     "docdash": "2.0.2",
-    "hapi-swagger": "17.3.0",
+    "hapi-swagger": "17.3.2",
     "joi": "17.13.3",
     "mustache": "4.2.0",
     "parse-strings-in-object": "2.0.0",
     "rc": "1.2.8"
   },
   "overrides": {
+    "cross-spawn": "7.0.6",
+    "jsonpointer": "5.0.0",
+    "jsonwebtoken": "9.0.0",
+    "postcss": {
+      "nanoid": "^3.3.8"
+    },
     "shins": {
       "ajv": "6.12.3",
       "ejs": "3.1.10",
+      "path-to-regexp": "8.1.0",
       "sanitize-html": "2.12.1",
       "yargs-parser": "18.1.1",
       "markdown-it": "12.3.2"
@@ -93,9 +100,7 @@
       "swagger2openapi": "7.0.8",
       "yargs-parser": "13.1.2",
       "markdown-it": "12.3.2"
-    },
-    "jsonwebtoken": "9.0.0",
-    "jsonpointer": "5.0.0"
+    }
   },
   "devDependencies": {
     "@mojaloop/ml-testing-toolkit-shared-lib": "14.0.2",
@@ -107,7 +112,7 @@
     "jsdoc": "4.0.4",
     "license-checker": "25.0.1",
     "npm-audit-resolver": "3.0.0-RC.0",
-    "npm-check-updates": "17.1.11",
+    "npm-check-updates": "17.1.13",
     "pre-commit": "1.2.2",
     "replace": "^1.2.2",
     "sinon": "19.0.2",
