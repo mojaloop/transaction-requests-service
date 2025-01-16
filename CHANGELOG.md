@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [14.3.4](https://github.com/mojaloop/transaction-requests-service/compare/v14.3.3...v14.3.4) (2025-01-16)
+
+
+### Bug Fixes
+
+* downgrade nodejs to v18.20.4 ([#115](https://github.com/mojaloop/transaction-requests-service/issues/115)) ([ea59154](https://github.com/mojaloop/transaction-requests-service/commit/ea59154e6ede7005fac909ee82505ae5374f4eff))
+
 ### [14.3.3](https://github.com/mojaloop/transaction-requests-service/compare/v14.3.2...v14.3.3) (2025-01-15)
 
 
