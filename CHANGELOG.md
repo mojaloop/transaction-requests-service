@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [14.3.8](https://github.com/mojaloop/transaction-requests-service/compare/v14.3.7...v14.3.8) (2025-02-26)
+
+
+### Chore
+
+* maintenance updates ([#120](https://github.com/mojaloop/transaction-requests-service/issues/120)) ([b5e662f](https://github.com/mojaloop/transaction-requests-service/commit/b5e662f508fba79b891f601d6135c87192ac543a))
+
 ### [14.3.7](https://github.com/mojaloop/transaction-requests-service/compare/v14.3.6...v14.3.7) (2025-02-04)
 
 
