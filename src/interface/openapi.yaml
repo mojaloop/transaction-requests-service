@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.2
 info:
   title: >-
     Transaction Requests related parts of Open API for FSP Interoperability
@@ -1528,11 +1528,7 @@ components:
       additionalProperties: false
       properties:
         bulkQuoteId:
-          description: >-
-            Common ID between the FSPs for the bulk quote object, decided by the
-            Payer FSP. The ID should be reused for resends of the same bulk
-            quote. A new ID should be generated for each new bulk quote.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         payer:
           $ref: '#/components/schemas/Party'
         geoCode:
@@ -1588,15 +1584,9 @@ components:
       additionalProperties: false
       properties:
         bulkTransferId:
-          description: >-
-            Common ID between the FSPs and the optional Switch for the bulk
-            transfer object, decided by the Payer FSP. The ID should be reused
-            for resends of the same bulk transfer. A new ID should be generated
-            for each new bulk transfer.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         bulkQuoteId:
-          description: ID of the related bulk quote.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         payerFsp:
           description: Payer FSP identifier.
           type: string
@@ -1735,8 +1725,7 @@ components:
       additionalProperties: false
       properties:
         quoteId:
-          description: Identifies quote message.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         transactionId:
           description: Identifies transaction message.
           type: string
@@ -1765,8 +1754,7 @@ components:
       additionalProperties: false
       properties:
         quoteId:
-          description: Identifies quote message.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         payee:
           $ref: '#/components/schemas/Party'
         transferAmount:
@@ -1799,8 +1787,7 @@ components:
       additionalProperties: false
       properties:
         transferId:
-          description: Identifies messages related to the same /transfers sequence.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         transferAmount:
           $ref: '#/components/schemas/Money'
         ilpPacket:
@@ -1822,8 +1809,7 @@ components:
       additionalProperties: false
       properties:
         transferId:
-          description: Identifies messages related to the same /transfers sequence.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         fulfilment:
           description: >-
             Fulfilment of the condition specified with the transaction. Note -
@@ -2022,12 +2008,7 @@ components:
       additionalProperties: false
       properties:
         quoteId:
-          description: >-
-            Common ID between the FSPs for the quote object, decided by the
-            Payer FSP. The ID should be reused for resends of the same quote for
-            a transaction. A new ID should be generated for each new quote for a
-            transaction.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         transactionId:
           description: >-
             Common ID (decided by the Payer FSP) between the FSPs for the future
@@ -2161,10 +2142,7 @@ components:
             creation of the quote.
           type: string
         quoteId:
-          description: >-
-            ID of the quote, the ID is decided by the Payer FSP during the
-            creation of the quote.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         payee:
           $ref: '#/components/schemas/Party'
         payer:
@@ -2259,12 +2237,7 @@ components:
       additionalProperties: false
       properties:
         transferId:
-          description: >-
-            The common ID between the FSPs and the optional Switch for the
-            transfer object, decided by the Payer FSP. The ID should be reused
-            for resends of the same transfer. A new ID should be generated for
-            each new transfer.
-          type: string
+          $ref: '#/components/schemas/CorrelationId'
         payeeFsp:
           description: Payee FSP in the proposed financial transaction.
           type: string
