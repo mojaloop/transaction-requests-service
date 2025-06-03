@@ -36,7 +36,7 @@
     "start": "node src/index.js api",
     "test": "npm run test:unit",
     "test:unit": "jest --testMatch '**/test/unit/**/*.test.js'",
-    "test:xunit": "echo 'No xunit tests defined'",
+    "test:xunit": "npm run test:unit",
     "test:junit": "JEST_JUNIT_OUTPUT_DIR='./test/results' JEST_JUNIT_OUTPUT_NAME='junit.xml' jest --reporters=default --reporters=jest-junit --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage": "jest --coverage --coverageThreshold='{}' --testMatch '**/test/unit/**/*.test.js'",
     "test:coverage-check": "jest --coverage --testMatch '**/test/unit/**/*.test.js'",
@@ -64,19 +64,19 @@
   "dependencies": {
     "@hapi/boom": "10.0.1",
     "@hapi/good": "9.0.1",
-    "@hapi/hapi": "21.3.12",
+    "@hapi/hapi": "21.4.0",
     "@hapi/inert": "7.1.0",
     "@hapi/vision": "7.0.3",
-    "@mojaloop/central-services-error-handling": "13.0.6",
-    "@mojaloop/central-services-health": "15.0.4",
-    "@mojaloop/central-services-logger": "11.5.5",
-    "@mojaloop/central-services-metrics": "12.4.5",
-    "@mojaloop/central-services-shared": "18.20.0",
-    "@mojaloop/event-sdk": "14.1.5",
+    "@mojaloop/central-services-error-handling": "13.1.0",
+    "@mojaloop/central-services-health": "15.1.0",
+    "@mojaloop/central-services-logger": "11.9.0",
+    "@mojaloop/central-services-metrics": "12.6.0",
+    "@mojaloop/central-services-shared": "18.27.0",
+    "@mojaloop/event-sdk": "14.5.1",
     "ajv": "8.17.1",
     "ajv-keywords": "5.1.0",
     "blipp": "4.0.2",
-    "commander": "13.1.0",
+    "commander": "14.0.0",
     "docdash": "2.0.2",
     "hapi-swagger": "17.3.2",
     "joi": "17.13.3",
@@ -85,6 +85,9 @@
     "rc": "1.2.8"
   },
   "overrides": {
+    "json-schema-faker@0.5.9": {
+      "json-schema-ref-parser": "npm:@apidevtools/json-schema-ref-parser@latest"
+    },
     "ansi-regex": "5.0.1",
     "cross-spawn": "7.0.6",
     "jsonpath-plus": "10.3.0",
@@ -100,7 +103,7 @@
       "sanitize-html": "2.12.1",
       "markdown-it": "12.3.2"
     },
-    "undici": "6.21.1",
+    "undici": "6.21.2",
     "widdershins": {
       "swagger2openapi": "7.0.8",
       "markdown-it": "12.3.2"
@@ -108,7 +111,7 @@
     "yargs-parser": "21.1.1"
   },
   "devDependencies": {
-    "@mojaloop/ml-testing-toolkit-shared-lib": "14.0.4",
+    "@mojaloop/ml-testing-toolkit-shared-lib": "14.1.0",
     "@types/jest": "29.5.14",
     "audit-ci": "^7.1.0",
     "get-port": "5.1.1",
@@ -117,10 +120,10 @@
     "jsdoc": "4.0.4",
     "license-checker": "25.0.1",
     "npm-audit-resolver": "3.0.0-RC.0",
-    "npm-check-updates": "17.1.15",
+    "npm-check-updates": "18.0.1",
     "pre-commit": "1.2.2",
     "replace": "^1.2.2",
-    "sinon": "19.0.2",
+    "sinon": "20.0.0",
     "standard": "17.1.2",
     "standard-version": "^9.5.0"
   },
