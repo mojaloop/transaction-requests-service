@@ -50,7 +50,7 @@ describe('Server Handlers', () => {
       const action = async () => failActionHandler(null, null, input)
 
       // Assert
-      await expect(action()).rejects.toThrowError('Generic error')
+      await expect(action()).rejects.toThrow('Generic error')
     })
   })
 
