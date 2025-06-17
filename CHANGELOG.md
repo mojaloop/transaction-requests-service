@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [14.4.1](https://github.com/mojaloop/transaction-requests-service/compare/v14.4.0...v14.4.1) (2025-06-17)
+
+
+### Chore
+
+* **sbom:** add initial sbom ([#125](https://github.com/mojaloop/transaction-requests-service/issues/125)) ([1c4ced6](https://github.com/mojaloop/transaction-requests-service/commit/1c4ced655ece6cf9f2795f75a4702302260791ba))
+* **sbom:** update sbom-v14.4.0.csv [skip ci] ([cafa20d](https://github.com/mojaloop/transaction-requests-service/commit/cafa20d0a753df327e4008fad43b28b307178442))
+
 ## [14.4.0](https://github.com/mojaloop/transaction-requests-service/compare/v14.3.9...v14.4.0) (2025-06-03)
 
 
