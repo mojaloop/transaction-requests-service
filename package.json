@@ -115,7 +115,7 @@
     "@types/jest": "30.0.0",
     "audit-ci": "^7.1.0",
     "get-port": "5.1.1",
-    "jest": "30.0.1",
+    "jest": "30.0.2",
     "jest-junit": "16.0.0",
     "jsdoc": "4.0.4",
     "license-checker": "25.0.1",
