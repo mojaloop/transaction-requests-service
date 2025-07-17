@@ -71,7 +71,7 @@
     "@mojaloop/central-services-health": "15.1.0",
     "@mojaloop/central-services-logger": "11.9.0",
     "@mojaloop/central-services-metrics": "12.6.0",
-    "@mojaloop/central-services-shared": "18.28.2",
+    "@mojaloop/central-services-shared": "18.30.1",
     "@mojaloop/event-sdk": "14.6.1",
     "ajv": "8.17.1",
     "ajv-keywords": "5.1.0",
@@ -111,11 +111,11 @@
     "yargs-parser": "21.1.1"
   },
   "devDependencies": {
-    "@mojaloop/ml-testing-toolkit-shared-lib": "14.1.0",
+    "@mojaloop/ml-testing-toolkit-shared-lib": "14.2.0",
     "@types/jest": "30.0.0",
     "audit-ci": "^7.1.0",
     "get-port": "5.1.1",
-    "jest": "30.0.2",
+    "jest": "30.0.4",
     "jest-junit": "16.0.0",
     "jsdoc": "4.0.4",
     "license-checker": "25.0.1",
