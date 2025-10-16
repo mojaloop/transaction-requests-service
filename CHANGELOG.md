@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [14.4.6](https://github.com/mojaloop/transaction-requests-service/compare/v14.4.5...v14.4.6) (2025-10-16)
+
+
+### Chore
+
+* axios vul pi28 ([#133](https://github.com/mojaloop/transaction-requests-service/issues/133)) ([9006fc0](https://github.com/mojaloop/transaction-requests-service/commit/9006fc0773c4d13cb604a9d371278c2699e3b456))
+* **sbom:** update sbom [skip ci] ([402743d](https://github.com/mojaloop/transaction-requests-service/commit/402743d97aa2c064831cc41f4f98c7a2362ceb29))
+
 ### [14.4.5](https://github.com/mojaloop/transaction-requests-service/compare/v14.4.4...v14.4.5) (2025-07-25)
 
 
