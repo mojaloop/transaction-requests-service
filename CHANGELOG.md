@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [14.4.7](https://github.com/mojaloop/transaction-requests-service/compare/v14.4.6...v14.4.7) (2026-01-16)
+
+
+### Chore
+
+* Add CVE-2026-22184 vulnerability to .grype.yaml ([#138](https://github.com/mojaloop/transaction-requests-service/issues/138)) ([66e1249](https://github.com/mojaloop/transaction-requests-service/commit/66e1249e3deb2bb1a918cf25c54817d472104b70))
+* **ci:** update CircleCI orb to 1.1.10 ([#137](https://github.com/mojaloop/transaction-requests-service/issues/137)) ([9d9446a](https://github.com/mojaloop/transaction-requests-service/commit/9d9446afea46db5ba2c699b372b126133e16b878))
+* **sbom:** update sbom [skip ci] ([1ff34ce](https://github.com/mojaloop/transaction-requests-service/commit/1ff34ced17c6a088ac0288db5b37c516b1c9ddf7))
+
 ### [14.4.6](https://github.com/mojaloop/transaction-requests-service/compare/v14.4.5...v14.4.6) (2025-10-16)
 
 
