@@ -73,7 +73,7 @@
     "@mojaloop/central-services-metrics": "12.8.3",
     "@mojaloop/central-services-shared": "18.34.6",
     "@mojaloop/event-sdk": "14.8.2",
-    "ajv": "8.17.1",
+    "ajv": "8.18.0",
     "ajv-keywords": "5.1.0",
     "blipp": "4.0.2",
     "commander": "14.0.2",
