@@ -64,19 +64,19 @@
   "dependencies": {
     "@hapi/boom": "10.0.1",
     "@hapi/good": "9.0.1",
-    "@hapi/hapi": "21.4.4",
+    "@hapi/hapi": "21.4.6",
     "@hapi/inert": "7.1.0",
     "@hapi/vision": "7.0.3",
-    "@mojaloop/central-services-error-handling": "13.1.5",
-    "@mojaloop/central-services-health": "15.2.1",
-    "@mojaloop/central-services-logger": "11.10.3",
-    "@mojaloop/central-services-metrics": "12.8.3",
-    "@mojaloop/central-services-shared": "18.34.6",
-    "@mojaloop/event-sdk": "14.8.2",
-    "ajv": "8.17.1",
+    "@mojaloop/central-services-error-handling": "13.1.6",
+    "@mojaloop/central-services-health": "15.2.2",
+    "@mojaloop/central-services-logger": "11.10.4",
+    "@mojaloop/central-services-metrics": "12.8.5",
+    "@mojaloop/central-services-shared": "18.35.5",
+    "@mojaloop/event-sdk": "14.8.3",
+    "ajv": "8.18.0",
     "ajv-keywords": "5.1.0",
     "blipp": "4.0.2",
-    "commander": "14.0.2",
+    "commander": "14.0.3",
     "docdash": "2.0.2",
     "hapi-swagger": "17.3.2",
     "joi": "17.13.3",
@@ -85,7 +85,7 @@
     "rc": "1.2.8"
   },
   "overrides": {
-    "form-data": "4.0.4",
+    "form-data": "4.0.5",
     "on-headers": "1.1.0",
     "json-schema-faker@0.5.9": {
       "json-schema-ref-parser": "npm:@apidevtools/json-schema-ref-parser@latest"
@@ -105,21 +105,24 @@
       "sanitize-html": "2.12.1",
       "markdown-it": "12.3.2"
     },
-    "undici": "6.21.2",
+    "undici": "6.23.0",
     "widdershins": {
       "swagger2openapi": "7.0.8",
       "markdown-it": "12.3.2"
     },
     "yargs-parser": "21.1.1",
-    "qs": "6.14.1",
+    "qs": "6.14.2",
     "validator": "13.15.22",
     "glob@10.4.5": "10.5.0",
-    "js-yaml": "4.1.1"
+    "js-yaml": "4.1.1",
+    "axios": "1.13.5",
+    "minimatch": "10.2.1",
+    "lodash": "4.17.23"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.6",
-    "@babel/preset-env": "^7.28.6",
-    "@mojaloop/ml-testing-toolkit-shared-lib": "14.3.2",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "@mojaloop/ml-testing-toolkit-shared-lib": "14.3.3",
     "@types/jest": "30.0.0",
     "audit-ci": "^7.1.0",
     "babel-jest": "^30.2.0",
@@ -129,7 +132,7 @@
     "jsdoc": "4.0.5",
     "license-checker": "25.0.1",
     "npm-audit-resolver": "3.0.0-RC.0",
-    "npm-check-updates": "19.3.1",
+    "npm-check-updates": "19.4.1",
     "pre-commit": "1.2.2",
     "replace": "^1.2.2",
     "sinon": "21.0.1",

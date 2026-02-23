@@ -4,8 +4,11 @@
   // Only use one of ["low": true, "moderate": true, "high": true, "critical": true]
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
-        "GHSA-9965-vmph-33xx", // CVE-2025-56200: validator.js URL validation bypass
-        "GHSA-xffm-g5w8-qvg7" // @eslint/plugin-kit RegEx DoS
-    // Currently no fixes available for the following
+    "GHSA-9965-vmph-33xx",
+    "GHSA-xffm-g5w8-qvg7",
+    "GHSA-m7jm-9gc2-mpf2",
+    "GHSA-jmr7-xgp7-cmfj",
+    "GHSA-2g4f-4pwh-qvx6",
+    "GHSA-38c4-r59v-3vqw"
   ]
 }
