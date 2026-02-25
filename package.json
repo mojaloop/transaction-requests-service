@@ -88,7 +88,7 @@
     "form-data": "4.0.5",
     "on-headers": "1.1.0",
     "json-schema-faker@0.5.9": {
-      "json-schema-ref-parser": "npm:@apidevtools/json-schema-ref-parser@latest"
+      "json-schema-ref-parser": "npm:@apidevtools/json-schema-ref-parser@13.0.1"
     },
     "ansi-regex": "5.0.1",
     "cross-spawn": "7.0.6",
@@ -132,7 +132,7 @@
     "jsdoc": "4.0.5",
     "license-checker": "25.0.1",
     "npm-audit-resolver": "3.0.0-RC.0",
-    "npm-check-updates": "19.4.1",
+    "npm-check-updates": "19.5.0",
     "pre-commit": "1.2.2",
     "replace": "^1.2.2",
     "sinon": "21.0.1",
