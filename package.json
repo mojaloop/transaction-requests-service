@@ -1,5 +1,6 @@
 {
   "name": "transaction-requests-service",
+  "private": true,
   "description": "An asynchronous pass through transaction request API for Payee initiated use-cases.",
   "version": "14.4.8",
   "license": "Apache-2.0",
