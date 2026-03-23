@@ -93,7 +93,7 @@
     },
     "ansi-regex": "5.0.1",
     "cross-spawn": "7.0.6",
-    "jsonpath-plus": "10.3.0",
+    "jsonpath-plus": "10.4.0",
     "jsonpointer": "5.0.0",
     "jsonwebtoken": "9.0.0",
     "postcss": {
@@ -112,12 +112,12 @@
       "markdown-it": "12.3.2"
     },
     "yargs-parser": "21.1.1",
-    "qs": "6.14.2",
-    "validator": "13.15.22",
+    "qs": "6.15.0",
+    "validator": "13.15.26",
     "glob@10.4.5": "10.5.0",
     "js-yaml": "4.1.1",
     "axios": "1.13.6",
-    "fast-xml-parser": "5.5.7",
+    "fast-xml-parser": "5.5.8",
     "lodash": "4.17.23",
     "immutable": "5.1.5",
     "minimatch@3.0.5": "3.1.5"
