@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [14.4.9](https://github.com/mojaloop/transaction-requests-service/compare/v14.4.8...v14.4.9) (2026-03-24)
+
+
+### Chore
+
+* add private:true to prevent npm publish ([#4384](https://github.com/mojaloop/transaction-requests-service/issues/4384)) ([#144](https://github.com/mojaloop/transaction-requests-service/issues/144)) ([dc3fd94](https://github.com/mojaloop/transaction-requests-service/commit/dc3fd94c9a716140a62adf0d02125ea7fb56e06a))
+* **sbom:** update sbom [skip ci] ([ab8222a](https://github.com/mojaloop/transaction-requests-service/commit/ab8222a78f0819ba1420fdc4887dda05ac79cb0a))
+
 ### [14.4.8](https://github.com/mojaloop/transaction-requests-service/compare/v14.4.7...v14.4.8) (2026-02-25)
 
 
