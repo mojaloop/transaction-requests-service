@@ -26,6 +26,13 @@
     }
   },
   "SWITCH_ENDPOINT": "http://central-ledger.local:3001",
+  "ENDPOINT_SECURITY": {
+    "JWS": {
+      "JWS_VALIDATE": false,
+      "JWS_VERIFICATION_KEYS_DIRECTORY": "secrets/jwsVerificationKeys",
+      "JWS_VALIDATE_PUT_PARTIES": false
+    }
+  },
   "ERROR_HANDLING": {
     "includeCauseExtension": true,
     "truncateExtensions": true
