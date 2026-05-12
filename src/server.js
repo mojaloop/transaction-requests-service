@@ -59,6 +59,10 @@ const createServer = async (port) => {
       validate: {
         options: ErrorHandler.validateRoutes(),
         failAction: ServerHandler.failActionHandler
+      },
+      payload: {
+        parse: true,
+        output: 'stream'
       }
     }
   })
