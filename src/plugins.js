@@ -120,7 +120,6 @@ const registerPlugins = async (server, openAPIBackend) => {
   if (Config.JWS_VALIDATE) {
     const validationKeys = loadJwsKeys(Config.JWS_VERIFICATION_KEYS_DIRECTORY)
     const jwsValidator = new JwsValidator({ logger: Logger, validationKeys })
-    const validatePutParties = Config.JWS_VALIDATE_PUT_PARTIES
 
     const watcher = watchJwsKeys(Config.JWS_VERIFICATION_KEYS_DIRECTORY, validationKeys)
     if (watcher) {
@@ -133,10 +132,6 @@ const registerPlugins = async (server, openAPIBackend) => {
 
       const resource = request.path.replace(/^\//, '').split('/')[0]
       if (!['transactionRequests', 'authorizations'].includes(resource)) return h.continue
-
-      if (!validatePutParties && request.method === 'put' && request.path.startsWith('/parties/')) {
-        return h.continue
-      }
 
       try {
         jwsValidator.validate({ headers: request.headers, body: request.payload })

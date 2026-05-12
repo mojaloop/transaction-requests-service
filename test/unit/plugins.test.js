@@ -86,10 +86,8 @@ describe('plugins', () => {
     const createServer = async (keysDir) => {
       const origValidate = Config.JWS_VALIDATE
       const origDir = Config.JWS_VERIFICATION_KEYS_DIRECTORY
-      const origPutParties = Config.JWS_VALIDATE_PUT_PARTIES
       Config.JWS_VALIDATE = true
       Config.JWS_VERIFICATION_KEYS_DIRECTORY = keysDir
-      Config.JWS_VALIDATE_PUT_PARTIES = false
 
       const server = new Hapi.Server({
         routes: { payload: { output: 'stream', parse: true } }
@@ -115,7 +113,6 @@ describe('plugins', () => {
 
       Config.JWS_VALIDATE = origValidate
       Config.JWS_VERIFICATION_KEYS_DIRECTORY = origDir
-      Config.JWS_VALIDATE_PUT_PARTIES = origPutParties
 
       return server
     }
@@ -195,19 +192,6 @@ describe('plugins', () => {
       const res = await server.inject({ method: 'POST', url: '/transactionRequests', headers, payload: body })
       expect(res.statusCode).toBe(400)
       expect(JSON.parse(res.payload).errorCode).toBe('3105')
-    })
-
-    it('PUT /parties bypasses validation', async () => {
-      const dir = makeTempDir()
-      fs.writeFileSync(path.join(dir, `${FSPIOP_SOURCE}.pem`), publicKey)
-      const server = await createServer(dir)
-      server.route({ method: 'PUT', path: '/parties/{type}/{id}', handler: (_r, h) => h.response({ ok: true }).code(200) })
-
-      const res = await server.inject({ method: 'PUT', url: '/parties/MSISDN/123', payload: { party: {} } })
-      expect(res.statusCode).toBe(200)
-
-      if (server.app.jwsKeyWatcher) server.app.jwsKeyWatcher.close()
-      fs.rmSync(dir, { recursive: true, force: true })
     })
 
     it('watchJwsKeys detects added and removed keys', async () => {
