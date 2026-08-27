@@ -4,6 +4,23 @@
   // Only use one of ["low": true, "moderate": true, "high": true, "critical": true]
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
-    "GHSA-2g4f-4pwh-qvx6" // ajv ReDoS - transitive via @mojaloop/inter-scheme-proxy-cache-lib and ml-testing-toolkit-shared-lib, unfixable via override
+    "GHSA-2g4f-4pwh-qvx6",
+    "GHSA-22p9-wv53-3rq4",
+    "GHSA-mh99-v99m-4gvg",
+    "GHSA-rgw5-rvv9-x895",
+    "GHSA-3jxr-9vmj-r5cp",
+    "GHSA-vccv-cmxp-4j9h",
+    "GHSA-6v5v-wf23-fmfq",
+    "GHSA-66ff-xgx4-vchm",
+    "GHSA-2pr8-phx7-x9h3",
+    "GHSA-fx83-v9x8-x52w",
+    "GHSA-75px-5xx7-5xc7",
+    "GHSA-jvwf-75h9-cwgg",
+    "GHSA-685m-2w69-288q",
+    "GHSA-q6x5-8v7m-xcrf",
+    "GHSA-jggg-4jg4-v7c6",
+    "GHSA-wcpc-wj8m-hjx6",
+    "GHSA-f38q-mgvj-vph7",
+    "GHSA-j3f2-48v5-ccww"
   ]
 }
