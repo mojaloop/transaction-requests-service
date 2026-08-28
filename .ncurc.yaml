@@ -1,5 +1,18 @@
 ## Add a TODO comment indicating the reason for each rejected dependency upgrade added to this list, and what should be done to resolve it (i.e. handle it through a story, etc).
 reject: [
+  # ml-testing-toolkit-shared-lib 14.3.4 floats @apidevtools/json-schema-ref-parser to
+  # 15.x (ESM-only), which jest cannot parse in this CJS suite ("Jest encountered an
+  # unexpected token" in openApiMockGenerator). Hold at 14.3.3 (ref-parser 14.2.1).
+  # Reproduced 2026-08-27 [mojaloop/#4479].
+  "@mojaloop/ml-testing-toolkit-shared-lib",
+  # commander 15.x: jest resolves an ESM entry for require("commander") in this repo's
+  # CJS test suites -> "SyntaxError: Cannot use import statement outside a module"
+  # (8 suites). Hold at 14.0.3, the version the upstream lock pinned. Reproduced 2026-08-27.
+  "commander",
+  # event-sdk >=14.8.5 pulls ESM-only serialize-error; jest compiles event-sdk TS source
+  # without transforming node_modules ESM -> SyntaxError in Span.ts. Hold at 14.8.4
+  # (same hold as quoting-service). Reproduced 2026-08-27 [mojaloop/#4479].
+  "@mojaloop/event-sdk",
   # TODO: v6+ (ref: https://github.com/sindresorhus/get-port/releases/tag/v6.0.0) is an ESM library and thus not compatible with CommonJS. Future story needed to resolve.
   "get-port",
   "joi"
