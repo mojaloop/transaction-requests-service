@@ -19,7 +19,9 @@ RUN apk add --no-cache -t build-dependencies make gcc g++ python3 libtool openss
 
 COPY package.json package-lock.json* /opt/app/
 
-RUN npm ci
+# Lifecycle scripts are skipped for supply-chain safety (SonarCloud docker:S6505). This
+# service has no native dependencies, so nothing needs rebuilding afterwards.
+RUN npm ci --ignore-scripts
 
 COPY src /opt/app/src
 COPY config /opt/app/config
