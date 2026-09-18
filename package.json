@@ -36,11 +36,11 @@
   "scripts": {
     "start": "node src/index.js api",
     "test": "npm run test:unit",
-    "test:unit": "jest --testMatch '**/test/unit/**/*.test.js'",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --testMatch '**/test/unit/**/*.test.js'",
     "test:xunit": "npm run test:unit",
-    "test:junit": "JEST_JUNIT_OUTPUT_DIR='./test/results' JEST_JUNIT_OUTPUT_NAME='junit.xml' jest --reporters=default --reporters=jest-junit --testMatch '**/test/unit/**/*.test.js'",
-    "test:coverage": "jest --coverage --coverageThreshold='{}' --testMatch '**/test/unit/**/*.test.js'",
-    "test:coverage-check": "jest --coverage --testMatch '**/test/unit/**/*.test.js'",
+    "test:junit": "NODE_OPTIONS=--experimental-vm-modules JEST_JUNIT_OUTPUT_DIR='./test/results' JEST_JUNIT_OUTPUT_NAME='junit.xml' jest --reporters=default --reporters=jest-junit --testMatch '**/test/unit/**/*.test.js'",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage --coverageThreshold='{}' --testMatch '**/test/unit/**/*.test.js'",
+    "test:coverage-check": "NODE_OPTIONS=--experimental-vm-modules jest --coverage --testMatch '**/test/unit/**/*.test.js'",
     "test:functional": "echo 'No functional tests defined'",
     "test:integration": "echo 'No integration tests defined'",
     "lint": "npm run standard",
@@ -81,7 +81,7 @@
     "commander": "15.0.0",
     "docdash": "2.0.2",
     "hapi-swagger": "17.3.2",
-    "joi": "17.13.5",
+    "joi": "17.13.8",
     "mustache": "4.2.0",
     "parse-strings-in-object": "2.0.0",
     "rc": "1.2.8"
@@ -102,16 +102,16 @@
       "ajv": "6.12.3",
       "ejs": "3.1.10",
       "path-to-regexp": "0.1.13",
-      "sanitize-html": "2.12.1",
-      "markdown-it": "12.3.2"
+      "sanitize-html": "2.17.7",
+      "markdown-it": "14.2.0"
     },
     "undici": "7.29.0",
     "widdershins": {
       "swagger2openapi": "7.0.8",
-      "markdown-it": "12.3.2"
+      "markdown-it": "14.2.0"
     },
     "yargs-parser": "20.2.9",
-    "qs": "6.15.3",
+    "qs": "6.16.0",
     "validator": "13.15.26",
     "glob@10.4.5": "10.5.0",
     "js-yaml": "4.3.2",
@@ -120,11 +120,11 @@
     "lodash": "4.18.1",
     "immutable": "5.1.8",
     "minimatch@3.0.5": "3.1.5",
-    "protobufjs": "7.6.5",
+    "protobufjs": "8.8.0",
     "@grpc/proto-loader": {
-      "protobufjs": "7.5.5"
+      "protobufjs": "7.6.5"
     },
-    "brace-expansion": "5.0.6",
+    "brace-expansion": "5.0.12",
     "path-to-regexp": "0.1.13",
     "yaml": "2.8.3",
     "lodash-es": "4.18.1",
@@ -139,12 +139,13 @@
     "browserslist": "4.28.7",
     "linkify-it": "5.0.2",
     "nanoid": "3.3.18",
-    "mysql2": "3.23.1",
+    "mysql2": "3.24.4",
     "@hapi/wreck": "18.1.2",
-    "sanitize-html": "2.17.6",
+    "sanitize-html": "2.17.7",
     "body-parser": "1.20.6",
     "markdown-it": "14.2.0",
-    "baseline-browser-mapping": "2.11.0"
+    "baseline-browser-mapping": "2.11.0",
+    "joi@18": "18.2.9"
   },
   "devDependencies": {
     "@babel/core": "8.0.5",
