@@ -1,6 +1,5 @@
 # Arguments
-ARG NODE_VERSION=24.14.1-alpine3.23
-
+ARG NODE_VERSION="24.21.0-alpine3.24"
 # NOTE: Ensure you set NODE_VERSION Build Argument as follows...
 #
 #  export NODE_VERSION="$(cat .nvmrc)-alpine" \
@@ -11,16 +10,17 @@ ARG NODE_VERSION=24.14.1-alpine3.23
 #
 
 # Build Image
-FROM node:${NODE_VERSION} as builder
+FROM node:${NODE_VERSION} AS builder
 WORKDIR /opt/app
 
 RUN apk --no-cache add git
-RUN apk add --no-cache -t build-dependencies make gcc g++ python3 libtool openssl-dev autoconf automake bash \
-    && cd $(npm root -g)/npm
+RUN apk add --no-cache --virtual .build-deps autoconf automake bash g++ gcc libtool make openssl-dev python3
 
 COPY package.json package-lock.json* /opt/app/
 
-RUN npm ci
+# Lifecycle scripts are skipped for supply-chain safety (docker:S6505); no production
+# dependency in this service needs a native build.
+RUN npm ci --omit=dev --ignore-scripts
 
 COPY src /opt/app/src
 COPY config /opt/app/config
@@ -38,7 +38,6 @@ RUN adduser -D ml-user
 USER ml-user
 
 COPY --chown=ml-user --from=builder /opt/app .
-RUN npm prune --production
 
 EXPOSE 4001
 CMD ["npm", "run", "start"]
