@@ -70,6 +70,10 @@ const createServer = async (port) => {
   await Plugins.registerPlugins(server, api)
   await server.ext([
     {
+      type: 'onRequest',
+      method: ServerHandler.onRequest
+    },
+    {
       type: 'onPreHandler',
       method: ServerHandler.onPreHandler
     }
