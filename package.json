@@ -72,7 +72,7 @@
     "@mojaloop/central-services-health": "15.2.4",
     "@mojaloop/central-services-logger": "11.10.7",
     "@mojaloop/central-services-metrics": "12.8.9",
-    "@mojaloop/central-services-shared": "18.39.4",
+    "@mojaloop/central-services-shared": "19.0.0",
     "@mojaloop/event-sdk": "14.8.6",
     "@mojaloop/sdk-standard-components": "19.19.3",
     "ajv": "8.20.0",
@@ -89,14 +89,8 @@
   "overrides": {
     "form-data": "4.0.6",
     "on-headers": "1.1.0",
-    "json-schema-faker@0.5.9": {
-      "json-schema-ref-parser": "npm:@apidevtools/json-schema-ref-parser@13.0.1"
-    },
-    "ansi-regex": "5.0.1",
     "cross-spawn": "7.0.6",
-    "jsonpath-plus": "10.4.0",
-    "jsonpointer": "5.0.0",
-    "jsonwebtoken": "9.0.0",
+    "jsonwebtoken": "9.0.3",
     "postcss": "8.5.23",
     "shins": {
       "ajv": "6.12.3",
@@ -105,19 +99,17 @@
       "sanitize-html": "2.17.7",
       "markdown-it": "14.3.1"
     },
-    "undici": "7.29.1",
     "widdershins": {
       "swagger2openapi": "7.0.8",
       "markdown-it": "14.3.1"
     },
-    "yargs-parser": "20.2.9",
     "qs": "6.16.0",
     "validator": "13.15.26",
     "glob@10.4.5": "10.5.0",
     "axios": "1.20.0",
     "fast-xml-parser": "5.7.0",
     "lodash": "4.18.1",
-    "immutable": "5.1.8",
+    "immutable": "5.1.9",
     "minimatch@3.0.5": "3.1.5",
     "protobufjs": "8.8.0",
     "@grpc/proto-loader": {
@@ -125,7 +117,7 @@
     },
     "brace-expansion": "5.0.12",
     "path-to-regexp": "0.1.13",
-    "yaml": "2.8.3",
+    "yaml": "2.9.1",
     "lodash-es": "4.18.1",
     "follow-redirects": "1.16.0",
     "picomatch": "4.0.4",
@@ -133,7 +125,7 @@
     "ajv@>=7.0.0-alpha.0": "8.20.0",
     "fast-uri": "3.1.8",
     "fast-xml-builder": "1.1.7",
-    "@faker-js/faker": "10.5.0",
+    "@faker-js/faker": "10.6.0",
     "@grpc/grpc-js": "1.14.5",
     "browserslist": "4.28.7",
     "linkify-it": "5.0.2",
@@ -144,12 +136,16 @@
     "body-parser": "1.20.6",
     "markdown-it": "14.3.1",
     "baseline-browser-mapping": "2.11.0",
-    "joi@18": "18.2.9",
+    "joi@18": "18.3.0",
     "js-yaml@4": "4.3.2",
     "handlebars": "4.7.10",
     "moment": "2.31.0",
     "argparse@1": "2.0.1",
-    "argparse@3": "3.0.0"
+    "argparse@3": "3.0.0",
+    "ansi-regex@5": "5.0.1",
+    "undici@6": "6.29.1",
+    "undici@7": "7.29.1",
+    "yargs-parser@11": "21.1.1"
   },
   "devDependencies": {
     "@babel/core": "8.0.7",
@@ -158,7 +154,7 @@
     "@types/jest": "30.0.0",
     "audit-ci": "^7.1.0",
     "babel-jest": "^30.5.2",
-    "get-port": "5.1.1",
+    "get-port": "7.2.0",
     "jest": "30.5.2",
     "jest-junit": "17.0.0",
     "jsdoc": "4.0.5",
