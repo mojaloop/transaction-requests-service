@@ -1,7 +1,5 @@
 ## Add a TODO comment indicating the reason for each rejected dependency upgrade added to this list, and what should be done to resolve it (i.e. handle it through a story, etc).
 reject: [
-  # TODO: v6+ (ref: https://github.com/sindresorhus/get-port/releases/tag/v6.0.0) is an ESM library and thus not compatible with CommonJS. Future story needed to resolve.
-  "get-port",
+  # TODO: hapi-swagger 17.3.2 (latest) declares a `joi@17.x` peer dependency, so npm cannot resolve joi 18 as a direct dependency; the nested copies under central-services-shared are already on 18.x via the `joi@18` override. Lift once hapi-swagger supports joi 18.
   "joi"
 ]
-

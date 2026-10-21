@@ -1,7 +1,7 @@
 'use strict'
 
 const Sinon = require('sinon')
-const getPort = require('get-port')
+const getPort = require('get-port').default
 const { initialize } = require('../../../src/server')
 let sandbox
 
