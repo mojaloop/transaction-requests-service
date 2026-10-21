@@ -96,12 +96,12 @@
       "ajv": "6.12.3",
       "ejs": "3.1.10",
       "path-to-regexp": "0.1.13",
-      "sanitize-html": "2.17.7",
-      "markdown-it": "14.3.1"
+      "sanitize-html": "2.18.1",
+      "markdown-it": "14.3.3"
     },
     "widdershins": {
       "swagger2openapi": "7.0.8",
-      "markdown-it": "14.3.1"
+      "markdown-it": "14.3.3"
     },
     "qs": "6.16.0",
     "validator": "13.15.26",
@@ -119,7 +119,7 @@
     "path-to-regexp": "0.1.13",
     "yaml": "2.9.1",
     "lodash-es": "4.18.1",
-    "follow-redirects": "1.16.0",
+    "follow-redirects": "1.16.1",
     "picomatch": "4.0.4",
     "convict": "6.2.5",
     "ajv@>=7.0.0-alpha.0": "8.20.0",
@@ -132,9 +132,9 @@
     "nanoid": "3.3.18",
     "mysql2": "3.24.4",
     "@hapi/wreck": "18.1.2",
-    "sanitize-html": "2.17.7",
+    "sanitize-html": "2.18.1",
     "body-parser": "1.20.6",
-    "markdown-it": "14.3.1",
+    "markdown-it": "14.3.3",
     "baseline-browser-mapping": "2.11.0",
     "joi@18": "18.3.0",
     "js-yaml@4": "4.3.2",
