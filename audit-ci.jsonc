@@ -4,6 +4,6 @@
   // Only use one of ["low": true, "moderate": true, "high": true, "critical": true]
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
-    "GHSA-2g4f-4pwh-qvx6" // ajv ReDoS - transitive via @mojaloop/inter-scheme-proxy-cache-lib and ml-testing-toolkit-shared-lib, unfixable via override
+    "GHSA-vfj7-8cjw-p6xm" // braces stack-exhaustion ReDoS - dev-only transitive via sdk-standard-components > ml-schema-transformer-lib > api-snippets > ts-auto-mock > micromatch; no patched release of braces 3.x exists (2026-10-16)
   ]
 }
