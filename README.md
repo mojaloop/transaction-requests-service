@@ -19,6 +19,7 @@
 ## Interface Specifications
 
 - OpenAPI v3 Interface Specification: [src/interface/openapi.yaml](src/interface/openapi.yaml)
+- Swagger UI of the running service: `/documentation` (for example http://localhost:4003/documentation). It lists the service's routes. `/swaggerui/index.html` redirects there.
 
 ## Auditing Dependencies
 

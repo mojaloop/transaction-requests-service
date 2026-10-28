@@ -34,7 +34,7 @@ jest.mock('../../../src/lib/requestLogger', () => ({
   logResponse: mockRequestLogger
 }))
 
-const { failActionHandler, onPreHandler } = require('../../../src/handlers/server')
+const { failActionHandler, onRequest, onPreHandler } = require('../../../src/handlers/server')
 
 describe('Server Handlers', () => {
   afterEach(() => {
@@ -51,6 +51,72 @@ describe('Server Handlers', () => {
 
       // Assert
       await expect(action()).rejects.toThrow('Generic error')
+    })
+  })
+
+  describe('onRequest', () => {
+    const buildToolkit = () => {
+      const takeover = jest.fn().mockReturnValue('takeover')
+      const redirect = jest.fn().mockReturnValue({ takeover })
+      return { h: { redirect, continue: 'continue' }, redirect, takeover }
+    }
+
+    it.each([
+      '/swaggerui',
+      '/swaggerui/',
+      '/swaggerui/index.html'
+    ])('redirects %s to /documentation', async (path) => {
+      // Arrange
+      const { h, redirect, takeover } = buildToolkit()
+
+      // Act
+      const result = await onRequest({ path, method: 'get' }, h)
+
+      // Assert
+      expect(redirect).toHaveBeenCalledWith('/documentation')
+      expect(takeover).toHaveBeenCalled()
+      expect(result).toBe('takeover')
+    })
+
+    it('redirects HEAD requests', async () => {
+      // Arrange
+      const { h, redirect } = buildToolkit()
+
+      // Act
+      await onRequest({ path: '/swaggerui/index.html', method: 'head' }, h)
+
+      // Assert
+      expect(redirect).toHaveBeenCalledWith('/documentation')
+    })
+
+    it('does not redirect other methods', async () => {
+      // Arrange
+      const { h, redirect } = buildToolkit()
+
+      // Act
+      const result = await onRequest({ path: '/swaggerui/index.html', method: 'post' }, h)
+
+      // Assert
+      expect(redirect).not.toHaveBeenCalled()
+      expect(result).toBe('continue')
+    })
+
+    it.each([
+      '/documentation',
+      '/swaggerui/swagger-ui-bundle.js',
+      '/swaggerui/extend.js',
+      '/swagger.json',
+      '/transactionRequests'
+    ])('does not redirect %s', async (path) => {
+      // Arrange
+      const { h, redirect } = buildToolkit()
+
+      // Act
+      const result = await onRequest({ path, method: 'get' }, h)
+
+      // Assert
+      expect(redirect).not.toHaveBeenCalled()
+      expect(result).toBe('continue')
     })
   })
 

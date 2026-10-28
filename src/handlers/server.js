@@ -42,7 +42,22 @@ async function onPreHandler (request, h) {
   return h.continue
 }
 
+// hapi-swagger serves the swagger-ui-dist index.html under /swaggerui/ without the
+// swagger-initializer.js it needs, so those URLs render a blank page.
+// The supported Swagger UI page is /documentation.
+const SWAGGER_UI_PATHS = ['/swaggerui', '/swaggerui/', '/swaggerui/index.html']
+const SWAGGER_UI_DOCUMENTATION_PATH = '/documentation'
+const REDIRECTED_METHODS = ['get', 'head']
+
+async function onRequest (request, h) {
+  if (REDIRECTED_METHODS.includes(request.method) && SWAGGER_UI_PATHS.includes(request.path)) {
+    return h.redirect(SWAGGER_UI_DOCUMENTATION_PATH).takeover()
+  }
+  return h.continue
+}
+
 module.exports = {
   failActionHandler,
+  onRequest,
   onPreHandler
 }
